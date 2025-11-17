@@ -225,10 +225,8 @@ const App = {
             bannersHTML += `
                 <div class="slds-scoped-notification slds-media slds-media_center slds-theme_warning" role="alert">
                     <div class="slds-media__figure">
-                        <span class="slds-icon_container slds-icon-utility-warning" title="warning">
-                            <svg class="slds-icon slds-icon_small" aria-hidden="true">
-                                <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#warning"></use>
-                            </svg>
+                        <span class="slds-icon_container" title="warning" style="font-size: 1.5rem; color: #706e6b;">
+                            ⚠
                         </span>
                     </div>
                     <div class="slds-media__body">
@@ -2919,6 +2917,343 @@ const App = {
                                 This feature is currently under development. Check back soon for updates.
                             </p>
                         </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+
+    renderLiveSentimentMonitor() {
+        return `
+            <div class="slds-card slds-m-top_medium">
+                <div class="slds-card__header slds-grid">
+                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                        <div class="slds-media__body">
+                            <h2 class="slds-card__header-title">
+                                Live Sentiment Monitor
+                            </h2>
+                        </div>
+                        <div class="slds-no-flex">
+                            <span class="slds-badge" style="background-color: #c23934; color: white;">2 At-Risk</span>
+                        </div>
+                    </header>
+                </div>
+                <div class="slds-card__body slds-card__body_inner">
+                    <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_small">
+                        Active calls with negative sentiment
+                    </p>
+
+                    <div class="slds-box slds-box_x-small slds-m-bottom_small" style="background-color: #feded8; border-left: 3px solid #c23934;">
+                        <div class="slds-grid slds-grid_vertical-align-start">
+                            <div class="slds-col slds-has-flexi-truncate">
+                                <p class="slds-text-body_small slds-text-title slds-m-bottom_xxx-small">
+                                    <span style="color: #c23934; font-weight: 600;">😞 Negative</span> • Mike Chen
+                                </p>
+                                <p class="slds-text-body_small slds-m-bottom_xxx-small">
+                                    Call with ABC Corp - 12 min
+                                </p>
+                                <p class="slds-text-body_small slds-text-color_weak">
+                                    AI detected: pricing objection, competitor mention
+                                </p>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters_xx-small slds-m-top_x-small">
+                            <div class="slds-col">
+                                <button class="slds-button slds-button_neutral slds-button_stretch" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">
+                                    View Live Transcript
+                                </button>
+                            </div>
+                            <div class="slds-col">
+                                <button class="slds-button slds-button_brand slds-button_stretch" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">
+                                    Join Call
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slds-box slds-box_x-small" style="background-color: #feded8; border-left: 3px solid #c23934;">
+                        <div class="slds-grid slds-grid_vertical-align-start">
+                            <div class="slds-col slds-has-flexi-truncate">
+                                <p class="slds-text-body_small slds-text-title slds-m-bottom_xxx-small">
+                                    <span style="color: #c23934; font-weight: 600;">😞 Negative</span> • Sarah Johnson
+                                </p>
+                                <p class="slds-text-body_small slds-m-bottom_xxx-small">
+                                    Call with XYZ Inc - 8 min
+                                </p>
+                                <p class="slds-text-body_small slds-text-color_weak">
+                                    AI detected: billing dispute, escalation request
+                                </p>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters_xx-small slds-m-top_x-small">
+                            <div class="slds-col">
+                                <button class="slds-button slds-button_neutral slds-button_stretch" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">
+                                    View Live Transcript
+                                </button>
+                            </div>
+                            <div class="slds-col">
+                                <button class="slds-button slds-button_brand slds-button_stretch" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">
+                                    Join Call
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slds-text-align_center slds-m-top_small">
+                        <a href="#" class="slds-text-link">View All Active Calls (12)</a>
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+
+    renderAiPlaybookAdherence() {
+        return `
+            <div class="slds-card slds-m-top_medium">
+                <div class="slds-card__header slds-grid">
+                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                        <div class="slds-media__body">
+                            <h2 class="slds-card__header-title">
+                                AI Playbook Adherence
+                            </h2>
+                        </div>
+                        <div class="slds-no-flex">
+                            <span class="slds-badge slds-theme_warning">78%</span>
+                        </div>
+                    </header>
+                </div>
+                <div class="slds-card__body slds-card__body_inner">
+                    <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_small">
+                        BANT Methodology - Last 7 Days
+                    </p>
+
+                    <div class="slds-m-bottom_small">
+                        <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_xxx-small">
+                            <div class="slds-col slds-has-flexi-truncate">
+                                <p class="slds-text-body_small">Budget Discussed</p>
+                            </div>
+                            <div class="slds-col slds-no-flex">
+                                <span class="slds-badge" style="background-color: #4bca81; color: white;">85%</span>
+                            </div>
+                        </div>
+                        <div class="slds-progress-bar" style="height: 6px;">
+                            <span class="slds-progress-bar__value" style="width: 85%; background-color: #4bca81;"></span>
+                        </div>
+                    </div>
+
+                    <div class="slds-m-bottom_small">
+                        <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_xxx-small">
+                            <div class="slds-col slds-has-flexi-truncate">
+                                <p class="slds-text-body_small">Authority Confirmed</p>
+                            </div>
+                            <div class="slds-col slds-no-flex">
+                                <span class="slds-badge" style="background-color: #ffb75d; color: white;">72%</span>
+                            </div>
+                        </div>
+                        <div class="slds-progress-bar" style="height: 6px;">
+                            <span class="slds-progress-bar__value" style="width: 72%; background-color: #ffb75d;"></span>
+                        </div>
+                    </div>
+
+                    <div class="slds-m-bottom_small">
+                        <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_xxx-small">
+                            <div class="slds-col slds-has-flexi-truncate">
+                                <p class="slds-text-body_small">Need Identified</p>
+                            </div>
+                            <div class="slds-col slds-no-flex">
+                                <span class="slds-badge" style="background-color: #4bca81; color: white;">91%</span>
+                            </div>
+                        </div>
+                        <div class="slds-progress-bar" style="height: 6px;">
+                            <span class="slds-progress-bar__value" style="width: 91%; background-color: #4bca81;"></span>
+                        </div>
+                    </div>
+
+                    <div class="slds-m-bottom_small">
+                        <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_xxx-small">
+                            <div class="slds-col slds-has-flexi-truncate">
+                                <p class="slds-text-body_small">Timing Captured</p>
+                            </div>
+                            <div class="slds-col slds-no-flex">
+                                <span class="slds-badge" style="background-color: #c23934; color: white;">64%</span>
+                            </div>
+                        </div>
+                        <div class="slds-progress-bar" style="height: 6px;">
+                            <span class="slds-progress-bar__value" style="width: 64%; background-color: #c23934;"></span>
+                        </div>
+                    </div>
+
+                    <div class="slds-text-align_center slds-m-top_small">
+                        <a href="#" class="slds-text-link">View Agent Breakdown</a>
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+
+    renderAgentAiActionItems() {
+        return `
+            <div class="slds-card slds-m-top_medium">
+                <div class="slds-card__header slds-grid">
+                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                        <div class="slds-media__body">
+                            <h2 class="slds-card__header-title">
+                                <span class="slds-icon_container slds-icon-utility-checklist" style="margin-right: 0.5rem;">
+                                    <svg class="slds-icon slds-icon_x-small" aria-hidden="true" style="width: 16px; height: 16px; fill: #3A49DA;">
+                                        <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#checklist"></use>
+                                    </svg>
+                                </span>
+                                AI Action Items
+                            </h2>
+                        </div>
+                        <div class="slds-no-flex">
+                            <span class="slds-badge slds-theme_warning">3 Pending</span>
+                        </div>
+                    </header>
+                </div>
+                <div class="slds-card__body slds-card__body_inner">
+                    <div class="slds-m-bottom_small">
+                        <div class="slds-grid slds-grid_vertical-align-start slds-m-bottom_x-small">
+                            <div class="slds-col slds-has-flexi-truncate">
+                                <div class="slds-form-element">
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-checkbox">
+                                            <input type="checkbox" id="action-1" />
+                                            <label class="slds-checkbox__label" for="action-1">
+                                                <span class="slds-checkbox_faux"></span>
+                                                <span class="slds-form-element__label slds-text-body_small">Send pricing quote to Acme Corp</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="slds-text-body_small slds-text-color_weak" style="margin-left: 1.5rem;">
+                            <span style="color: #c23934; font-weight: 600;">Due: Today 5pm</span> • From call at 2:15pm
+                        </p>
+                    </div>
+
+                    <div class="slds-m-bottom_small">
+                        <div class="slds-grid slds-grid_vertical-align-start slds-m-bottom_x-small">
+                            <div class="slds-col slds-has-flexi-truncate">
+                                <div class="slds-form-element">
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-checkbox">
+                                            <input type="checkbox" id="action-2" />
+                                            <label class="slds-checkbox__label" for="action-2">
+                                                <span class="slds-checkbox_faux"></span>
+                                                <span class="slds-form-element__label slds-text-body_small">Schedule demo for Tech Solutions Inc</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="slds-text-body_small slds-text-color_weak" style="margin-left: 1.5rem;">
+                            <span style="color: #ffb75d; font-weight: 600;">Due: Tomorrow</span> • From call at 11:30am
+                        </p>
+                    </div>
+
+                    <div class="slds-m-bottom_small">
+                        <div class="slds-grid slds-grid_vertical-align-start slds-m-bottom_x-small">
+                            <div class="slds-col slds-has-flexi-truncate">
+                                <div class="slds-form-element">
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-checkbox">
+                                            <input type="checkbox" id="action-3" />
+                                            <label class="slds-checkbox__label" for="action-3">
+                                                <span class="slds-checkbox_faux"></span>
+                                                <span class="slds-form-element__label slds-text-body_small">Send case study to Global Industries</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="slds-text-body_small slds-text-color_weak" style="margin-left: 1.5rem;">
+                            <span style="color: #4bca81; font-weight: 600;">Due: Friday</span> • From call yesterday
+                        </p>
+                    </div>
+
+                    <div class="slds-text-align_center slds-m-top_small">
+                        <a href="#" class="slds-text-link">View All Action Items (5)</a>
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+
+    renderAgentAiRecaps() {
+        return `
+            <div class="slds-card slds-m-top_medium">
+                <div class="slds-card__header slds-grid">
+                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                        <div class="slds-media__body">
+                            <h2 class="slds-card__header-title">
+                                <span class="slds-icon_container" style="margin-right: 0.5rem;">
+                                    <svg class="slds-icon slds-icon_x-small" aria-hidden="true" style="width: 16px; height: 16px; fill: #3A49DA;">
+                                        <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#bundle_config"></use>
+                                    </svg>
+                                </span>
+                                Recent AI Recaps
+                            </h2>
+                        </div>
+                    </header>
+                </div>
+                <div class="slds-card__body slds-card__body_inner">
+                    <div class="slds-box slds-box_x-small slds-theme_shade slds-m-bottom_small">
+                        <div class="slds-grid slds-grid_vertical-align-start">
+                            <div class="slds-col">
+                                <p class="slds-text-body_small slds-text-title slds-m-bottom_xxx-small">
+                                    <span class="slds-badge" style="background-color: #4bca81; color: white; margin-right: 0.25rem;">92% 😊</span>
+                                    John Smith - 3:45pm
+                                </p>
+                                <p class="slds-text-body_small slds-m-bottom_xxx-small">
+                                    Customer inquired about Enterprise pricing. Provided quote and discussed volume discounts. Follow-up scheduled.
+                                </p>
+                                <p class="slds-text-body_small slds-text-color_weak">
+                                    <strong>Outcome:</strong> Quote Sent • <strong>Duration:</strong> 8 min
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slds-box slds-box_x-small slds-theme_shade slds-m-bottom_small">
+                        <div class="slds-grid slds-grid_vertical-align-start">
+                            <div class="slds-col">
+                                <p class="slds-text-body_small slds-text-title slds-m-bottom_xxx-small">
+                                    <span class="slds-badge" style="background-color: #ffb75d; color: white; margin-right: 0.25rem;">78% 😐</span>
+                                    Sarah Johnson - 2:15pm
+                                </p>
+                                <p class="slds-text-body_small slds-m-bottom_xxx-small">
+                                    Support call regarding billing issue. Resolved duplicate charge, applied $50 credit to account.
+                                </p>
+                                <p class="slds-text-body_small slds-text-color_weak">
+                                    <strong>Outcome:</strong> Issue Resolved • <strong>Duration:</strong> 12 min
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slds-box slds-box_x-small slds-theme_shade">
+                        <div class="slds-grid slds-grid_vertical-align-start">
+                            <div class="slds-col">
+                                <p class="slds-text-body_small slds-text-title slds-m-bottom_xxx-small">
+                                    <span class="slds-badge" style="background-color: #4bca81; color: white; margin-right: 0.25rem;">95% 😊</span>
+                                    Mike Chen - 11:30am
+                                </p>
+                                <p class="slds-text-body_small slds-m-bottom_xxx-small">
+                                    Product demo completed successfully. Customer very interested in integration features. Next step: technical call with engineering.
+                                </p>
+                                <p class="slds-text-body_small slds-text-color_weak">
+                                    <strong>Outcome:</strong> Demo Completed • <strong>Duration:</strong> 45 min
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slds-text-align_center slds-m-top_small">
+                        <a href="#" class="slds-text-link">View All Recaps</a>
                     </div>
                 </div>
             </div>

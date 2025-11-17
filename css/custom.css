@@ -1,14 +1,96 @@
 /* Custom Styles for Dialpad Launchpad Prototype */
 
+/* ========================================
+   SLDS 2 Cosmos Theme Inspired Overrides
+   ======================================== */
+
+:root {
+    /* Cosmos Theme Colors */
+    --slds-c-button-brand-color-background: #3A49DA;
+    --slds-c-button-brand-color-background-hover: #2E3AB8;
+    --slds-c-link-color: #3A49DA;
+    --slds-c-link-color-hover: #2E3AB8;
+
+    /* Border Radius (Cosmos uses more rounded corners) */
+    --cosmos-border-radius-small: 4px;
+    --cosmos-border-radius-medium: 6px;
+    --cosmos-border-radius-large: 8px;
+
+    /* Drop Shadows for depth */
+    --cosmos-shadow-small: 0 1px 3px rgba(0, 0, 0, 0.12);
+    --cosmos-shadow-medium: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
 body {
     margin: 0;
     padding: 0;
     font-family: 'Salesforce Sans', Arial, sans-serif;
 }
 
+/* Cosmos: Rounded corners on interactive elements */
+.slds-button,
+.slds-input,
+.slds-select,
+.slds-textarea,
+.slds-radio_button,
+.slds-checkbox_button {
+    border-radius: var(--cosmos-border-radius-small) !important;
+}
+
+.slds-card,
+.slds-modal__container,
+.slds-popover,
+.slds-dropdown {
+    border-radius: var(--cosmos-border-radius-medium) !important;
+}
+
+/* Cosmos: Drop shadows for depth on interactive elements */
+.slds-button:not(.slds-button_icon):not([disabled]) {
+    box-shadow: var(--cosmos-shadow-small);
+    transition: box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+.slds-button:not(.slds-button_icon):not([disabled]):hover {
+    box-shadow: var(--cosmos-shadow-medium);
+    transform: translateY(-1px);
+}
+
+.slds-button:not(.slds-button_icon):not([disabled]):active {
+    transform: translateY(0);
+}
+
+.slds-card {
+    box-shadow: var(--cosmos-shadow-small);
+}
+
+/* Cosmos: Updated primary brand color */
+.slds-button_brand,
+.slds-button_brand:link,
+.slds-button_brand:visited {
+    background-color: #3A49DA;
+    border-color: #3A49DA;
+}
+
+.slds-button_brand:hover,
+.slds-button_brand:focus {
+    background-color: #2E3AB8;
+    border-color: #2E3AB8;
+}
+
+/* Cosmos: Links */
+a.slds-text-link,
+.slds-text-link {
+    color: #3A49DA;
+}
+
+a.slds-text-link:hover,
+.slds-text-link:hover {
+    color: #2E3AB8;
+}
+
 /* Context Bar Navigation Active State */
 .slds-context-bar__item.slds-is-active {
-    border-bottom: 3px solid #0176d3;
+    border-bottom: 3px solid #3A49DA;
 }
 
 .slds-context-bar__item.slds-is-active .slds-context-bar__label-action {
@@ -84,7 +166,7 @@ body {
     display: inline-block;
     margin-left: 0.25rem;
     font-size: 0.75rem;
-    color: #0176d3;
+    color: #3A49DA;
 }
 
 .slds-table tbody tr:hover {
@@ -123,7 +205,7 @@ body {
 
 /* Agent State Badges */
 .state-on-call {
-    background-color: #0176d3;
+    background-color: #3A49DA;
     color: white;
 }
 
@@ -166,7 +248,7 @@ body {
 
 /* Demo Controls */
 .demo-controls-link {
-    color: #0176d3;
+    color: #3A49DA;
     text-decoration: none;
     padding: 0.5rem 1rem;
     font-weight: 600;
@@ -254,7 +336,7 @@ body {
 }
 
 .version-banner__dismiss .slds-text-link {
-    color: #0176d3;
+    color: #3A49DA;
     font-weight: 600;
     white-space: nowrap;
 }
@@ -277,7 +359,7 @@ body {
 }
 
 .slds-scoped-notification a {
-    color: #0176d3;
+    color: #3A49DA;
     font-weight: 600;
 }
 
@@ -319,6 +401,6 @@ body {
 }
 
 .slds-notify_toast.slds-theme_info {
-    background-color: #0176d3;
+    background-color: #3A49DA;
     color: white;
 }
