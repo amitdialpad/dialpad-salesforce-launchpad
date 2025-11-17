@@ -53,9 +53,19 @@ const App = {
             // Only auto-refresh on home page
             if (this.currentPage === 'home') {
                 this.simulateDataUpdate();
-                this.renderCurrentPage();
+                this.refreshHomePageData();
             }
         }, 30000); // Refresh every 30 seconds
+    },
+
+    refreshHomePageData() {
+        // Refresh only the data content without re-rendering banners or showing loading state
+        const content = document.getElementById('main-content');
+        const role = RoleManager.getRole();
+
+        // Directly update the content without loading state
+        content.innerHTML = this.renderHomePage(role);
+        this.renderHomeCharts(role);
     },
 
     simulateDataUpdate() {
