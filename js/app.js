@@ -1158,11 +1158,6 @@ const App = {
                         <div class="slds-page-header__col-actions">
                             <div class="slds-page-header__controls">
                                 <div class="slds-page-header__control">
-                                    <button id="notifications-trigger" class="slds-button slds-button_neutral">
-                                        Notifications${AppState.getNotificationCount() > 0 ? ` <span class="slds-badge slds-badge_inverse slds-badge_small">${AppState.getNotificationCount()}</span>` : ''}
-                                    </button>
-                                </div>
-                                <div class="slds-page-header__control">
                                     <button class="slds-button slds-button_brand">Create List</button>
                                 </div>
                             </div>
