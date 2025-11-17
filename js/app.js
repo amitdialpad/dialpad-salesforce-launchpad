@@ -10,6 +10,9 @@ const App = {
         // Initialize role manager
         RoleManager.init();
 
+        // Update tab visibility based on role
+        this.updateTabVisibility();
+
         // Initialize app state
         AppState.init();
 
@@ -24,6 +27,7 @@ const App = {
 
         // Listen for role changes
         window.addEventListener('roleChanged', () => {
+            this.updateTabVisibility();
             this.renderCurrentPage();
         });
 
@@ -139,6 +143,30 @@ const App = {
                 case 'settings':
                     content.innerHTML = this.renderSettingsPage(role);
                     setTimeout(() => this.attachSettingsPageListeners(), 0);
+                    break;
+                case 'voicemail':
+                    content.innerHTML = this.renderComingSoonPage('Voicemail', 'View and manage your voicemail messages with transcription and playback.');
+                    break;
+                case 'recordings':
+                    content.innerHTML = this.renderComingSoonPage('Recordings', 'Access and search all call recordings with filters and sharing options.');
+                    break;
+                case 'contacts':
+                    content.innerHTML = this.renderComingSoonPage('Contacts', 'Standard Salesforce Contacts view with click-to-dial integration.');
+                    break;
+                case 'accounts':
+                    content.innerHTML = this.renderComingSoonPage('Accounts', 'Standard Salesforce Accounts view with communication history.');
+                    break;
+                case 'leads':
+                    content.innerHTML = this.renderComingSoonPage('Leads', 'Standard Salesforce Leads view with call tracking and conversion.');
+                    break;
+                case 'opportunities':
+                    content.innerHTML = this.renderComingSoonPage('Opportunities', 'Standard Salesforce Opportunities view with call insights.');
+                    break;
+                case 'analytics':
+                    content.innerHTML = this.renderComingSoonPage('Analytics', 'Advanced analytics with AI-powered insights, predictions, and trends.');
+                    break;
+                case 'team':
+                    content.innerHTML = this.renderComingSoonPage('Team', 'Manage team members, assign quotas, and view real-time agent status.');
                     break;
                 default:
                     content.innerHTML = '<p>Page not found</p>';
@@ -2860,6 +2888,55 @@ const App = {
                 </div>
             </div>
         `;
+    },
+
+    renderComingSoonPage(title, description) {
+        return `
+            <div class="slds-container_fluid slds-p-around_large">
+                <div style="max-width: 800px; margin: 0 auto; text-align: center; padding-top: 4rem;">
+                    <div class="slds-illustration slds-illustration_large">
+                        <svg class="slds-illustration__svg" viewBox="0 0 454 300" style="width: 300px; height: 200px; margin: 0 auto;">
+                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                <g transform="translate(-67.000000, -100.000000)">
+                                    <g>
+                                        <g transform="translate(125.000000, 200.000000)">
+                                            <circle fill="#E0E5EE" cx="169" cy="100" r="100"></circle>
+                                            <path d="M169,50 L169,150 M119,100 L219,100" stroke="#0176D3" stroke-width="8" stroke-linecap="round"></path>
+                                        </g>
+                                    </g>
+                                </g>
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="slds-m-top_large">
+                        <h1 class="slds-text-heading_large slds-m-bottom_medium">${title}</h1>
+                        <p class="slds-text-body_regular slds-text-color_weak slds-m-bottom_large" style="font-size: 1.125rem;">
+                            ${description}
+                        </p>
+                        <div class="slds-box slds-theme_shade slds-p-around_medium" style="max-width: 600px; margin: 0 auto;">
+                            <p class="slds-text-body_small slds-text-color_weak">
+                                <strong>Coming Soon</strong><br>
+                                This feature is currently under development. Check back soon for updates.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+
+    updateTabVisibility() {
+        const currentRole = RoleManager.getRole();
+
+        // Show/hide tabs based on role visibility
+        document.querySelectorAll('.slds-context-bar__item[data-role-visibility]').forEach(tabItem => {
+            const visibleRoles = tabItem.getAttribute('data-role-visibility').split(',');
+            if (visibleRoles.includes(currentRole)) {
+                tabItem.style.display = '';
+            } else {
+                tabItem.style.display = 'none';
+            }
+        });
     }
 };
 
