@@ -14,8 +14,7 @@ This is a lo-fi prototype of the Dialpad for Salesforce Launchpad built using Sa
 
 ## Running the Prototype
 
-The local server is already running at:
-**http://localhost:8000**
+https://amitdialpad.github.io/dialpad-salesforce-launchpad/
 
 Open this URL in your browser to view the prototype.
 
