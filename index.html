@@ -131,7 +131,14 @@
         <!-- Content will be loaded here dynamically -->
     </div>
 
-    <!-- Application Entry Point -->
+    <!-- Legacy Scripts - Temporary during migration -->
+    <script src="js/data-service.js"></script>
+    <script src="js/role-manager.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/app-state.js"></script>
+    <script src="js/app.js"></script>
+
+    <!-- New Architecture (Running in parallel) -->
     <script type="module" src="/src/main.ts"></script>
 
     <!-- Modals Container -->

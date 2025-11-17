@@ -26,11 +26,11 @@ class Application {
       // Setup event listeners
       this.setupEventListeners();
 
-      // Start auto-refresh
-      this.startAutoRefresh();
+      // Note: Auto-refresh disabled - legacy app.js handles this
+      // this.startAutoRefresh();
 
-      // Render initial UI
-      this.renderApp();
+      // Note: Rendering disabled - legacy app.js handles UI
+      // this.renderApp();
 
       Logger.info('Application initialized successfully');
     } catch (error) {
@@ -110,42 +110,9 @@ class Application {
   }
 
   private renderApp(): void {
-    // TODO: Implement actual rendering logic
-    // This is a placeholder that will be replaced with proper component rendering
-    const content = document.getElementById('main-content');
-    if (!content) {
-      Logger.error('Main content element not found');
-      return;
-    }
-
-    const state = store.getState();
-    const role = roleService.getRole();
-
-    Logger.info('Rendering app', { page: this.currentPage, role });
-
-    // Temporary placeholder
-    content.innerHTML = `
-      <div class="slds-container_fluid slds-p-around_large">
-        <h1 class="slds-text-heading_large slds-m-bottom_medium">
-          Welcome to Dialpad Launchpad (Production-Ready Version)
-        </h1>
-        <div class="slds-box slds-theme_shade">
-          <p class="slds-text-body_regular slds-m-bottom_small">
-            <strong>Status:</strong> TypeScript + Vite build system initialized ✓
-          </p>
-          <p class="slds-text-body_regular slds-m-bottom_small">
-            <strong>Current Role:</strong> ${role}
-          </p>
-          <p class="slds-text-body_regular slds-m-bottom_small">
-            <strong>Users Loaded:</strong> ${state.users.length}
-          </p>
-          <p class="slds-text-body_regular slds-text-color_weak slds-m-top_medium">
-            The application is being migrated to a production-ready architecture.
-            Component rendering will be implemented in the next phase.
-          </p>
-        </div>
-      </div>
-    `;
+    // Skip rendering - legacy app.js handles UI during migration
+    // TODO: Gradually migrate UI components to TypeScript
+    Logger.info('New architecture initialized, legacy UI active');
   }
 
   private showErrorMessage(message: string): void {
