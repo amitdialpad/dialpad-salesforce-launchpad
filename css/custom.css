@@ -1,0 +1,324 @@
+/* Custom Styles for Dialpad Launchpad Prototype */
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Salesforce Sans', Arial, sans-serif;
+}
+
+/* Context Bar Navigation Active State */
+.slds-context-bar__item.slds-is-active {
+    border-bottom: 3px solid #0176d3;
+}
+
+.slds-context-bar__item.slds-is-active .slds-context-bar__label-action {
+    font-weight: 600;
+}
+
+/* Context Bar Secondary Right Alignment */
+.slds-context-bar__secondary {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Metric Cards */
+.metric-card {
+    text-align: center;
+}
+
+.metric-value {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 0.5rem 0;
+}
+
+.metric-label {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025rem;
+}
+
+.metric-subtext {
+    font-size: 0.75rem;
+    color: #706e6b;
+    margin-top: 0.25rem;
+}
+
+.metric-positive {
+    color: #4bca81;
+    font-weight: 600;
+}
+
+.metric-negative {
+    color: #c23934;
+    font-weight: 600;
+}
+
+/* Table Utilities */
+.slds-table th {
+    background-color: #f3f3f3;
+}
+
+/* Sortable Table Headers */
+.sortable {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+}
+
+.sortable:hover {
+    background-color: #e8e8e8;
+}
+
+.sort-indicator {
+    display: inline-block;
+    margin-left: 0.25rem;
+    font-size: 0.75rem;
+    color: #0176d3;
+}
+
+.slds-table tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* Chart Placeholder */
+.chart-placeholder {
+    background-color: #f3f3f3;
+    height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+}
+
+/* Filters Section */
+.filters-section {
+    background-color: #f3f3f3;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    margin-bottom: 1rem;
+}
+
+/* Status Badges */
+.status-connected {
+    background-color: #4bca81;
+    color: white;
+}
+
+.status-disconnected {
+    background-color: #c23934;
+    color: white;
+}
+
+/* Agent State Badges */
+.state-on-call {
+    background-color: #0176d3;
+    color: white;
+}
+
+.state-available {
+    background-color: #4bca81;
+    color: white;
+}
+
+.state-wrap-up {
+    background-color: #e07c3e;
+    color: white;
+}
+
+.state-break {
+    background-color: #706e6b;
+    color: white;
+}
+
+.state-offline {
+    background-color: #c23934;
+    color: white;
+}
+
+/* Loading State */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    padding: 2rem;
+}
+
+/* Two Column Layout */
+.two-column-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1rem;
+}
+
+/* Demo Controls */
+.demo-controls-link {
+    color: #0176d3;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    display: inline-block;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.demo-controls-link:hover {
+    color: #014486;
+    text-decoration: underline;
+}
+
+.demo-controls-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background: white;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2);
+    z-index: 9998;
+    overflow-y: auto;
+}
+
+.demo-controls-panel .slds-panel {
+    height: 100%;
+}
+
+.demo-controls-panel .slds-panel__header {
+    background-color: #f3f3f3;
+    border-bottom: 1px solid #dddbda;
+    padding: 1rem;
+}
+
+.demo-controls-panel .slds-panel__body {
+    padding: 1rem;
+}
+
+/* Notifications Dropdown Positioning */
+.notifications-dropdown-position {
+    position: absolute;
+    top: 50px;
+    right: 20px;
+    z-index: 9999;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+    .two-column-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .demo-controls-panel {
+        width: 100%;
+    }
+}
+
+/* SLDS Overrides for Better Contrast */
+
+/* Ensure scoped notifications have proper contrast */
+.slds-scoped-notification {
+    margin-bottom: 0.5rem;
+}
+
+/* Version Banner Layout */
+.version-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+}
+
+.version-banner__content {
+    flex: 1;
+}
+
+.version-banner__dismiss {
+    flex-shrink: 0;
+    margin-left: 2rem;
+}
+
+.version-banner__dismiss .slds-text-link {
+    color: #0176d3;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.version-banner__dismiss .slds-text-link:hover {
+    color: #014486;
+    text-decoration: underline;
+}
+
+.slds-scoped-notification.slds-scoped-notification_light {
+    background-color: #f3f3f3;
+    border: 1px solid #dddbda;
+    color: #080707;
+}
+
+.slds-scoped-notification.slds-theme_warning {
+    background-color: #ffd657;
+    border: 1px solid #ffb75d;
+    color: #080707;
+}
+
+.slds-scoped-notification a {
+    color: #0176d3;
+    font-weight: 600;
+}
+
+.slds-scoped-notification a:hover {
+    color: #014486;
+    text-decoration: underline;
+}
+
+/* Ensure theme boxes have proper text colors */
+.slds-theme_shade {
+    background-color: #f3f3f3;
+    color: #080707;
+}
+
+.slds-text-color_default {
+    color: #080707 !important;
+}
+
+/* Ensure badges have proper contrast */
+.slds-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+/* Toast notifications - ensure proper contrast */
+.slds-notify_toast.slds-theme_success {
+    background-color: #04844b;
+    color: white;
+}
+
+.slds-notify_toast.slds-theme_warning {
+    background-color: #ffb75d;
+    color: #080707;
+}
+
+.slds-notify_toast.slds-theme_error {
+    background-color: #c23934;
+    color: white;
+}
+
+.slds-notify_toast.slds-theme_info {
+    background-color: #0176d3;
+    color: white;
+}

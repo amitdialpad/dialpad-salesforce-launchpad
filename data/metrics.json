@@ -1,0 +1,48 @@
+{
+  "company": {
+    "callsToday": 15,
+    "callsThisWeek": 87,
+    "activeUsers": 10,
+    "connectedUsers": 9,
+    "avgCallDuration": 245,
+    "missedCalls": 3,
+    "totalTalkTime": 3675
+  },
+  "byDepartment": [
+    {
+      "department": "Sales",
+      "callsToday": 11,
+      "avgDuration": 235,
+      "missedCalls": 3
+    },
+    {
+      "department": "Support",
+      "callsToday": 3,
+      "avgDuration": 290,
+      "missedCalls": 0
+    },
+    {
+      "department": "IT",
+      "callsToday": 0,
+      "avgDuration": 0,
+      "missedCalls": 0
+    }
+  ],
+  "byOffice": [
+    {
+      "office": "San Francisco",
+      "callsToday": 9,
+      "agents": 5
+    },
+    {
+      "office": "Austin",
+      "callsToday": 3,
+      "agents": 3
+    },
+    {
+      "office": "New York",
+      "callsToday": 3,
+      "agents": 2
+    }
+  ]
+}

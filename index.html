@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dialpad for Salesforce - Launchpad</title>
+
+    <!-- Salesforce Lightning Design System -->
+    <link rel="stylesheet" href="https://unpkg.com/@salesforce-ux/design-system@2.24.0/assets/styles/salesforce-lightning-design-system.min.css">
+
+    <!-- Chart.js for visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <link rel="stylesheet" href="css/custom.css">
+</head>
+<body>
+    <!-- Alert Banners Container -->
+    <div id="alert-banners"></div>
+
+    <!-- Global Header -->
+    <div class="slds-context-bar">
+        <div class="slds-context-bar__primary">
+            <div class="slds-context-bar__item slds-context-bar__dropdown-trigger slds-dropdown-trigger slds-dropdown-trigger_click slds-no-hover">
+                <div class="slds-context-bar__icon-action">
+                    <button class="slds-button slds-icon-waffle_container slds-context-bar__button" title="App Launcher">
+                        <span class="slds-icon-waffle">
+                            <span class="slds-r1"></span>
+                            <span class="slds-r2"></span>
+                            <span class="slds-r3"></span>
+                            <span class="slds-r4"></span>
+                            <span class="slds-r5"></span>
+                            <span class="slds-r6"></span>
+                            <span class="slds-r7"></span>
+                            <span class="slds-r8"></span>
+                            <span class="slds-r9"></span>
+                        </span>
+                        <span class="slds-assistive-text">App Launcher</span>
+                    </button>
+                </div>
+                <span class="slds-context-bar__label-action slds-context-bar__app-name">
+                    <span class="slds-truncate" title="Dialpad">Dialpad</span>
+                </span>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <div class="slds-context-bar__item slds-is-active">
+                <a href="#" class="slds-context-bar__label-action" data-page="home" id="tab-home">
+                    <span class="slds-truncate">Home</span>
+                </a>
+            </div>
+            <div class="slds-context-bar__item">
+                <a href="#" class="slds-context-bar__label-action" data-page="calls" id="tab-calls">
+                    <span class="slds-truncate">Calls</span>
+                </a>
+            </div>
+            <div class="slds-context-bar__item">
+                <a href="#" class="slds-context-bar__label-action" data-page="sms" id="tab-sms">
+                    <span class="slds-truncate">SMS</span>
+                </a>
+            </div>
+            <div class="slds-context-bar__item">
+                <a href="#" class="slds-context-bar__label-action" data-page="powerdialer" id="tab-powerdialer">
+                    <span class="slds-truncate">Powerdialer</span>
+                </a>
+            </div>
+            <div class="slds-context-bar__item">
+                <a href="#" class="slds-context-bar__label-action" data-page="reports" id="tab-reports">
+                    <span class="slds-truncate">Reports</span>
+                </a>
+            </div>
+            <div class="slds-context-bar__item">
+                <a href="#" class="slds-context-bar__label-action" data-page="settings" id="tab-settings">
+                    <span class="slds-truncate">Settings</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Notifications & Demo Controls -->
+        <div class="slds-context-bar__secondary">
+            <button id="notifications-trigger" class="slds-button">
+                Notifications<span id="notification-badge" class="slds-badge slds-badge_inverse slds-badge_small slds-m-left_xx-small slds-hide"></span>
+            </button>
+            <a href="#" id="demo-controls-trigger" class="demo-controls-link">
+                Demo Controls <span id="current-role-indicator" class="slds-text-color_weak">(Admin)</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="slds-container_fluid slds-p-around_medium" id="main-content">
+        <!-- Content will be loaded here dynamically -->
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/data-service.js"></script>
+    <script src="js/role-manager.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/app-state.js"></script>
+    <script src="js/app.js"></script>
+
+    <!-- Modals Container -->
+    <div id="modals-container"></div>
+
+    <!-- Demo Controls Panel -->
+    <div id="demo-controls-panel" class="demo-controls-panel" style="display: none;">
+        <div class="slds-panel slds-size_medium slds-panel_docked slds-panel_docked-right slds-is-open">
+            <div class="slds-panel__header">
+                <h2 class="slds-panel__header-title slds-text-heading_small">Demo Controls</h2>
+                <button class="slds-button slds-button_icon slds-button_icon-small slds-panel__close" id="close-demo-controls">
+                    <span class="slds-icon_container">✕</span>
+                    <span class="slds-assistive-text">Close</span>
+                </button>
+            </div>
+            <div class="slds-panel__body">
+                <div class="slds-form slds-form_stacked">
+
+                    <div class="slds-form-element">
+                        <h3 class="slds-text-title_caps slds-m-bottom_small">Current Role</h3>
+                        <div class="slds-form-element__control">
+                            <div class="slds-radio_button-group">
+                                <span class="slds-button slds-radio_button">
+                                    <input type="radio" name="role" id="role-admin" value="admin" checked />
+                                    <label class="slds-radio_button__label" for="role-admin">
+                                        <span class="slds-radio_faux">Admin</span>
+                                    </label>
+                                </span>
+                                <span class="slds-button slds-radio_button">
+                                    <input type="radio" name="role" id="role-supervisor" value="supervisor" />
+                                    <label class="slds-radio_button__label" for="role-supervisor">
+                                        <span class="slds-radio_faux">Supervisor</span>
+                                    </label>
+                                </span>
+                                <span class="slds-button slds-radio_button">
+                                    <input type="radio" name="role" id="role-agent" value="agent" />
+                                    <label class="slds-radio_button__label" for="role-agent">
+                                        <span class="slds-radio_faux">Agent</span>
+                                    </label>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slds-form-element slds-m-top_medium">
+                        <h3 class="slds-text-title_caps slds-m-bottom_small">Onboarding States</h3>
+                        <button class="slds-button slds-button_brand slds-button_stretch slds-m-bottom_x-small" id="trigger-onboarding">
+                            Show Onboarding Wizard
+                        </button>
+                        <button class="slds-button slds-button_neutral slds-button_stretch slds-m-bottom_small" id="trigger-tour">
+                            Start Feature Tour
+                        </button>
+                    </div>
+
+                    <div class="slds-form-element slds-m-top_medium">
+                        <h3 class="slds-text-title_caps slds-m-bottom_small">Package States</h3>
+                        <label class="slds-checkbox_toggle slds-grid">
+                            <span class="slds-form-element__label slds-m-bottom_none">Show Version Banner</span>
+                            <input type="checkbox" id="toggle-version-banner" checked />
+                            <span class="slds-checkbox_faux_container">
+                                <span class="slds-checkbox_faux"></span>
+                                <span class="slds-checkbox_on">Shown</span>
+                                <span class="slds-checkbox_off">Hidden</span>
+                            </span>
+                        </label>
+                        <button class="slds-button slds-button_neutral slds-button_stretch slds-m-top_small" id="show-changelog">
+                            Show Changelog Modal
+                        </button>
+                    </div>
+
+                    <div class="slds-form-element slds-m-top_medium">
+                        <h3 class="slds-text-title_caps slds-m-bottom_small">Environment</h3>
+                        <div class="slds-form-element__control">
+                            <div class="slds-radio_button-group">
+                                <span class="slds-button slds-radio_button">
+                                    <input type="radio" name="environment" id="env-sandbox" value="sandbox" />
+                                    <label class="slds-radio_button__label" for="env-sandbox">
+                                        <span class="slds-radio_faux">Sandbox</span>
+                                    </label>
+                                </span>
+                                <span class="slds-button slds-radio_button">
+                                    <input type="radio" name="environment" id="env-production" value="production" checked />
+                                    <label class="slds-radio_button__label" for="env-production">
+                                        <span class="slds-radio_faux">Production</span>
+                                    </label>
+                                </span>
+                            </div>
+                        </div>
+                        <label class="slds-checkbox_toggle slds-grid slds-m-top_small">
+                            <span class="slds-form-element__label slds-m-bottom_none">Show Sandbox Warning</span>
+                            <input type="checkbox" id="toggle-sandbox-warning" checked />
+                            <span class="slds-checkbox_faux_container">
+                                <span class="slds-checkbox_faux"></span>
+                                <span class="slds-checkbox_on">Shown</span>
+                                <span class="slds-checkbox_off">Hidden</span>
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="slds-form-element slds-m-top_medium">
+                        <h3 class="slds-text-title_caps slds-m-bottom_small">Alerts</h3>
+                        <label class="slds-form-element__label" for="unlogged-count">
+                            Unlogged Calls Count: <span id="unlogged-value">3</span>
+                        </label>
+                        <input type="range" id="unlogged-count" class="slds-slider__range" min="0" max="20" value="3" step="1" style="width: 100%;" />
+                    </div>
+
+                    <div class="slds-form-element slds-m-top_medium">
+                        <h3 class="slds-text-title_caps slds-m-bottom_small">Integration Health</h3>
+                        <div class="slds-form-element__control">
+                            <div class="slds-radio_button-group">
+                                <span class="slds-button slds-radio_button">
+                                    <input type="radio" name="integration-status" id="integration-connected" value="connected" checked />
+                                    <label class="slds-radio_button__label" for="integration-connected">
+                                        <span class="slds-radio_faux">Connected</span>
+                                    </label>
+                                </span>
+                                <span class="slds-button slds-radio_button">
+                                    <input type="radio" name="integration-status" id="integration-disconnected" value="disconnected" />
+                                    <label class="slds-radio_button__label" for="integration-disconnected">
+                                        <span class="slds-radio_faux">Disconnected</span>
+                                    </label>
+                                </span>
+                            </div>
+                        </div>
+                        <label class="slds-checkbox_toggle slds-grid slds-m-top_small">
+                            <span class="slds-form-element__label slds-m-bottom_none">Show Config Warning</span>
+                            <input type="checkbox" id="toggle-config-warning" />
+                            <span class="slds-checkbox_faux_container">
+                                <span class="slds-checkbox_faux"></span>
+                                <span class="slds-checkbox_on">Shown</span>
+                                <span class="slds-checkbox_off">Hidden</span>
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="slds-form-element slds-m-top_medium">
+                        <h3 class="slds-text-title_caps slds-m-bottom_small">Agent Quota (Sarah Johnson)</h3>
+                        <label class="slds-form-element__label" for="quota-progress">
+                            Progress: <span id="quota-value">45</span> / 100 calls
+                        </label>
+                        <input type="range" id="quota-progress" class="slds-slider__range" min="0" max="100" value="45" step="1" style="width: 100%;" />
+                    </div>
+
+                    <div class="slds-form-element slds-m-top_medium">
+                        <button class="slds-button slds-button_destructive slds-button_stretch" id="reset-demo-state">
+                            Reset All States
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications Dropdown -->
+    <div id="notifications-dropdown" class="slds-dropdown slds-dropdown_right slds-dropdown_medium slds-nubbin_top-right notifications-dropdown-position slds-hide">
+        <div class="slds-dropdown__header">
+            <span class="slds-text-heading_small">Notifications</span>
+        </div>
+        <ul class="slds-dropdown__list" id="notifications-list" role="menu">
+            <!-- Notifications will be rendered here -->
+        </ul>
+    </div>
+</body>
+</html>
