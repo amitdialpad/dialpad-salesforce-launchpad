@@ -416,7 +416,7 @@ const App = {
                     <div class="slds-media__figure">
                         <span class="slds-icon_container" style="background-color: ${iconColor};">
                             <svg class="slds-icon slds-icon_x-small slds-icon-text-default" aria-hidden="true">
-                                <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#${notification.icon}")}"></use>
+                                <use xlink:href="${getAssetPath(`assets/icons/utility-sprite/svg/symbols.svg#${notification.icon}`)}"></use>
                             </svg>
                         </span>
                     </div>
@@ -513,7 +513,7 @@ const App = {
                         <div class="slds-media__figure">
                             <span class="slds-icon_container" style="background-color: ${iconColor};">
                                 <svg class="slds-icon slds-icon_x-small slds-icon-text-default" aria-hidden="true">
-                                    <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#${notification.icon}")}"></use>
+                                    <use xlink:href="${getAssetPath(`assets/icons/utility-sprite/svg/symbols.svg#${notification.icon}`)}"></use>
                                 </svg>
                             </span>
                         </div>
@@ -661,7 +661,7 @@ const App = {
                             <li class="slds-nav-vertical__item ${currentSection === section.id ? 'slds-is-active' : ''}">
                                 <a href="#" class="slds-nav-vertical__action" data-admin-section="${section.id}">
                                     <svg class="slds-icon slds-icon-text-default slds-icon_x-small slds-m-right_x-small" aria-hidden="true">
-                                        <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#${section.icon}")}"></use>
+                                        <use xlink:href="${getAssetPath(`assets/icons/utility-sprite/svg/symbols.svg#${section.icon}`)}"></use>
                                     </svg>
                                     ${section.label}
                                 </a>
@@ -1190,7 +1190,7 @@ const App = {
                                         <div class="slds-col slds-size_1-of-12">
                                             <span class="slds-icon_container" title="${alert.type}">
                                                 <svg class="slds-icon slds-icon_x-small ${getAlertClass(alert.type)}" aria-hidden="true">
-                                                    <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#${getAlertIcon(alert.type)}"")}></use>
+                                                    <use xlink:href="${getAssetPath(`assets/icons/utility-sprite/svg/symbols.svg#${getAlertIcon(alert.type)}`)}"></use>
                                                 </svg>
                                             </span>
                                         </div>
@@ -1435,7 +1435,7 @@ const App = {
                                     <div class="slds-col slds-size_1-of-12">
                                         <span class="slds-icon_container">
                                             <svg class="slds-icon slds-icon_x-small ${getStepClass(step.status)}" aria-hidden="true">
-                                                <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#${getStepIcon(step.status)}"")}></use>
+                                                <use xlink:href="${getAssetPath(`assets/icons/utility-sprite/svg/symbols.svg#${getStepIcon(step.status)}`)}></use>
                                             </svg>
                                         </span>
                                     </div>
@@ -1527,7 +1527,7 @@ const App = {
                                         <div class="slds-col slds-size_1-of-12">
                                             <span class="slds-icon_container slds-icon-standard-announcement">
                                                 <svg class="slds-icon slds-icon_small" aria-hidden="true">
-                                                    <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#${getAnnouncementIcon(announcement.type)}"")}></use>
+                                                    <use xlink:href="${getAssetPath(`assets/icons/utility-sprite/svg/symbols.svg#${getAnnouncementIcon(announcement.type)}`)}></use>
                                                 </svg>
                                             </span>
                                         </div>
@@ -1642,7 +1642,7 @@ const App = {
                                     <td>
                                         <div class="slds-grid slds-grid_vertical-align-center">
                                             <svg class="slds-icon slds-icon_x-small slds-m-right_x-small" aria-hidden="true">
-                                                <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#${getActivityIcon(activity.type)}"")}></use>
+                                                <use xlink:href="${getAssetPath(`assets/icons/utility-sprite/svg/symbols.svg#${getActivityIcon(activity.type)}`)}></use>
                                             </svg>
                                             ${activity.activity}
                                         </div>
@@ -1931,7 +1931,7 @@ const App = {
                                     <div class="slds-col slds-size_1-of-12">
                                         <span class="slds-icon_container ${alert.type === 'error' ? 'slds-icon-utility-error' : alert.type === 'warning' ? 'slds-icon-utility-warning' : 'slds-icon-utility-success'}" title="${alert.type}">
                                             <svg class="slds-icon slds-icon_x-small ${alert.type === 'error' ? 'slds-icon-text-error' : alert.type === 'warning' ? 'slds-icon-text-warning' : 'slds-icon-text-success'}" aria-hidden="true">
-                                                <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#${alert.type === 'success' ? 'check' : alert.type}")}"></use>
+                                                <use xlink:href="${getAssetPath(`assets/icons/utility-sprite/svg/symbols.svg#${alert.type === 'success' ? 'check' : alert.type}`)}"></use>
                                             </svg>
                                         </span>
                                     </div>
@@ -2020,7 +2020,7 @@ const App = {
                     <td data-label="Status" style="padding: 0.375rem 0.75rem;">
                         <div class="slds-grid slds-grid_vertical-align-center" style="gap: 0.25rem;">
                             <svg class="slds-icon slds-icon_x-small" style="width: 0.75rem; height: 0.75rem; fill: ${agent.state === 'On Call' ? '#3A49DA' : agent.state === 'Available' ? '#4bca81' : '#706e6b'};">
-                                <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#${stateIcon[agent.state] || 'user'}")}"></use>
+                                <use xlink:href="${getAssetPath(`assets/icons/utility-sprite/svg/symbols.svg#${stateIcon[agent.state] || 'user'}`)}"></use>
                             </svg>
                             <span class="slds-badge ${getStateClass(agent.state)}" style="font-size: 0.75rem;">${agent.state}</span>
                             <span class="slds-text-body_small slds-text-color_weak" style="margin-left: 0.25rem;">${agent.stateDuration}</span>
@@ -4358,7 +4358,7 @@ const App = {
                 <span class="slds-assistive-text">${type}</span>
                 <span class="slds-icon_container slds-m-right_small" style="background: transparent;">
                     <svg class="slds-icon slds-icon_small" aria-hidden="true" style="fill: white;">
-                        <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#${icon}")}"></use>
+                        <use xlink:href="${getAssetPath(`assets/icons/utility-sprite/svg/symbols.svg#${icon}`)}"></use>
                     </svg>
                 </span>
                 <div class="slds-notify__content">
