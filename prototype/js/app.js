@@ -1415,17 +1415,17 @@ const App = {
                     </div>
                     <ul class="slds-has-dividers_top-space">
                         ${setup.steps.map(step => `
-                            <li class="slds-item slds-p-vertical_x-small">
-                                <div class="slds-grid slds-grid_vertical-align-center">
-                                    <div class="slds-col slds-size_1-of-12">
+                            <li class="slds-item slds-p-vertical_small">
+                                <div class="slds-grid slds-grid_vertical-align-center slds-grid_align-spread">
+                                    <div class="slds-col slds-no-flex slds-m-right_small">
                                         <span class="slds-icon_container">
                                             <svg class="slds-icon slds-icon_x-small ${getStepClass(step.status)}" aria-hidden="true">
                                                 <use xlink:href="${getAssetPath(`assets/icons/utility-sprite/svg/symbols.svg#${getStepIcon(step.status)}`)}></use>
                                             </svg>
                                         </span>
                                     </div>
-                                    <div class="slds-col slds-size_11-of-12">
-                                        <span class="slds-text-body_small">${step.name}</span>
+                                    <div class="slds-col slds-has-flexi-truncate">
+                                        <span class="slds-text-body_regular slds-text-color_default">${step.name}</span>
                                     </div>
                                 </div>
                             </li>
@@ -2680,8 +2680,40 @@ const App = {
         const lists = DataService.getLists(role);
 
         if (role === 'agent') {
+            const session = AppState.getDialerSession();
             const queue = DataService.getPowerdialerQueue(null, 10);
+            const hasActiveSession = session.status === 'active' || session.status === 'paused';
+            const activeList = lists.find(l => l.id === session.listId);
 
+            // Empty state
+            if (lists.length === 0) {
+                return `
+                    <div class="slds-page-header">
+                        <div class="slds-page-header__row">
+                            <div class="slds-page-header__col-title">
+                                <div class="slds-media">
+                                    <div class="slds-media__body">
+                                        <h1 class="slds-page-header__title slds-truncate" title="Powerdialer">Powerdialer</h1>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-illustration slds-illustration_small" style="margin-top: 4rem;">
+                        <div class="slds-text-align_center">
+                            <h3 class="slds-text-heading_medium slds-m-bottom_small">No Lists Assigned</h3>
+                            <p class="slds-text-body_regular slds-text-color_weak">Contact your supervisor to get assigned to powerdialer lists.</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            const currentContact = hasActiveSession ? queue[session.contactIndex] : null;
+            const upNextContacts = hasActiveSession ? queue.slice(session.contactIndex + 1, session.contactIndex + 4) : [];
+            const progress = hasActiveSession ? Math.round((session.contactIndex / queue.length) * 100) : 0;
+            const isPaused = session.status === 'paused';
+
+            // Single page with active session at top, lists below
             return `
                 <div class="slds-page-header">
                     <div class="slds-page-header__row">
@@ -2689,50 +2721,189 @@ const App = {
                             <div class="slds-media">
                                 <div class="slds-media__body">
                                     <h1 class="slds-page-header__title slds-truncate" title="Powerdialer">Powerdialer</h1>
-                                    <p class="slds-page-header__meta-text">${lists.length} active lists • ${queue.length} contacts in queue</p>
+                                    <p class="slds-page-header__meta-text">
+                                        ${hasActiveSession
+                                            ? `Active Session: ${activeList.name} • Contact ${session.contactIndex + 1} of ${queue.length} (${progress}%)`
+                                            : `${lists.length} assigned list${lists.length > 1 ? 's' : ''}`
+                                        }
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        ${hasActiveSession ? `
+                            <div class="slds-page-header__col-actions">
+                                <div class="slds-page-header__controls">
+                                    ${isPaused ? `
+                                        <button class="slds-button slds-button_brand" onclick="DialpadApp.resumeSession()">
+                                            Resume Session
+                                        </button>
+                                    ` : `
+                                        <button class="slds-button slds-button_neutral" onclick="DialpadApp.pauseSession()">
+                                            Pause Session
+                                        </button>
+                                    `}
+                                    <button class="slds-button slds-button_neutral" onclick="DialpadApp.endSession()">
+                                        End Session
+                                    </button>
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+
+                ${hasActiveSession && isPaused ? `
+                    <div class="slds-notify slds-notify_alert slds-theme_warning" style="margin-top: 1rem;">
+                        <span class="slds-assistive-text">warning</span>
+                        <h2>Session Paused</h2>
+                    </div>
+                ` : ''}
+
+                ${hasActiveSession && currentContact ? `
+                    <div class="slds-grid slds-wrap slds-gutters" style="margin-top: 1rem;">
+                        <div class="slds-col slds-size_1-of-2">
+                            <div class="slds-card" style="border-left: 4px solid #0176d3;">
+                                <div class="slds-card__header slds-grid">
+                                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                        <div class="slds-media__body">
+                                            <h2 class="slds-card__header-title">Current Contact</h2>
+                                        </div>
+                                    </header>
+                                </div>
+                                <div class="slds-card__body slds-card__body_inner">
+                                    <div class="slds-media">
+                                        <div class="slds-media__body">
+                                            <h3 class="slds-text-heading_small slds-m-bottom_xxx-small">${currentContact.name}</h3>
+                                            <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_small">${currentContact.company}</p>
+                                            <dl class="slds-dl_horizontal">
+                                                <dt class="slds-dl_horizontal__label">
+                                                    <p class="slds-text-body_small slds-text-color_weak">Phone:</p>
+                                                </dt>
+                                                <dd class="slds-dl_horizontal__detail">
+                                                    <p class="slds-text-body_small"><strong>${currentContact.phone}</strong></p>
+                                                </dd>
+                                                <dt class="slds-dl_horizontal__label">
+                                                    <p class="slds-text-body_small slds-text-color_weak">Priority:</p>
+                                                </dt>
+                                                <dd class="slds-dl_horizontal__detail">
+                                                    <span class="slds-badge ${currentContact.priority === 'High' ? 'slds-theme_error' : currentContact.priority === 'Medium' ? 'slds-theme_warning' : ''}">${currentContact.priority}</span>
+                                                </dd>
+                                                <dt class="slds-dl_horizontal__label">
+                                                    <p class="slds-text-body_small slds-text-color_weak">Last Activity:</p>
+                                                </dt>
+                                                <dd class="slds-dl_horizontal__detail">
+                                                    <p class="slds-text-body_small">${currentContact.lastActivity}</p>
+                                                </dd>
+                                            </dl>
+                                            <div class="slds-grid slds-grid_align-spread slds-m-top_medium" style="gap: 0.5rem;">
+                                                <button class="slds-button slds-button_brand slds-col" onclick="DialpadApp.callNow()" ${isPaused ? 'disabled' : ''}>
+                                                    Call Now
+                                                </button>
+                                                <button class="slds-button slds-button_neutral slds-col" onclick="DialpadApp.skipContact()">
+                                                    Skip
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="slds-col slds-size_1-of-2">
+                            <div class="slds-card">
+                                <div class="slds-card__header">
+                                    <header class="slds-media slds-media_center">
+                                        <div class="slds-media__body">
+                                            <h2 class="slds-card__header-title">Up Next</h2>
+                                        </div>
+                                    </header>
+                                </div>
+                                <div class="slds-card__body slds-card__body_inner">
+                                    ${upNextContacts.length > 0 ? `
+                                        <ul class="slds-has-dividers_bottom-space">
+                                            ${upNextContacts.map((contact, index) => `
+                                                <li class="slds-item slds-p-vertical_xx-small">
+                                                    <div class="slds-grid slds-grid_vertical-align-start">
+                                                        <div class="slds-col slds-no-flex slds-m-right_small">
+                                                            <span class="slds-badge">${session.contactIndex + index + 2}</span>
+                                                        </div>
+                                                        <div class="slds-col">
+                                                            <p class="slds-text-body_small"><strong>${contact.name}</strong></p>
+                                                            <p class="slds-text-body_small slds-text-color_weak">${contact.company} • ${contact.phone}</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            `).join('')}
+                                        </ul>
+                                    ` : '<p class="slds-text-align_center slds-text-color_weak">No more contacts in queue</p>'}
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                ` : ''}
 
                 <div class="slds-card" style="margin-top: 1rem;">
                     <div class="slds-card__header slds-grid">
                         <header class="slds-media slds-media_center slds-has-flexi-truncate">
                             <div class="slds-media__body">
-                                <h2 class="slds-card__header-title">Call Queue</h2>
+                                <h2 class="slds-card__header-title">My Assigned Lists</h2>
+                                <p class="slds-text-body_small slds-text-color_weak slds-m-top_xxx-small">
+                                    ${hasActiveSession ? 'Other lists' : 'Select a list to start calling'}
+                                </p>
                             </div>
                         </header>
                     </div>
                     <div class="slds-card__body slds-card__body_inner">
-                        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                        <table class="slds-table slds-table_bordered slds-table_cell-buffer">
                             <thead>
                                 <tr>
-                                    <th scope="col">Contact Name</th>
-                                    <th scope="col">Company</th>
-                                    <th scope="col">Phone</th>
-                                    <th scope="col">Last Activity</th>
-                                    <th scope="col">Priority</th>
+                                    ${hasActiveSession ? '<th scope="col">Status</th>' : ''}
+                                    <th scope="col">List Name</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col">Called</th>
+                                    <th scope="col">Remaining</th>
+                                    <th scope="col">Progress</th>
                                     <th scope="col">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                ${queue.map((contact, index) => `
-                                    <tr>
-                                        <td><strong>${contact.name}</strong></td>
-                                        <td>${contact.company}</td>
-                                        <td>${contact.phone}</td>
-                                        <td>${contact.lastActivity}</td>
-                                        <td>
-                                            <span class="slds-badge ${contact.priority === 'High' ? 'slds-theme_error' : 'slds-theme_warning'}">${contact.priority}</span>
-                                        </td>
-                                        <td>
-                                            <button class="slds-button slds-button_brand" ${index === 0 ? '' : 'disabled'}>
-                                                ${index === 0 ? 'Call Now' : 'Up Next'}
-                                            </button>
-                                        </td>
-                                    </tr>
-                                `).join('')}
+                                ${lists.map(list => {
+                                    const contacted = list.completedContacts || list.contacted || 0;
+                                    const percent = Math.round((contacted / list.totalContacts) * 100);
+                                    const remaining = list.totalContacts - contacted;
+                                    const isActive = hasActiveSession && list.id === session.listId;
+
+                                    return `
+                                        <tr ${isActive ? 'style="background-color: #f3f2f2;"' : ''}>
+                                            ${hasActiveSession ? `
+                                                <td>
+                                                    ${isActive
+                                                        ? '<span class="slds-badge slds-theme_success">Active</span>'
+                                                        : '<span class="slds-text-color_weak">—</span>'}
+                                                </td>
+                                            ` : ''}
+                                            <td><strong>${list.name}</strong></td>
+                                            <td>${list.totalContacts}</td>
+                                            <td>${contacted}</td>
+                                            <td>${remaining}</td>
+                                            <td>
+                                                <div class="slds-grid slds-grid_vertical-align-center">
+                                                    <span class="slds-m-right_x-small">${percent}%</span>
+                                                    <div class="slds-progress-bar slds-progress-bar_x-small" style="width: 80px;">
+                                                        <span class="slds-progress-bar__value" style="width: ${percent}%;"></span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                ${hasActiveSession
+                                                    ? (isActive
+                                                        ? '<button class="slds-button slds-button_neutral" disabled>Currently Active</button>'
+                                                        : '<button class="slds-button slds-button_neutral" disabled title="End current session first">Start Calling</button>')
+                                                    : `<button class="slds-button slds-button_brand" onclick="DialpadApp.startCalling('${list.id}')">Start Calling</button>`
+                                                }
+                                            </td>
+                                        </tr>
+                                    `;
+                                }).join('')}
                             </tbody>
                         </table>
                     </div>
@@ -5983,13 +6154,14 @@ const App = {
                         </thead>
                         <tbody>
                             ${lists.map(list => {
-                                const percent = Math.round((list.contacted / list.totalContacts) * 100);
+                                const contacted = list.completedContacts || list.contacted || 0;
+                                const percent = Math.round((contacted / list.totalContacts) * 100);
                                 return `
                                     <tr style="cursor: pointer; transition: background-color 0.2s ease;" onclick="window.location.hash='#/powerdialer'" onmouseenter="this.style.backgroundColor='#f9f9f9'" onmouseleave="this.style.backgroundColor=''">
                                         <td><span class="slds-text-link" style="pointer-events: none;">${list.name}</span></td>
                                         <td>${list.totalContacts}</td>
-                                        <td>${list.contacted}</td>
-                                        <td>${list.totalContacts - list.contacted}</td>
+                                        <td>${contacted}</td>
+                                        <td>${list.totalContacts - contacted}</td>
                                         <td>
                                             <div class="slds-grid slds-grid_vertical-align-center">
                                                 <span class="slds-m-right_x-small">${percent}%</span>
@@ -6019,6 +6191,11 @@ const App = {
                             <h2 class="slds-card__header-title">Power Dialer Queue</h2>
                         </div>
                     </header>
+                    <div class="slds-no-flex">
+                        <button class="slds-button slds-button_neutral" onclick="window.location.hash='#/powerdialer'">
+                            All Records
+                        </button>
+                    </div>
                 </div>
                 <div class="slds-card__body slds-card__body_inner" style="flex: 1; display: flex; flex-direction: column;">
                     <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_small">Next contacts to call:</p>
@@ -6697,6 +6874,69 @@ const App = {
                 tabItem.style.display = 'none';
             }
         });
+    },
+
+    // Powerdialer Session Action Handlers
+    startCalling(listId) {
+        AppState.startDialerSession(listId);
+        this.renderCurrentPage();
+    },
+
+    callNow() {
+        const session = AppState.getDialerSession();
+        const queue = DataService.getPowerdialerQueue(null, 100);
+        const currentContact = queue[session.contactIndex];
+
+        if (currentContact) {
+            // Show toast/alert simulating call
+            alert(`Call initiated to ${currentContact.name} at ${currentContact.phone}`);
+
+            // Advance to next contact
+            AppState.advanceToNextContact();
+
+            // Check if we've reached the end of the queue
+            if (session.contactIndex >= queue.length - 1) {
+                alert('You have reached the end of the queue. Session will end.');
+                AppState.endDialerSession();
+            }
+        }
+
+        this.renderCurrentPage();
+    },
+
+    skipContact() {
+        const session = AppState.getDialerSession();
+        const queue = DataService.getPowerdialerQueue(null, 100);
+        const currentContact = queue[session.contactIndex];
+
+        if (currentContact) {
+            AppState.skipCurrentContact(currentContact.id);
+
+            // Check if we've reached the end of the queue
+            if (session.contactIndex >= queue.length - 1) {
+                alert('You have reached the end of the queue. Session will end.');
+                AppState.endDialerSession();
+            }
+        }
+
+        this.renderCurrentPage();
+    },
+
+    pauseSession() {
+        AppState.pauseDialerSession();
+        this.renderCurrentPage();
+    },
+
+    resumeSession() {
+        AppState.resumeDialerSession();
+        this.renderCurrentPage();
+    },
+
+    endSession() {
+        if (confirm('Are you sure you want to end this powerdialer session?')) {
+            AppState.endDialerSession();
+            this.renderCurrentPage();
+        }
     }
 };
 
@@ -6705,4 +6945,5 @@ document.addEventListener('DOMContentLoaded', () => {
     App.init();
     // Expose app instance globally for sidebar navigation
     window.app = App;
+    window.DialpadApp = App; // Alias for onclick handlers
 });

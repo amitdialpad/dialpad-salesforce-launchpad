@@ -431,6 +431,31 @@ a.slds-text-link:hover,
     padding: 0.25rem 0.5rem;
 }
 
+/* Warning theme badges - Better contrast with white text */
+.slds-badge.slds-theme_warning {
+    background-color: #fe9339;
+    color: #ffffff !important;
+    font-weight: 600;
+}
+
+/* Alert/Notify warning theme - Better contrast */
+.slds-notify_alert.slds-theme_warning,
+.slds-notify.slds-theme_warning {
+    background-color: #fe9339 !important;
+    background-image: none !important;
+    color: #ffffff !important;
+}
+
+.slds-notify_alert.slds-theme_warning h2,
+.slds-notify.slds-theme_warning h2 {
+    color: #ffffff !important;
+}
+
+.slds-notify_alert.slds-theme_warning .slds-assistive-text,
+.slds-notify.slds-theme_warning .slds-assistive-text {
+    color: #ffffff !important;
+}
+
 /* Toast notifications - ensure proper contrast */
 .slds-notify_toast.slds-theme_success {
     background-color: #04844b;

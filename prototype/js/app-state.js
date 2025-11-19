@@ -54,6 +54,14 @@ const AppState = {
     // Drilldown context for navigation filters
     drilldownContext: null, // { page: 'calls', filter: { status: 'Missed', ... } }
 
+    // Powerdialer active session state
+    activeDialerSession: {
+        listId: null,           // ID of active list
+        contactIndex: 0,        // Current position in list
+        status: 'inactive',     // 'active', 'paused', 'inactive'
+        skippedContacts: []     // Array of skipped contact IDs
+    },
+
     init() {
         this.loadFromStorage();
         this.attachDemoControlListeners();
@@ -287,6 +295,52 @@ const AppState = {
             const quota = this.agentQuotas[user.id];
             return quota && (quota.status === 'at-risk' || quota.status === 'behind');
         });
+    },
+
+    // Powerdialer session management
+    startDialerSession(listId) {
+        this.activeDialerSession = {
+            listId: listId,
+            contactIndex: 0,
+            status: 'active',
+            skippedContacts: []
+        };
+        this.dispatchStateChange('dialerSession', this.activeDialerSession);
+    },
+
+    pauseDialerSession() {
+        this.activeDialerSession.status = 'paused';
+        this.dispatchStateChange('dialerSession', this.activeDialerSession);
+    },
+
+    resumeDialerSession() {
+        this.activeDialerSession.status = 'active';
+        this.dispatchStateChange('dialerSession', this.activeDialerSession);
+    },
+
+    endDialerSession() {
+        this.activeDialerSession = {
+            listId: null,
+            contactIndex: 0,
+            status: 'inactive',
+            skippedContacts: []
+        };
+        this.dispatchStateChange('dialerSession', this.activeDialerSession);
+    },
+
+    advanceToNextContact() {
+        this.activeDialerSession.contactIndex++;
+        this.dispatchStateChange('dialerSession', this.activeDialerSession);
+    },
+
+    skipCurrentContact(contactId) {
+        this.activeDialerSession.skippedContacts.push(contactId);
+        this.activeDialerSession.contactIndex++;
+        this.dispatchStateChange('dialerSession', this.activeDialerSession);
+    },
+
+    getDialerSession() {
+        return this.activeDialerSession;
     },
 
     // Get count of active notifications
