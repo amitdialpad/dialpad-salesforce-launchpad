@@ -195,7 +195,7 @@ const UIHelpers = {
         const styleAttr = color ? ` style="fill: ${color};"` : '';
         return `
             <svg class="slds-icon ${sizeClass}"${styleAttr} aria-hidden="true">
-                <use xlink:href="public/assets/icons/utility-sprite/svg/symbols.svg#${iconName}"></use>
+                <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#${iconName}"></use>
             </svg>
         `;
     }
