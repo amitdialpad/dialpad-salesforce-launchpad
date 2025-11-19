@@ -24,8 +24,10 @@
             : '/';
 
         // Immediately write CSS link tags with correct paths
+        // Add cache-busting version parameter to force reload
+        const cssVersion = '20251119-2';
         document.write('<link rel="stylesheet" href="' + window.BASE_PATH + 'assets/styles/salesforce-lightning-design-system.min.css">');
-        document.write('<link rel="stylesheet" href="' + window.CSS_PATH + 'css/custom.css">');
+        document.write('<link rel="stylesheet" href="' + window.CSS_PATH + 'css/custom.css?v=' + cssVersion + '">');
     </script>
 
     <!-- Chart.js for visualizations -->
