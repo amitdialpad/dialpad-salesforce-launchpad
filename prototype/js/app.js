@@ -1673,6 +1673,20 @@ const App = {
                 <!-- Filters Row -->
                 <div class="slds-page-header__row slds-m-top_small">
                     <div class="slds-grid slds-grid_vertical-align-center" style="gap: 1.5rem;">
+                        <!-- Date Range Filter -->
+                        <div class="slds-form-element">
+                            <div class="slds-form-element__control">
+                                <div class="slds-select_container">
+                                    <select class="slds-select" id="supervisor-date-range-select" style="width: 180px;">
+                                        <option value="today" ${AppState.dateRange === 'today' ? 'selected' : ''}>Today</option>
+                                        <option value="this-week" ${AppState.dateRange === 'this-week' ? 'selected' : ''}>This Week</option>
+                                        <option value="this-month" ${AppState.dateRange === 'this-month' ? 'selected' : ''}>This Month</option>
+                                        <option value="last-30-days" ${AppState.dateRange === 'last-30-days' ? 'selected' : ''}>Last 30 Days</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Filter Section -->
                         <div class="slds-grid slds-grid_vertical-align-center" style="gap: 0.5rem;">
                             <span class="slds-text-body_regular slds-text-color_weak">Filter by:</span>
@@ -1703,16 +1717,6 @@ const App = {
                                         </button>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- Date Range Section -->
-                        <div class="slds-grid slds-grid_vertical-align-center" style="gap: 0.5rem;">
-                            <span class="slds-text-body_regular slds-text-color_weak">Date range:</span>
-                            <div class="slds-button-group" role="group">
-                                <button class="slds-button slds-button_brand">Today</button>
-                                <button class="slds-button slds-button_neutral">This Week</button>
-                                <button class="slds-button slds-button_neutral">This Month</button>
                             </div>
                         </div>
                     </div>
@@ -2294,6 +2298,20 @@ const App = {
                 <!-- Filters Row -->
                 <div class="slds-page-header__row slds-m-top_small">
                     <div class="slds-grid slds-grid_vertical-align-center" style="gap: 1.5rem;">
+                        <!-- Date Range Filter -->
+                        <div class="slds-form-element">
+                            <div class="slds-form-element__control">
+                                <div class="slds-select_container">
+                                    <select class="slds-select" id="agent-date-range-select" style="width: 180px;">
+                                        <option value="today" ${AppState.dateRange === 'today' ? 'selected' : ''}>Today</option>
+                                        <option value="this-week" ${AppState.dateRange === 'this-week' ? 'selected' : ''}>This Week</option>
+                                        <option value="this-month" ${AppState.dateRange === 'this-month' ? 'selected' : ''}>This Month</option>
+                                        <option value="last-30-days" ${AppState.dateRange === 'last-30-days' ? 'selected' : ''}>Last 30 Days</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Filter Section -->
                         <div class="slds-grid slds-grid_vertical-align-center" style="gap: 0.5rem;">
                             <span class="slds-text-body_regular slds-text-color_weak">Filter by:</span>
@@ -2310,16 +2328,6 @@ const App = {
                                         </button>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- Date Range Section -->
-                        <div class="slds-grid slds-grid_vertical-align-center" style="gap: 0.5rem;">
-                            <span class="slds-text-body_regular slds-text-color_weak">Date range:</span>
-                            <div class="slds-button-group" role="group">
-                                <button class="slds-button slds-button_brand">Today</button>
-                                <button class="slds-button slds-button_neutral">This Week</button>
-                                <button class="slds-button slds-button_neutral">This Month</button>
                             </div>
                         </div>
                     </div>
@@ -4246,6 +4254,22 @@ const App = {
             const adminAnalyticsDateRangeSelect = document.getElementById('admin-analytics-date-range-select');
             if (adminAnalyticsDateRangeSelect) {
                 adminAnalyticsDateRangeSelect.addEventListener('change', (e) => {
+                    AppState.setDateRange(e.target.value);
+                });
+            }
+
+            // Date range filter (supervisor dashboard)
+            const supervisorDateRangeSelect = document.getElementById('supervisor-date-range-select');
+            if (supervisorDateRangeSelect) {
+                supervisorDateRangeSelect.addEventListener('change', (e) => {
+                    AppState.setDateRange(e.target.value);
+                });
+            }
+
+            // Date range filter (agent dashboard)
+            const agentDateRangeSelect = document.getElementById('agent-date-range-select');
+            if (agentDateRangeSelect) {
+                agentDateRangeSelect.addEventListener('change', (e) => {
                     AppState.setDateRange(e.target.value);
                 });
             }
