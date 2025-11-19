@@ -1,5 +1,11 @@
 // Main App Logic - Handles navigation and page rendering
 
+// Helper function to get correct asset path for GitHub Pages vs Local
+function getAssetPath(path) {
+    const basePath = window.BASE_PATH || '/';
+    return basePath + path;
+}
+
 const App = {
     currentPage: 'home',
 
@@ -230,7 +236,7 @@ const App = {
                     <div class="slds-media__figure">
                         <span class="slds-icon_container slds-icon-utility-error" title="error">
                             <svg class="slds-icon slds-icon_small" aria-hidden="true" style="fill: #c23934;">
-                                <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#error"></use>
+                                <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#error") + "></use>
                             </svg>
                         </span>
                     </div>
@@ -256,7 +262,7 @@ const App = {
                     <div class="slds-media__figure">
                         <span class="slds-icon_container slds-icon-utility-info" title="information">
                             <svg class="slds-icon slds-icon-text-default slds-icon_small" aria-hidden="true">
-                                <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#info"></use>
+                                <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#info") + "></use>
                             </svg>
                         </span>
                     </div>
@@ -410,7 +416,7 @@ const App = {
                     <div class="slds-media__figure">
                         <span class="slds-icon_container" style="background-color: ${iconColor};">
                             <svg class="slds-icon slds-icon_x-small slds-icon-text-default" aria-hidden="true">
-                                <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#${notification.icon}"></use>
+                                <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#${notification.icon}") + "></use>
                             </svg>
                         </span>
                     </div>
@@ -507,7 +513,7 @@ const App = {
                         <div class="slds-media__figure">
                             <span class="slds-icon_container" style="background-color: ${iconColor};">
                                 <svg class="slds-icon slds-icon_x-small slds-icon-text-default" aria-hidden="true">
-                                    <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#${notification.icon}"></use>
+                                    <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#${notification.icon}") + "></use>
                                 </svg>
                             </span>
                         </div>
@@ -655,7 +661,7 @@ const App = {
                             <li class="slds-nav-vertical__item ${currentSection === section.id ? 'slds-is-active' : ''}">
                                 <a href="#" class="slds-nav-vertical__action" data-admin-section="${section.id}">
                                     <svg class="slds-icon slds-icon-text-default slds-icon_x-small slds-m-right_x-small" aria-hidden="true">
-                                        <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#${section.icon}"></use>
+                                        <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#${section.icon}") + "></use>
                                     </svg>
                                     ${section.label}
                                 </a>
@@ -700,7 +706,7 @@ const App = {
                         <div class="slds-page-header__controls">
                             <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="Refresh">
                                 <svg class="slds-button__icon" aria-hidden="true">
-                                    <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#refresh"></use>
+                                    <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#refresh") + "></use>
                                 </svg>
                                 <span class="slds-assistive-text">Refresh</span>
                             </button>
@@ -736,7 +742,7 @@ const App = {
                                         <button class="slds-button slds-button_neutral">
                                             <span class="slds-truncate">All Departments</span>
                                             <svg class="slds-button__icon slds-button__icon_right" style="width: 0.875rem; height: 0.875rem; margin-left: 0.5rem;">
-                                                <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#down"></use>
+                                                <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#down") + "></use>
                                             </svg>
                                         </button>
                                     </div>
@@ -750,7 +756,7 @@ const App = {
                                         <button class="slds-button slds-button_neutral">
                                             <span class="slds-truncate">All Offices</span>
                                             <svg class="slds-button__icon slds-button__icon_right" style="width: 0.875rem; height: 0.875rem; margin-left: 0.5rem;">
-                                                <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#down"></use>
+                                                <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#down") + "></use>
                                             </svg>
                                         </button>
                                     </div>
@@ -825,7 +831,7 @@ const App = {
                         <div class="slds-page-header__controls">
                             <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="Refresh">
                                 <svg class="slds-button__icon" aria-hidden="true">
-                                    <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#refresh"></use>
+                                    <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#refresh") + "></use>
                                 </svg>
                                 <span class="slds-assistive-text">Refresh</span>
                             </button>
@@ -861,7 +867,7 @@ const App = {
                                         <button class="slds-button slds-button_neutral">
                                             <span class="slds-truncate">All Departments</span>
                                             <svg class="slds-button__icon slds-button__icon_right" style="width: 0.875rem; height: 0.875rem; margin-left: 0.5rem;">
-                                                <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#down"></use>
+                                                <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#down") + "></use>
                                             </svg>
                                         </button>
                                     </div>
@@ -875,7 +881,7 @@ const App = {
                                         <button class="slds-button slds-button_neutral">
                                             <span class="slds-truncate">All Offices</span>
                                             <svg class="slds-button__icon slds-button__icon_right" style="width: 0.875rem; height: 0.875rem; margin-left: 0.5rem;">
-                                                <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#down"></use>
+                                                <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#down") + "></use>
                                             </svg>
                                         </button>
                                     </div>
@@ -1172,7 +1178,7 @@ const App = {
                     ${alerts.length === 0 ? `
                         <div style="text-align: center; padding: 2rem;">
                             <svg class="slds-icon slds-icon_large slds-icon-text-success" aria-hidden="true">
-                                <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                                <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#check") + "></use>
                             </svg>
                             <p class="slds-m-top_small">All systems running smoothly</p>
                         </div>
@@ -1184,7 +1190,7 @@ const App = {
                                         <div class="slds-col slds-size_1-of-12">
                                             <span class="slds-icon_container" title="${alert.type}">
                                                 <svg class="slds-icon slds-icon_x-small ${getAlertClass(alert.type)}" aria-hidden="true">
-                                                    <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#${getAlertIcon(alert.type)}"></use>
+                                                    <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#${getAlertIcon(alert.type)}") + "></use>
                                                 </svg>
                                             </span>
                                         </div>
@@ -1429,7 +1435,7 @@ const App = {
                                     <div class="slds-col slds-size_1-of-12">
                                         <span class="slds-icon_container">
                                             <svg class="slds-icon slds-icon_x-small ${getStepClass(step.status)}" aria-hidden="true">
-                                                <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#${getStepIcon(step.status)}"></use>
+                                                <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#${getStepIcon(step.status)}") + "></use>
                                             </svg>
                                         </span>
                                     </div>
@@ -1521,7 +1527,7 @@ const App = {
                                         <div class="slds-col slds-size_1-of-12">
                                             <span class="slds-icon_container slds-icon-standard-announcement">
                                                 <svg class="slds-icon slds-icon_small" aria-hidden="true">
-                                                    <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#${getAnnouncementIcon(announcement.type)}"></use>
+                                                    <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#${getAnnouncementIcon(announcement.type)}") + "></use>
                                                 </svg>
                                             </span>
                                         </div>
@@ -1557,7 +1563,7 @@ const App = {
                         <li class="slds-item slds-p-vertical_small">
                             <button class="slds-button slds-button_neutral slds-button_stretch" onclick="window.location.hash='#/settings'">
                                 <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
-                                    <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#add"></use>
+                                    <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#add") + "></use>
                                 </svg>
                                 Add User
                             </button>
@@ -1565,7 +1571,7 @@ const App = {
                         <li class="slds-item slds-p-vertical_small">
                             <button class="slds-button slds-button_neutral slds-button_stretch">
                                 <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
-                                    <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#upload"></use>
+                                    <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#upload") + "></use>
                                 </svg>
                                 Bulk Import
                             </button>
@@ -1573,7 +1579,7 @@ const App = {
                         <li class="slds-item slds-p-vertical_small">
                             <button class="slds-button slds-button_neutral slds-button_stretch">
                                 <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
-                                    <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                                    <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#check") + "></use>
                                 </svg>
                                 Run Health Check
                             </button>
@@ -1581,7 +1587,7 @@ const App = {
                         <li class="slds-item slds-p-vertical_small">
                             <button class="slds-button slds-button_neutral slds-button_stretch" onclick="window.location.hash='#/settings'">
                                 <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
-                                    <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#settings"></use>
+                                    <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#settings") + "></use>
                                 </svg>
                                 Manage Permissions
                             </button>
@@ -1636,7 +1642,7 @@ const App = {
                                     <td>
                                         <div class="slds-grid slds-grid_vertical-align-center">
                                             <svg class="slds-icon slds-icon_x-small slds-m-right_x-small" aria-hidden="true">
-                                                <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#${getActivityIcon(activity.type)}"></use>
+                                                <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#${getActivityIcon(activity.type)}") + "></use>
                                             </svg>
                                             ${activity.activity}
                                         </div>
@@ -1683,7 +1689,7 @@ const App = {
                     <div class="slds-page-header__col-actions">
                         <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="Refresh">
                             <svg class="slds-button__icon" aria-hidden="true">
-                                <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#refresh"></use>
+                                <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#refresh") + "></use>
                             </svg>
                             <span class="slds-assistive-text">Refresh</span>
                         </button>
@@ -1704,7 +1710,7 @@ const App = {
                                         <button class="slds-button slds-button_neutral">
                                             <span class="slds-truncate">All Contact Centers</span>
                                             <svg class="slds-button__icon slds-button__icon_right" style="width: 0.875rem; height: 0.875rem; margin-left: 0.5rem;">
-                                                <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#down"></use>
+                                                <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#down") + "></use>
                                             </svg>
                                         </button>
                                     </div>
@@ -1718,7 +1724,7 @@ const App = {
                                         <button class="slds-button slds-button_neutral">
                                             <span class="slds-truncate">All Agents</span>
                                             <svg class="slds-button__icon slds-button__icon_right" style="width: 0.875rem; height: 0.875rem; margin-left: 0.5rem;">
-                                                <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#down"></use>
+                                                <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#down") + "></use>
                                             </svg>
                                         </button>
                                     </div>
@@ -1925,7 +1931,7 @@ const App = {
                                     <div class="slds-col slds-size_1-of-12">
                                         <span class="slds-icon_container ${alert.type === 'error' ? 'slds-icon-utility-error' : alert.type === 'warning' ? 'slds-icon-utility-warning' : 'slds-icon-utility-success'}" title="${alert.type}">
                                             <svg class="slds-icon slds-icon_x-small ${alert.type === 'error' ? 'slds-icon-text-error' : alert.type === 'warning' ? 'slds-icon-text-warning' : 'slds-icon-text-success'}" aria-hidden="true">
-                                                <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#${alert.type === 'success' ? 'check' : alert.type}"></use>
+                                                <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#${alert.type === 'success' ? 'check' : alert.type}") + "></use>
                                             </svg>
                                         </span>
                                     </div>
@@ -2014,7 +2020,7 @@ const App = {
                     <td data-label="Status" style="padding: 0.375rem 0.75rem;">
                         <div class="slds-grid slds-grid_vertical-align-center" style="gap: 0.25rem;">
                             <svg class="slds-icon slds-icon_x-small" style="width: 0.75rem; height: 0.75rem; fill: ${agent.state === 'On Call' ? '#3A49DA' : agent.state === 'Available' ? '#4bca81' : '#706e6b'};">
-                                <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#${stateIcon[agent.state] || 'user'}"></use>
+                                <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#${stateIcon[agent.state] || 'user'}") + "></use>
                             </svg>
                             <span class="slds-badge ${getStateClass(agent.state)}" style="font-size: 0.75rem;">${agent.state}</span>
                             <span class="slds-text-body_small slds-text-color_weak" style="margin-left: 0.25rem;">${agent.stateDuration}</span>
@@ -2166,7 +2172,7 @@ const App = {
                                     <td><span class="slds-text-body_small">Call</span></td>
                                     <td><button class="slds-button slds-button_icon" title="More actions" onclick="event.stopPropagation();">
                                         <svg class="slds-button__icon" style="width: 1rem; height: 1rem;">
-                                            <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#down"></use>
+                                            <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#down") + "></use>
                                         </svg>
                                     </button></td>
                                 </tr>
@@ -2304,7 +2310,7 @@ const App = {
                     <div class="slds-page-header__col-actions">
                         <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="Refresh">
                             <svg class="slds-button__icon" aria-hidden="true">
-                                <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#refresh"></use>
+                                <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#refresh") + "></use>
                             </svg>
                             <span class="slds-assistive-text">Refresh</span>
                         </button>
@@ -2325,7 +2331,7 @@ const App = {
                                         <button class="slds-button slds-button_neutral">
                                             <span class="slds-truncate">All Call Types</span>
                                             <svg class="slds-button__icon slds-button__icon_right" style="width: 0.875rem; height: 0.875rem; margin-left: 0.5rem;">
-                                                <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#down"></use>
+                                                <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#down") + "></use>
                                             </svg>
                                         </button>
                                     </div>
@@ -4352,7 +4358,7 @@ const App = {
                 <span class="slds-assistive-text">${type}</span>
                 <span class="slds-icon_container slds-m-right_small" style="background: transparent;">
                     <svg class="slds-icon slds-icon_small" aria-hidden="true" style="fill: white;">
-                        <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#${icon}"></use>
+                        <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#${icon}") + "></use>
                     </svg>
                 </span>
                 <div class="slds-notify__content">
@@ -4361,7 +4367,7 @@ const App = {
                 <div class="slds-notify__close">
                     <button class="slds-button slds-button_icon slds-button_icon-inverse" title="Close" style="color: white;">
                         <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true" style="fill: white;">
-                            <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+                            <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#close") + "></use>
                         </svg>
                         <span class="slds-assistive-text">Close</span>
                     </button>
@@ -6547,7 +6553,7 @@ const App = {
                             <h2 class="slds-card__header-title">
                                 <span class="slds-icon_container slds-icon-utility-checklist" style="margin-right: 0.5rem;">
                                     <svg class="slds-icon slds-icon_x-small" aria-hidden="true" style="width: 16px; height: 16px; fill: #3A49DA;">
-                                        <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#checklist"></use>
+                                        <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#checklist") + "></use>
                                     </svg>
                                 </span>
                                 AI Action Items
@@ -6639,7 +6645,7 @@ const App = {
                             <h2 class="slds-card__header-title">
                                 <span class="slds-icon_container" style="margin-right: 0.5rem;">
                                     <svg class="slds-icon slds-icon_x-small" aria-hidden="true" style="width: 16px; height: 16px; fill: #3A49DA;">
-                                        <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#bundle_config"></use>
+                                        <use xlink:href=" + getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#bundle_config") + "></use>
                                     </svg>
                                 </span>
                                 Recent AI Recaps

@@ -193,9 +193,10 @@ const UIHelpers = {
     renderIcon(iconName, size = 'small', color = null) {
         const sizeClass = `slds-icon_${size}`;
         const styleAttr = color ? ` style="fill: ${color};"` : '';
+        const basePath = window.BASE_PATH || '/';
         return `
             <svg class="slds-icon ${sizeClass}"${styleAttr} aria-hidden="true">
-                <use xlink:href="assets/icons/utility-sprite/svg/symbols.svg#${iconName}"></use>
+                <use xlink:href="${basePath}assets/icons/utility-sprite/svg/symbols.svg#${iconName}"></use>
             </svg>
         `;
     }
