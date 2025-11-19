@@ -11,13 +11,13 @@ const AppState = {
     // Package version states
     currentVersion: '2.3.0',
     latestVersion: '2.5.0',
-    showVersionBanner: true,
+    showVersionBanner: false,
     hasViewedChangelog: false,
 
     // Environment states
     environment: 'production', // 'production' or 'sandbox'
     hasTestedInSandbox: false,
-    showSandboxWarning: true,
+    showSandboxWarning: false,
 
     // Alert states
     unloggedCallsCount: 3,
