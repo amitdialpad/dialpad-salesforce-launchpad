@@ -2678,6 +2678,8 @@ const App = {
         const lists = DataService.getLists(role);
 
         if (role === 'agent') {
+            const queue = DataService.getPowerdialerQueue(null, 10);
+
             return `
                 <div class="slds-page-header">
                     <div class="slds-page-header__row">
@@ -2685,67 +2687,52 @@ const App = {
                             <div class="slds-media">
                                 <div class="slds-media__body">
                                     <h1 class="slds-page-header__title slds-truncate" title="Powerdialer">Powerdialer</h1>
+                                    <p class="slds-page-header__meta-text">${lists.length} active lists • ${queue.length} contacts in queue</p>
                                 </div>
                             </div>
                         </div>
-                        </div>
+                    </div>
                 </div>
 
-                <div class="slds-grid slds-wrap slds-gutters">
-                    <div class="slds-col slds-size_1-of-1 slds-medium-size_2-of-3">
-                        <div class="slds-card">
-                            <div class="slds-card__header slds-grid">
-                                <header class="slds-media slds-media_center slds-has-flexi-truncate">
-                                    <div class="slds-media__body">
-                                        <h2 class="slds-card__header-title">My Assigned Lists</h2>
-                                    </div>
-                                </header>
+                <div class="slds-card" style="margin-top: 1rem;">
+                    <div class="slds-card__header slds-grid">
+                        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                            <div class="slds-media__body">
+                                <h2 class="slds-card__header-title">Call Queue</h2>
                             </div>
-                            <div class="slds-card__body slds-card__body_inner">
-                                <table class="slds-table slds-table_bordered slds-table_cell-buffer">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">List Name</th>
-                                            <th scope="col">Total Contacts</th>
-                                            <th scope="col">Completed</th>
-                                            <th scope="col">Progress</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        ${lists.map(list => {
-                                            const progress = Math.round((list.completedContacts / list.totalContacts) * 100);
-                                            return `
-                                                <tr>
-                                                    <td>${list.name}</td>
-                                                    <td>${list.totalContacts}</td>
-                                                    <td>${list.completedContacts}</td>
-                                                    <td>${progress}%</td>
-                                                </tr>
-                                            `;
-                                        }).join('')}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                        </header>
                     </div>
-
-                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
-                        <div class="slds-card">
-                            <div class="slds-card__header slds-grid">
-                                <header class="slds-media slds-media_center slds-has-flexi-truncate">
-                                    <div class="slds-media__body">
-                                        <h2 class="slds-card__header-title">Next Up</h2>
-                                    </div>
-                                </header>
-                            </div>
-                            <div class="slds-card__body slds-card__body_inner">
-                                <strong>John Smith</strong><br>
-                                Company: Acme Corp<br>
-                                Phone: (415) 555-0123<br>
-                                List: Q4 Prospects<br><br>
-                                <button class="slds-button slds-button_brand">Call Now</button>
-                            </div>
-                        </div>
+                    <div class="slds-card__body slds-card__body_inner">
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Contact Name</th>
+                                    <th scope="col">Company</th>
+                                    <th scope="col">Phone</th>
+                                    <th scope="col">Last Activity</th>
+                                    <th scope="col">Priority</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${queue.map((contact, index) => `
+                                    <tr>
+                                        <td><strong>${contact.name}</strong></td>
+                                        <td>${contact.company}</td>
+                                        <td>${contact.phone}</td>
+                                        <td>${contact.lastActivity}</td>
+                                        <td>
+                                            <span class="slds-badge ${contact.priority === 'High' ? 'slds-theme_error' : 'slds-theme_warning'}">${contact.priority}</span>
+                                        </td>
+                                        <td>
+                                            <button class="slds-button slds-button_brand" ${index === 0 ? '' : 'disabled'}>
+                                                ${index === 0 ? 'Call Now' : 'Up Next'}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             `;

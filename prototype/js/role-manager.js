@@ -21,6 +21,16 @@ const RoleManager = {
     setRole(role) {
         this.currentRole = role;
         localStorage.setItem('dialpad_current_role', role);
+
+        // Always ensure we have a user ID when switching to agent
+        if (role === 'agent') {
+            if (!this.currentUserId) {
+                // Default to Sarah Chen (first agent)
+                this.currentUserId = '005xx000001X8Uz';
+            }
+            localStorage.setItem('dialpad_current_user_id', this.currentUserId);
+        }
+
         this.updateUI();
         // Trigger role change event
         window.dispatchEvent(new CustomEvent('roleChanged', { detail: { role } }));
@@ -61,3 +71,8 @@ const RoleManager = {
         });
     }
 };
+
+// Make available globally
+if (typeof window !== 'undefined') {
+    window.RoleManager = RoleManager;
+}
