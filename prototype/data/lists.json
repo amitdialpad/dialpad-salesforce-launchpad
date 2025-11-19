@@ -1,0 +1,54 @@
+{
+  "lists": [
+    {
+      "id": "LIST-001",
+      "name": "Q4 Prospects",
+      "totalContacts": 150,
+      "completedContacts": 87,
+      "assignedAgents": ["005xx000001X8Uz", "005xx000001X8V0"],
+      "status": "Active",
+      "createdBy": "Michael Chen",
+      "createdDate": "2025-11-01"
+    },
+    {
+      "id": "LIST-002",
+      "name": "Follow Up - November",
+      "totalContacts": 75,
+      "completedContacts": 45,
+      "assignedAgents": ["005xx000001X8V2", "005xx000001X8V3"],
+      "status": "Active",
+      "createdBy": "Michael Chen",
+      "createdDate": "2025-11-10"
+    },
+    {
+      "id": "LIST-003",
+      "name": "Support Callbacks",
+      "totalContacts": 30,
+      "completedContacts": 28,
+      "assignedAgents": ["005xx000001X8V1"],
+      "status": "Active",
+      "createdBy": "Linda Rodriguez",
+      "createdDate": "2025-11-15"
+    },
+    {
+      "id": "LIST-004",
+      "name": "New Leads - Week 46",
+      "totalContacts": 200,
+      "completedContacts": 12,
+      "assignedAgents": ["005xx000001X8Uz", "005xx000001X8V0", "005xx000001X8V8"],
+      "status": "Active",
+      "createdBy": "Michael Chen",
+      "createdDate": "2025-11-16"
+    },
+    {
+      "id": "LIST-005",
+      "name": "Expired Trials",
+      "totalContacts": 45,
+      "completedContacts": 45,
+      "assignedAgents": ["005xx000001X8V2"],
+      "status": "Completed",
+      "createdBy": "Michael Chen",
+      "createdDate": "2025-10-20"
+    }
+  ]
+}
