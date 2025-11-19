@@ -138,9 +138,10 @@ const DataService = {
         if (role === 'admin' || role === 'supervisor') {
             return this.lists;
         } else if (role === 'agent') {
-            const agent = this.users.find(u => u.role === 'Agent');
-            if (agent) {
-                return this.lists.filter(list => list.assignedAgents.includes(agent.id));
+            // Use the current user ID from RoleManager to filter lists
+            const currentUserId = window.RoleManager?.currentUserId;
+            if (currentUserId) {
+                return this.lists.filter(list => list.assignedAgents.includes(currentUserId));
             }
         }
         return [];

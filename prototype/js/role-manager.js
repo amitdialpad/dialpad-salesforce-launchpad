@@ -2,12 +2,17 @@
 
 const RoleManager = {
     currentRole: 'admin', // default role
+    currentUserId: '005xx000001X8Uz', // default to first agent (Sarah Chen)
 
     init() {
         // Load role from localStorage
         const savedRole = localStorage.getItem('dialpad_current_role');
+        const savedUserId = localStorage.getItem('dialpad_current_user_id');
         if (savedRole) {
             this.currentRole = savedRole;
+        }
+        if (savedUserId) {
+            this.currentUserId = savedUserId;
         }
         this.updateUI();
         this.attachEventListeners();
