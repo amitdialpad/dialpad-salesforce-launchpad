@@ -2261,6 +2261,8 @@ const App = {
 
     renderAgentDashboard() {
         const metrics = DataService.getMetrics('agent');
+        const currentUserId = window.RoleManager?.currentUserId || '005xx000001X8Uz';
+        const quota = AppState.getQuotaStatus(currentUserId);
 
         return `
             ${this.getAlertBannersHTML()}
@@ -2330,7 +2332,7 @@ const App = {
                 <div class="slds-card metric-card metric-card-clickable" data-metric="quota" style="cursor: pointer;">
                     <div class="slds-card__body slds-card__body_inner">
                         <div class="metric-label">Quota</div>
-                        <div class="metric-value">${AppState.getQuotaStatus(RoleManager.currentUserId || '1').made}/${AppState.getQuotaStatus(RoleManager.currentUserId || '1').target}</div>
+                        <div class="metric-value">${quota.made}/${quota.target}</div>
                     </div>
                 </div>
                 <div class="slds-card metric-card metric-card-clickable" data-metric="service-score" style="cursor: pointer;">
@@ -5531,7 +5533,7 @@ const App = {
     },
 
     renderQuotaProgress() {
-        const userId = RoleManager.currentUserId || '1';
+        const userId = window.RoleManager?.currentUserId || '005xx000001X8Uz';
         const quota = AppState.getQuotaStatus(userId);
         const percentComplete = Math.round((quota.made / quota.target) * 100);
 
@@ -6158,7 +6160,7 @@ const App = {
     },
 
     renderOpenCasesWidget() {
-        const userId = RoleManager.currentUserId || '1';
+        const userId = window.RoleManager?.currentUserId || '005xx000001X8Uz';
         const cases = DataService.getCases(userId, 'open');
         const caseCounts = DataService.getCaseCountsByStatus(userId);
 

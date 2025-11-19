@@ -35,10 +35,11 @@ const AppState = {
     },
     agentQuotas: {
         // userId: { made: X, target: Y }
-        '1': { made: 45, target: 100, status: 'on-track' },
-        '8': { made: 72, target: 100, status: 'on-track' },
-        '9': { made: 28, target: 100, status: 'at-risk' },
-        '10': { made: 15, target: 100, status: 'behind' }
+        // Using Salesforce user IDs from users.json
+        '005xx000001X8Uz': { made: 45, target: 100, status: 'on-track' }, // Sarah Johnson
+        '005xx000001X8V0': { made: 72, target: 100, status: 'on-track' }, // Tom Martinez
+        '005xx000001X8V1': { made: 28, target: 100, status: 'at-risk' },  // Emily Chen
+        '005xx000001X8V2': { made: 15, target: 100, status: 'behind' }    // James Wilson
     },
 
     // Demo controls
