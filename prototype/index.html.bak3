@@ -10,20 +10,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Base path configuration for GitHub Pages vs Local -->
-    <script>
-        // Detect if running on GitHub Pages and set base path
-        window.BASE_PATH = window.location.hostname === 'amitdialpad.github.io'
-            ? '/dialpad-salesforce-launchpad/prototype/public/'
-            : '/';
-
-        // Immediately write CSS link tags with correct paths
-        document.write('<link rel="stylesheet" href="' + window.BASE_PATH + 'assets/styles/salesforce-lightning-design-system.min.css">');
-        document.write('<link rel="stylesheet" href="' + window.BASE_PATH + 'css/custom.css">');
-    </script>
+    <!-- Salesforce Lightning Design System (Local - Winter '26 v2.28.1) -->
+    <link rel="stylesheet" href="public/assets/styles/salesforce-lightning-design-system.min.css">
 
     <!-- Chart.js for visualizations -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <link rel="stylesheet" href="css/custom.css">
 </head>
 <body>
     <!-- Global Header -->
@@ -151,6 +144,9 @@
 
     <!-- Main Application -->
     <script src="js/app.js"></script>
+
+    <!-- New Architecture (Running in parallel) -->
+    <script type="module" src="/src/main.ts"></script>
 
     <!-- Modals Container -->
     <div id="modals-container"></div>
