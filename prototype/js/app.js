@@ -763,16 +763,6 @@ const App = {
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Date Range Section -->
-                        <div class="slds-grid slds-grid_vertical-align-center" style="gap: 0.5rem;">
-                            <span class="slds-text-body_regular slds-text-color_weak">Date range:</span>
-                            <div class="slds-button-group" role="group">
-                                <button class="slds-button slds-button_brand">Today</button>
-                                <button class="slds-button slds-button_neutral">This Week</button>
-                                <button class="slds-button slds-button_neutral">This Month</button>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
