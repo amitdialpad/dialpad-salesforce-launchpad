@@ -69,17 +69,23 @@ A fully functional **HTML/JavaScript prototype** demonstrating the Dialpad Launc
    - Backend migration examples
    - 6-week production roadmap
 
-2. **[REFACTORING-SUMMARY.md](prototype/REFACTORING-SUMMARY.md)** - Recent changes (350+ lines)
+2. **[DEPLOYMENT-GUIDE.md](DEPLOYMENT-GUIDE.md)** - GitHub Pages deployment (⚠️ READ BEFORE PATH CHANGES)
+   - Critical path configuration (BASE_PATH vs CSS_PATH)
+   - Local vs GitHub Pages differences
+   - Common issues & fixes
+   - Testing checklist
+
+3. **[REFACTORING-SUMMARY.md](prototype/REFACTORING-SUMMARY.md)** - Recent changes (350+ lines)
    - What changed, what didn't
    - Testing checklist
    - Risk assessment
 
-3. **[CHANGELOG.md](prototype/CHANGELOG.md)** - Development history
+4. **[CHANGELOG.md](prototype/CHANGELOG.md)** - Development history
    - Session-by-session breakdown
    - Complete feature list
    - Technical decisions
 
-4. **[prototype/README.md](prototype/README.md)** - Full prototype documentation
+5. **[prototype/README.md](prototype/README.md)** - Full prototype documentation
 
 ---
 
