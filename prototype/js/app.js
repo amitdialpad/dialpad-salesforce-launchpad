@@ -1496,9 +1496,8 @@ const App = {
     renderAdminAnnouncementsCard(metrics) {
         const announcements = metrics.announcements.filter(a => !a.read).slice(0, 3);
         const getAnnouncementIcon = (type) => {
-            if (type === 'feature') return 'announcement';
-            if (type === 'update') return 'upload';
-            return 'report';
+            // All icons use 'announcement' from standard-sprite since other types don't exist
+            return 'announcement';
         };
 
         return `
@@ -1527,7 +1526,7 @@ const App = {
                                         <div class="slds-col slds-size_1-of-12">
                                             <span class="slds-icon_container slds-icon-standard-announcement">
                                                 <svg class="slds-icon slds-icon_small" aria-hidden="true">
-                                                    <use xlink:href="${getAssetPath(`assets/icons/utility-sprite/svg/symbols.svg#${getAnnouncementIcon(announcement.type)}`)}></use>
+                                                    <use xlink:href="${getAssetPath(`assets/icons/standard-sprite/svg/symbols.svg#${getAnnouncementIcon(announcement.type)}`)}"></use>
                                                 </svg>
                                             </span>
                                         </div>
