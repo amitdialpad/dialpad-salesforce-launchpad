@@ -13,14 +13,19 @@
 
     <!-- Base path configuration for GitHub Pages vs Local -->
     <script>
-        // Detect if running on GitHub Pages and set base path
+        // Detect if running on GitHub Pages and set base paths
+        // Assets are in public/ folder, but css/ is in prototype root
         window.BASE_PATH = window.location.hostname === 'amitdialpad.github.io'
             ? '/dialpad-salesforce-launchpad/prototype/public/'
             : '/';
 
+        window.CSS_PATH = window.location.hostname === 'amitdialpad.github.io'
+            ? '/dialpad-salesforce-launchpad/prototype/'
+            : '/';
+
         // Immediately write CSS link tags with correct paths
         document.write('<link rel="stylesheet" href="' + window.BASE_PATH + 'assets/styles/salesforce-lightning-design-system.min.css">');
-        document.write('<link rel="stylesheet" href="' + window.BASE_PATH + 'css/custom.css">');
+        document.write('<link rel="stylesheet" href="' + window.CSS_PATH + 'css/custom.css">');
     </script>
 
     <!-- Chart.js for visualizations -->
