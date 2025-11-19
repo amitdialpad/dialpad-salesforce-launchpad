@@ -16,21 +16,14 @@
         window.BASE_PATH = window.location.hostname === 'amitdialpad.github.io'
             ? '/dialpad-salesforce-launchpad/prototype/'
             : '/';
-    </script>
 
-    <!-- Salesforce Lightning Design System (Local - Winter '26 v2.28.1) -->
-    <link rel="stylesheet" id="slds-css">
-    <script>
-        document.getElementById('slds-css').href = window.BASE_PATH + 'assets/styles/salesforce-lightning-design-system.min.css';
+        // Immediately write CSS link tags with correct paths
+        document.write('<link rel="stylesheet" href="' + window.BASE_PATH + 'assets/styles/salesforce-lightning-design-system.min.css">');
+        document.write('<link rel="stylesheet" href="' + window.BASE_PATH + 'css/custom.css">');
     </script>
 
     <!-- Chart.js for visualizations -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-
-    <link rel="stylesheet" id="custom-css">
-    <script>
-        document.getElementById('custom-css').href = window.BASE_PATH + 'css/custom.css';
-    </script>
 </head>
 <body>
     <!-- Global Header -->
