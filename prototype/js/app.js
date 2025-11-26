@@ -1224,27 +1224,27 @@ const App = {
                             </button>
                         </li>
                         <li class="slds-item slds-p-vertical_small">
-                            <button class="slds-button slds-button_neutral slds-button_stretch">
-                                <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
-                                    <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#upload")}"></use>
-                                </svg>
-                                Bulk Import
-                            </button>
-                        </li>
-                        <li class="slds-item slds-p-vertical_small">
-                            <button class="slds-button slds-button_neutral slds-button_stretch">
-                                <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
-                                    <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#check")}"></use>
-                                </svg>
-                                Run Health Check
-                            </button>
-                        </li>
-                        <li class="slds-item slds-p-vertical_small">
                             <button class="slds-button slds-button_neutral slds-button_stretch" onclick="window.location.hash='#/settings'">
                                 <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
                                     <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#settings")}"></use>
                                 </svg>
-                                Manage Permissions
+                                Manage Permission Sets
+                            </button>
+                        </li>
+                        <li class="slds-item slds-p-vertical_small">
+                            <button class="slds-button slds-button_neutral slds-button_stretch" onclick="window.location.hash='#/calls'">
+                                <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
+                                    <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#call")}"></use>
+                                </svg>
+                                View Calls
+                            </button>
+                        </li>
+                        <li class="slds-item slds-p-vertical_small">
+                            <button class="slds-button slds-button_neutral slds-button_stretch" onclick="alert('Onboarding Wizard will launch here!')">
+                                <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
+                                    <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#forward")}"></use>
+                                </svg>
+                                Launch Onboarding Wizard
                             </button>
                         </li>
                     </ul>
@@ -2684,6 +2684,8 @@ const App = {
             `;
         }
 
+        const currentSettingsTab = this.currentSettingsTab || 'users';
+
         return `
             <div class="slds-page-header">
                 <div class="slds-page-header__row">
@@ -2695,795 +2697,304 @@ const App = {
                             </div>
                         </div>
                     </div>
-                    <div class="slds-page-header__col-actions">
-                        <div class="slds-page-header__controls">
-                            <button class="slds-button slds-button_neutral" id="cancel-settings">Cancel Changes</button>
-                            <button class="slds-button slds-button_brand" id="save-settings">Save Changes</button>
-                        </div>
-                    </div>
                 </div>
             </div>
 
-            <!-- Integration Status Section (Always Visible) -->
-            <div class="slds-card slds-m-bottom_medium">
-                <div class="slds-card__header slds-grid slds-grid_align-spread">
+            <div style="display: flex; gap: 1.5rem; margin-top: 1.5rem;">
+                <!-- Vertical Navigation Sidebar -->
+                <div style="width: 240px; flex-shrink: 0;">
+                    <nav class="slds-nav-vertical" aria-label="Settings Navigation">
+                        <div class="slds-nav-vertical__section">
+                            <h2 class="slds-nav-vertical__title">Settings</h2>
+                            <ul>
+                                <li class="slds-nav-vertical__item ${currentSettingsTab === 'users' ? 'slds-is-active' : ''}">
+                                    <a href="#" class="slds-nav-vertical__action" data-settings-tab="users" aria-current="${currentSettingsTab === 'users' ? 'page' : 'false'}">
+                                        Users & Licenses
+                                    </a>
+                                </li>
+                                <li class="slds-nav-vertical__item ${currentSettingsTab === 'screenpop' ? 'slds-is-active' : ''}">
+                                    <a href="#" class="slds-nav-vertical__action" data-settings-tab="screenpop" aria-current="${currentSettingsTab === 'screenpop' ? 'page' : 'false'}">
+                                        Screen Pop
+                                    </a>
+                                </li>
+                                <li class="slds-nav-vertical__item ${currentSettingsTab === 'calllogging' ? 'slds-is-active' : ''}">
+                                    <a href="#" class="slds-nav-vertical__action" data-settings-tab="calllogging" aria-current="${currentSettingsTab === 'calllogging' ? 'page' : 'false'}">
+                                        Call Logging
+                                    </a>
+                                </li>
+                                <li class="slds-nav-vertical__item ${currentSettingsTab === 'powerdialer' ? 'slds-is-active' : ''}">
+                                    <a href="#" class="slds-nav-vertical__action" data-settings-tab="powerdialer" aria-current="${currentSettingsTab === 'powerdialer' ? 'page' : 'false'}">
+                                        Powerdialer Settings
+                                    </a>
+                                </li>
+                                <li class="slds-nav-vertical__item ${currentSettingsTab === 'onboarding' ? 'slds-is-active' : ''}">
+                                    <a href="#" class="slds-nav-vertical__action" data-settings-tab="onboarding" aria-current="${currentSettingsTab === 'onboarding' ? 'page' : 'false'}">
+                                        Onboarding
+                                    </a>
+                                </li>
+                                <li class="slds-nav-vertical__item ${currentSettingsTab === 'datasync' ? 'slds-is-active' : ''}">
+                                    <a href="#" class="slds-nav-vertical__action" data-settings-tab="datasync" aria-current="${currentSettingsTab === 'datasync' ? 'page' : 'false'}">
+                                        Data Sync
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+
+                <!-- Content Area -->
+                <div style="flex: 1; min-width: 0;">
+                    ${this.renderSettingsContent(currentSettingsTab)}
+                </div>
+            </div>
+        `;
+    },
+
+    renderSettingsContent(tab) {
+        switch(tab) {
+            case 'users':
+                return this.renderUsersLicensesTab();
+            case 'screenpop':
+                return this.renderScreenPopTab();
+            case 'calllogging':
+                return this.renderCallLoggingTab();
+            case 'powerdialer':
+                return this.renderPowerdialerTab();
+            case 'onboarding':
+                return this.renderOnboardingTab();
+            case 'datasync':
+                return this.renderDataSyncTab();
+            default:
+                return this.renderUsersLicensesTab();
+        }
+    },
+
+    renderUsersLicensesTab() {
+        return `
+            <div class="slds-card">
+                <div class="slds-card__header slds-grid">
                     <header class="slds-media slds-media_center slds-has-flexi-truncate">
                         <div class="slds-media__body">
-                            <h2 class="slds-card__header-title">Integration Status</h2>
+                            <h2 class="slds-card__header-title">Users & Licenses</h2>
                         </div>
                     </header>
-                    <div class="slds-no-flex">
-                        <button class="slds-button slds-button_neutral" id="test-connection">Test Connection</button>
-                    </div>
                 </div>
                 <div class="slds-card__body slds-card__body_inner">
-                    <div class="slds-grid slds-wrap slds-gutters">
-                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
-                            <div class="slds-form-element">
-                                <label class="slds-form-element__label">Connection Status</label>
-                                <div class="slds-form-element__control">
-                                    <span class="slds-badge status-connected">Connected</span>
-                                </div>
+                    <div class="slds-form slds-form_stacked">
+                        <div class="slds-form-element">
+                            <label class="slds-form-element__label" for="default-user">Default user for unmatched calls</label>
+                            <div class="slds-form-element__control">
+                                <select id="default-user" class="slds-select">
+                                    <option value="">-- Select User --</option>
+                                    <option value="admin" selected>System Admin</option>
+                                    <option value="manager">Sales Manager</option>
+                                </select>
+                            </div>
+                            <div class="slds-form-element__help">Assign calls that don't match any Dialpad user</div>
+                        </div>
+
+                        <div class="slds-form-element slds-m-top_medium">
+                            <label class="slds-form-element__label">Connected users (15 of 25)</label>
+                            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-m-top_x-small">
+                                <thead>
+                                    <tr class="slds-line-height_reset">
+                                        <th scope="col"><div class="slds-truncate">Salesforce User</div></th>
+                                        <th scope="col"><div class="slds-truncate">Dialpad Email</div></th>
+                                        <th scope="col"><div class="slds-truncate">Status</div></th>
+                                        <th scope="col"><div class="slds-truncate">Actions</div></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Sarah Johnson</td>
+                                        <td>sarah.johnson@company.com</td>
+                                        <td><span class="slds-badge slds-theme_success">Connected</span></td>
+                                        <td><button class="slds-button slds-button_destructive slds-button_small">Remove</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Mike Chen</td>
+                                        <td>mike.chen@company.com</td>
+                                        <td><span class="slds-badge slds-theme_success">Connected</span></td>
+                                        <td><button class="slds-button slds-button_destructive slds-button_small">Remove</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Emily Rodriguez</td>
+                                        <td>emily.r@company.com</td>
+                                        <td><span class="slds-badge slds-theme_warning">Pending</span></td>
+                                        <td><button class="slds-button slds-button_neutral slds-button_small">Resend Invite</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="slds-m-top_small">
+                                <button class="slds-button slds-button_neutral" id="add-users-btn">Add Users</button>
                             </div>
                         </div>
-                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
-                            <div class="slds-form-element">
-                                <label class="slds-form-element__label">Last Sync</label>
-                                <div class="slds-form-element__control">
-                                    <p>Nov 18, 2025 4:15 PM</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
-                            <div class="slds-form-element">
-                                <label class="slds-form-element__label">Package Version</label>
-                                <div class="slds-form-element__control">
-                                    <p>1.820</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="slds-m-top_small">
-                        <a href="#" id="view-integration-logs">View integration logs</a>
                     </div>
                 </div>
             </div>
+        `;
+    },
 
-            <!-- Accordion Sections -->
-            <div class="slds-accordion">
+    renderScreenPopTab() {
+        return `
+            <div class="slds-card">
+                <div class="slds-card__header slds-grid">
+                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                        <div class="slds-media__body">
+                            <h2 class="slds-card__header-title">Screen Pop Settings</h2>
+                        </div>
+                    </header>
+                </div>
+                <div class="slds-card__body slds-card__body_inner">
+                    <div class="slds-form slds-form_stacked">
+                        <div class="slds-form-element">
+                            <label class="slds-checkbox_toggle slds-grid">
+                                <span class="slds-form-element__label slds-m-bottom_none">Pop contact on incoming call</span>
+                                <input type="checkbox" id="pop-contact" checked />
+                                <span class="slds-checkbox_faux_container">
+                                    <span class="slds-checkbox_faux"></span>
+                                    <span class="slds-checkbox_on">Enabled</span>
+                                    <span class="slds-checkbox_off">Disabled</span>
+                                </span>
+                            </label>
+                            <div class="slds-form-element__help">Automatically pop Contact record when call comes in</div>
+                        </div>
 
-                <!-- Call & SMS Logging -->
-                <section class="slds-accordion__section slds-is-open">
-                    <div class="slds-accordion__summary">
-                        <h2 class="slds-accordion__summary-heading">
-                            <button class="slds-button slds-button_reset slds-accordion__summary-action" type="button" data-accordion="logging">
-                                <span class="slds-accordion__summary-content">Call & SMS Logging</span>
-                            </button>
-                        </h2>
-                    </div>
-                    <div class="slds-accordion__content" id="logging-content">
-                        <div class="slds-p-around_medium">
-                            <div class="slds-form slds-form_stacked">
-                                <div class="slds-form-element">
-                                    <label class="slds-checkbox_toggle slds-grid">
-                                        <span class="slds-form-element__label slds-m-bottom_none">Auto-log calls</span>
-                                        <input type="checkbox" id="auto-log-calls" checked />
-                                        <span class="slds-checkbox_faux_container">
-                                            <span class="slds-checkbox_faux"></span>
-                                            <span class="slds-checkbox_on">Enabled</span>
-                                            <span class="slds-checkbox_off">Disabled</span>
-                                        </span>
-                                    </label>
-                                    <div class="slds-form-element__help">Automatically create Salesforce tasks for all calls</div>
-                                </div>
+                        <div class="slds-form-element slds-m-top_medium">
+                            <label class="slds-checkbox_toggle slds-grid">
+                                <span class="slds-form-element__label slds-m-bottom_none">Pop case if open</span>
+                                <input type="checkbox" id="pop-case" checked />
+                                <span class="slds-checkbox_faux_container">
+                                    <span class="slds-checkbox_faux"></span>
+                                    <span class="slds-checkbox_on">Enabled</span>
+                                    <span class="slds-checkbox_off">Disabled</span>
+                                </span>
+                            </label>
+                            <div class="slds-form-element__help">Pop open Case if contact has one</div>
+                        </div>
 
-                                <div class="slds-form-element slds-m-top_medium">
-                                    <label class="slds-checkbox_toggle slds-grid">
-                                        <span class="slds-form-element__label slds-m-bottom_none">Auto-log SMS</span>
-                                        <input type="checkbox" id="auto-log-sms" checked />
-                                        <span class="slds-checkbox_faux_container">
-                                            <span class="slds-checkbox_faux"></span>
-                                            <span class="slds-checkbox_on">Enabled</span>
-                                            <span class="slds-checkbox_off">Disabled</span>
-                                        </span>
-                                    </label>
-                                    <div class="slds-form-element__help">Automatically create Salesforce tasks for all SMS messages</div>
-                                </div>
-
-                                <div class="slds-form-element slds-m-top_medium">
-                                    <label class="slds-form-element__label">Call types to log</label>
-                                    <div class="slds-form-element__control">
-                                        <span class="slds-checkbox">
-                                            <input type="checkbox" id="log-inbound" checked />
-                                            <label class="slds-checkbox__label" for="log-inbound">
-                                                <span class="slds-checkbox_faux"></span>
-                                                <span class="slds-form-element__label">Inbound calls</span>
-                                            </label>
-                                        </span>
-                                        <span class="slds-checkbox slds-m-left_medium">
-                                            <input type="checkbox" id="log-outbound" checked />
-                                            <label class="slds-checkbox__label" for="log-outbound">
-                                                <span class="slds-checkbox_faux"></span>
-                                                <span class="slds-form-element__label">Outbound calls</span>
-                                            </label>
-                                        </span>
-                                        <span class="slds-checkbox slds-m-left_medium">
-                                            <input type="checkbox" id="log-missed" checked />
-                                            <label class="slds-checkbox__label" for="log-missed">
-                                                <span class="slds-checkbox_faux"></span>
-                                                <span class="slds-form-element__label">Missed calls</span>
-                                            </label>
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <div class="slds-form-element slds-m-top_medium">
-                                    <label class="slds-form-element__label" for="default-task-status">Default task status</label>
-                                    <div class="slds-form-element__control">
-                                        <select id="default-task-status" class="slds-select">
-                                            <option value="in-progress">In Progress</option>
-                                            <option value="completed" selected>Completed</option>
-                                            <option value="not-logged">Not Logged</option>
-                                        </select>
-                                    </div>
-                                    <div class="slds-form-element__help">Status applied to logged calls and SMS</div>
-                                </div>
-
-                                <div class="slds-form-element slds-m-top_medium">
-                                    <label class="slds-form-element__label" for="disposition-values">Disposition values</label>
-                                    <div class="slds-form-element__control">
-                                        <textarea id="disposition-values" class="slds-textarea" rows="3" placeholder="Connected, No Answer, Voicemail, Callback, Interested, Not Interested">Connected, No Answer, Voicemail, Callback, Interested, Not Interested</textarea>
-                                    </div>
-                                    <div class="slds-form-element__help">Comma-separated list of call disposition options</div>
-                                </div>
+                        <div class="slds-form-element slds-m-top_medium">
+                            <label class="slds-form-element__label">Object search priority</label>
+                            <div class="slds-form-element__control">
+                                <p class="slds-m-bottom_xx-small">1. Contact</p>
+                                <p class="slds-m-bottom_xx-small">2. Lead</p>
+                                <p class="slds-m-bottom_xx-small">3. Account</p>
+                                <p class="slds-m-bottom_xx-small">4. Opportunity</p>
+                                <p class="slds-m-bottom_xx-small">5. Case</p>
                             </div>
+                            <div class="slds-form-element__help">Screen pop will follow this priority order</div>
                         </div>
                     </div>
-                </section>
+                </div>
+            </div>
+        `;
+    },
 
-                <!-- User Management -->
-                <section class="slds-accordion__section">
-                    <div class="slds-accordion__summary">
-                        <h2 class="slds-accordion__summary-heading">
-                            <button class="slds-button slds-button_reset slds-accordion__summary-action" type="button" data-accordion="users">
-                                <span class="slds-accordion__summary-content">User Management</span>
-                            </button>
-                        </h2>
-                    </div>
-                    <div class="slds-accordion__content" id="users-content" style="display: none;">
-                        <div class="slds-p-around_medium">
-                            <div class="slds-form slds-form_stacked">
-                                <div class="slds-form-element">
-                                    <label class="slds-form-element__label" for="default-user">Default user for unmatched calls</label>
-                                    <div class="slds-form-element__control">
-                                        <select id="default-user" class="slds-select">
-                                            <option value="">-- Select User --</option>
-                                            <option value="admin" selected>System Admin</option>
-                                            <option value="manager">Sales Manager</option>
-                                        </select>
-                                    </div>
-                                    <div class="slds-form-element__help">Assign calls that don't match any Dialpad user</div>
-                                </div>
+    renderCallLoggingTab() {
+        return `
+            <div class="slds-card">
+                <div class="slds-card__header slds-grid">
+                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                        <div class="slds-media__body">
+                            <h2 class="slds-card__header-title">Call Logging Settings</h2>
+                        </div>
+                    </header>
+                </div>
+                <div class="slds-card__body slds-card__body_inner">
+                    <div class="slds-form slds-form_stacked">
+                        <div class="slds-form-element">
+                            <label class="slds-checkbox_toggle slds-grid">
+                                <span class="slds-form-element__label slds-m-bottom_none">Auto-log calls</span>
+                                <input type="checkbox" id="auto-log-calls" checked />
+                                <span class="slds-checkbox_faux_container">
+                                    <span class="slds-checkbox_faux"></span>
+                                    <span class="slds-checkbox_on">Enabled</span>
+                                    <span class="slds-checkbox_off">Disabled</span>
+                                </span>
+                            </label>
+                            <div class="slds-form-element__help">Automatically create Salesforce tasks for all calls</div>
+                        </div>
 
-                                <div class="slds-form-element slds-m-top_medium">
-                                    <label class="slds-form-element__label">Connected users (15 of 25)</label>
-                                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-m-top_x-small">
-                                        <thead>
-                                            <tr class="slds-line-height_reset">
-                                                <th scope="col"><div class="slds-truncate">Salesforce User</div></th>
-                                                <th scope="col"><div class="slds-truncate">Dialpad Email</div></th>
-                                                <th scope="col"><div class="slds-truncate">Status</div></th>
-                                                <th scope="col"><div class="slds-truncate">Actions</div></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>Sarah Johnson</td>
-                                                <td>sarah.johnson@company.com</td>
-                                                <td><span class="slds-badge slds-theme_success">Connected</span></td>
-                                                <td><button class="slds-button slds-button_destructive slds-button_small">Remove</button></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Mike Chen</td>
-                                                <td>mike.chen@company.com</td>
-                                                <td><span class="slds-badge slds-theme_success">Connected</span></td>
-                                                <td><button class="slds-button slds-button_destructive slds-button_small">Remove</button></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Emily Rodriguez</td>
-                                                <td>emily.r@company.com</td>
-                                                <td><span class="slds-badge slds-theme_warning">Pending</span></td>
-                                                <td><button class="slds-button slds-button_neutral slds-button_small">Resend Invite</button></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <div class="slds-m-top_small">
-                                        <button class="slds-button slds-button_neutral" id="add-users-btn">Add Users</button>
-                                    </div>
-                                </div>
+                        <div class="slds-form-element slds-m-top_medium">
+                            <label class="slds-checkbox_toggle slds-grid">
+                                <span class="slds-form-element__label slds-m-bottom_none">Auto-log SMS</span>
+                                <input type="checkbox" id="auto-log-sms" checked />
+                                <span class="slds-checkbox_faux_container">
+                                    <span class="slds-checkbox_faux"></span>
+                                    <span class="slds-checkbox_on">Enabled</span>
+                                    <span class="slds-checkbox_off">Disabled</span>
+                                </span>
+                            </label>
+                            <div class="slds-form-element__help">Automatically create Salesforce tasks for all SMS messages</div>
+                        </div>
+
+                        <div class="slds-form-element slds-m-top_medium">
+                            <label class="slds-form-element__label">Activity record type</label>
+                            <div class="slds-form-element__control">
+                                <select class="slds-select">
+                                    <option value="task" selected>Task</option>
+                                    <option value="event">Event</option>
+                                    <option value="custom">Custom Activity</option>
+                                </select>
                             </div>
+                            <div class="slds-form-element__help">Salesforce object type for logged calls</div>
                         </div>
                     </div>
-                </section>
+                </div>
+            </div>
+        `;
+    },
 
-                <!-- Click to Call & Screen Pop -->
-                <section class="slds-accordion__section">
-                    <div class="slds-accordion__summary">
-                        <h2 class="slds-accordion__summary-heading">
-                            <button class="slds-button slds-button_reset slds-accordion__summary-action" type="button" data-accordion="cti">
-                                <span class="slds-accordion__summary-content">Click to Call & Screen Pop</span>
-                            </button>
-                        </h2>
-                    </div>
-                    <div class="slds-accordion__content" id="cti-content" style="display: none;">
-                        <div class="slds-p-around_medium">
-                            <div class="slds-form slds-form_stacked">
-                                <h3 class="slds-text-heading_small slds-m-bottom_small">Click to Call Settings</h3>
-
-                                <div class="slds-form-element">
-                                    <label class="slds-checkbox_toggle slds-grid">
-                                        <span class="slds-form-element__label slds-m-bottom_none">Confirm phone number before placing call</span>
-                                        <input type="checkbox" id="confirm-before-call" checked />
-                                        <span class="slds-checkbox_faux_container">
-                                            <span class="slds-checkbox_faux"></span>
-                                            <span class="slds-checkbox_on">Enabled</span>
-                                            <span class="slds-checkbox_off">Disabled</span>
-                                        </span>
-                                    </label>
-                                    <div class="slds-form-element__help">Show confirmation dialog before placing outbound calls</div>
-                                </div>
-
-                                <h3 class="slds-text-heading_small slds-m-top_large slds-m-bottom_small">Screen Pop Settings</h3>
-
-                                <div class="slds-form-element">
-                                    <label class="slds-checkbox_toggle slds-grid">
-                                        <span class="slds-form-element__label slds-m-bottom_none">Pop contact on incoming call</span>
-                                        <input type="checkbox" id="pop-contact" checked />
-                                        <span class="slds-checkbox_faux_container">
-                                            <span class="slds-checkbox_faux"></span>
-                                            <span class="slds-checkbox_on">Enabled</span>
-                                            <span class="slds-checkbox_off">Disabled</span>
-                                        </span>
-                                    </label>
-                                    <div class="slds-form-element__help">Automatically pop Contact record when call comes in</div>
-                                </div>
-
-                                <div class="slds-form-element slds-m-top_medium">
-                                    <label class="slds-checkbox_toggle slds-grid">
-                                        <span class="slds-form-element__label slds-m-bottom_none">Pop case if open</span>
-                                        <input type="checkbox" id="pop-case" checked />
-                                        <span class="slds-checkbox_faux_container">
-                                            <span class="slds-checkbox_faux"></span>
-                                            <span class="slds-checkbox_on">Enabled</span>
-                                            <span class="slds-checkbox_off">Disabled</span>
-                                        </span>
-                                    </label>
-                                    <div class="slds-form-element__help">Pop open Case if contact has one</div>
-                                </div>
-
-                                <div class="slds-form-element slds-m-top_medium">
-                                    <label class="slds-checkbox_toggle slds-grid">
-                                        <span class="slds-form-element__label slds-m-bottom_none">Auto-create contact for unknown numbers</span>
-                                        <input type="checkbox" id="auto-create-contact" />
-                                        <span class="slds-checkbox_faux_container">
-                                            <span class="slds-checkbox_faux"></span>
-                                            <span class="slds-checkbox_on">Enabled</span>
-                                            <span class="slds-checkbox_off">Disabled</span>
-                                        </span>
-                                    </label>
-                                    <div class="slds-form-element__help">Create new Contact when phone number doesn't match</div>
-                                </div>
-
-                                <div class="slds-form-element slds-m-top_medium">
-                                    <label class="slds-form-element__label">Object search priority (when multiple records match)</label>
-                                    <div class="slds-form-element__control">
-                                        <div class="slds-m-bottom_x-small">1. Contact</div>
-                                        <div class="slds-m-bottom_x-small">2. Lead</div>
-                                        <div class="slds-m-bottom_x-small">3. Account</div>
-                                        <div class="slds-m-bottom_x-small">4. Opportunity</div>
-                                        <div class="slds-m-bottom_x-small">5. Case</div>
-                                    </div>
-                                    <div class="slds-form-element__help">Screen pop will follow this priority order</div>
-                                </div>
-
-                                <div class="slds-form-element slds-m-top_medium">
-                                    <label class="slds-checkbox_toggle slds-grid">
-                                        <span class="slds-form-element__label slds-m-bottom_none">Search custom objects</span>
-                                        <input type="checkbox" id="search-custom-objects" />
-                                        <span class="slds-checkbox_faux_container">
-                                            <span class="slds-checkbox_faux"></span>
-                                            <span class="slds-checkbox_on">Enabled</span>
-                                            <span class="slds-checkbox_off">Disabled</span>
-                                        </span>
-                                    </label>
-                                    <div class="slds-form-element__help">Include custom objects in phone number search</div>
-                                </div>
-                            </div>
+    renderPowerdialerTab() {
+        return `
+            <div class="slds-card">
+                <div class="slds-card__header slds-grid">
+                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                        <div class="slds-media__body">
+                            <h2 class="slds-card__header-title">Powerdialer Settings</h2>
                         </div>
-                    </div>
-                </section>
+                    </header>
+                </div>
+                <div class="slds-card__body slds-card__body_inner">
+                    <p class="slds-text-color_weak">Configure Powerdialer campaign settings and calling preferences.</p>
+                    <p class="slds-m-top_medium"><em>Settings content coming soon...</em></p>
+                </div>
+            </div>
+        `;
+    },
 
-                <!-- Powerdialer Settings -->
-                <section class="slds-accordion__section">
-                    <div class="slds-accordion__summary">
-                        <h2 class="slds-accordion__summary-heading">
-                            <button class="slds-button slds-button_reset slds-accordion__summary-action" type="button" data-accordion="powerdialer">
-                                <span class="slds-accordion__summary-content">Powerdialer Settings</span>
-                            </button>
-                        </h2>
-                    </div>
-                    <div class="slds-accordion__content" id="powerdialer-content" style="display: none;">
-                        <div class="slds-p-around_medium">
-                            <div class="slds-form slds-form_stacked">
-                                <h3 class="slds-text-heading_small slds-m-bottom_small">General Settings</h3>
-
-                                <div class="slds-form-element">
-                                    <label class="slds-form-element__label" for="dialing-mode">Dialing mode</label>
-                                    <div class="slds-form-element__control">
-                                        <select id="dialing-mode" class="slds-select">
-                                            <option value="preview">Preview (Agent reviews before dialing)</option>
-                                            <option value="progressive" selected>Progressive (Auto-dial with agent pacing)</option>
-                                            <option value="power">Power (Multiple calls per agent)</option>
-                                        </select>
-                                    </div>
-                                    <div class="slds-form-element__help">How powerdialer places calls from lists</div>
-                                </div>
-
-                                <div class="slds-form-element slds-m-top_medium">
-                                    <label class="slds-form-element__label" for="calls-per-agent">Calls per agent ratio</label>
-                                    <div class="slds-form-element__control">
-                                        <input type="number" id="calls-per-agent" class="slds-input" value="1.5" min="1" max="3" step="0.1" />
-                                    </div>
-                                    <div class="slds-form-element__help">Simultaneous calls per available agent (Power mode only)</div>
-                                </div>
-
-                                <div class="slds-form-element slds-m-top_medium">
-                                    <label class="slds-checkbox_toggle slds-grid">
-                                        <span class="slds-form-element__label slds-m-bottom_none">Enable call recording</span>
-                                        <input type="checkbox" id="powerdialer-recording" checked />
-                                        <span class="slds-checkbox_faux_container">
-                                            <span class="slds-checkbox_faux"></span>
-                                            <span class="slds-checkbox_on">Enabled</span>
-                                            <span class="slds-checkbox_off">Disabled</span>
-                                        </span>
-                                    </label>
-                                    <div class="slds-form-element__help">Automatically record all powerdialer calls</div>
-                                </div>
-
-                                <h3 class="slds-text-heading_small slds-m-top_large slds-m-bottom_small">List Segmentation</h3>
-
-                                <div class="slds-form-element">
-                                    <label class="slds-form-element__label">Segment lists by</label>
-                                    <div class="slds-form-element__control">
-                                        <span class="slds-checkbox">
-                                            <input type="checkbox" id="segment-territory" checked />
-                                            <label class="slds-checkbox__label" for="segment-territory">
-                                                <span class="slds-checkbox_faux"></span>
-                                                <span class="slds-form-element__label">Territory</span>
-                                            </label>
-                                        </span>
-                                        <span class="slds-checkbox slds-m-left_medium">
-                                            <input type="checkbox" id="segment-priority" checked />
-                                            <label class="slds-checkbox__label" for="segment-priority">
-                                                <span class="slds-checkbox_faux"></span>
-                                                <span class="slds-form-element__label">Lead Priority</span>
-                                            </label>
-                                        </span>
-                                        <span class="slds-checkbox slds-m-left_medium">
-                                            <input type="checkbox" id="segment-timezone" />
-                                            <label class="slds-checkbox__label" for="segment-timezone">
-                                                <span class="slds-checkbox_faux"></span>
-                                                <span class="slds-form-element__label">Timezone</span>
-                                            </label>
-                                        </span>
-                                    </div>
-                                    <div class="slds-form-element__help">Automatically segment lists based on these criteria</div>
-                                </div>
-
-                                <h3 class="slds-text-heading_small slds-m-top_large slds-m-bottom_small">Exclusion Rules</h3>
-
-                                <div class="slds-form-element">
-                                    <label class="slds-form-element__label">Exclude from powerdialer lists</label>
-                                    <div class="slds-form-element__control">
-                                        <span class="slds-checkbox">
-                                            <input type="checkbox" id="exclude-dnc" checked />
-                                            <label class="slds-checkbox__label" for="exclude-dnc">
-                                                <span class="slds-checkbox_faux"></span>
-                                                <span class="slds-form-element__label">Do Not Call (DNC) contacts</span>
-                                            </label>
-                                        </span>
-                                        <span class="slds-checkbox slds-m-top_x-small">
-                                            <input type="checkbox" id="exclude-unsubscribed" checked />
-                                            <label class="slds-checkbox__label" for="exclude-unsubscribed">
-                                                <span class="slds-checkbox_faux"></span>
-                                                <span class="slds-form-element__label">Email unsubscribed contacts</span>
-                                            </label>
-                                        </span>
-                                        <span class="slds-checkbox slds-m-top_x-small">
-                                            <input type="checkbox" id="exclude-closed-opps" />
-                                            <label class="slds-checkbox__label" for="exclude-closed-opps">
-                                                <span class="slds-checkbox_faux"></span>
-                                                <span class="slds-form-element__label">Contacts with closed opportunities</span>
-                                            </label>
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <div class="slds-form-element slds-m-top_medium">
-                                    <label class="slds-form-element__label" for="exclusion-statuses">Excluded lead statuses</label>
-                                    <div class="slds-form-element__control">
-                                        <textarea id="exclusion-statuses" class="slds-textarea" rows="2" placeholder="Unqualified, Closed - Lost, Duplicate">Unqualified, Closed - Lost, Duplicate</textarea>
-                                    </div>
-                                    <div class="slds-form-element__help">Comma-separated list of lead statuses to exclude</div>
-                                </div>
-                            </div>
+    renderOnboardingTab() {
+        return `
+            <div class="slds-card">
+                <div class="slds-card__header slds-grid">
+                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                        <div class="slds-media__body">
+                            <h2 class="slds-card__header-title">Onboarding Settings</h2>
                         </div>
-                    </div>
-                </section>
+                    </header>
+                </div>
+                <div class="slds-card__body slds-card__body_inner">
+                    <p class="slds-text-color_weak">Manage user onboarding workflows and training materials.</p>
+                    <p class="slds-m-top_medium"><em>Settings content coming soon...</em></p>
+                </div>
+            </div>
+        `;
+    },
 
-                <!-- CTI Record Selection -->
-                <section class="slds-accordion__section">
-                    <div class="slds-accordion__summary">
-                        <h2 class="slds-accordion__summary-heading">
-                            <button class="slds-button slds-button_reset slds-accordion__summary-action" type="button" data-accordion="record-selection">
-                                <span class="slds-accordion__summary-content">CTI Record Selection</span>
-                            </button>
-                        </h2>
-                    </div>
-                    <div class="slds-accordion__content" id="record-selection-content" style="display: none;">
-                        <div class="slds-p-around_medium">
-                            <div class="slds-form slds-form_stacked">
-                                <h3 class="slds-text-heading_small slds-m-bottom_small">Case Selection Criteria</h3>
-
-                                <div class="slds-form-element">
-                                    <label class="slds-form-element__label" for="case-priority">When one case matches, pop if priority is</label>
-                                    <div class="slds-form-element__control">
-                                        <select id="case-priority" class="slds-select">
-                                            <option value="any" selected>Any Priority</option>
-                                            <option value="high">High or Critical</option>
-                                            <option value="critical">Critical Only</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="slds-form-element slds-m-top_medium">
-                                    <label class="slds-form-element__label" for="case-status">And status is</label>
-                                    <div class="slds-form-element__control">
-                                        <select id="case-status" class="slds-select">
-                                            <option value="any">Any Status</option>
-                                            <option value="open" selected>Open Cases Only</option>
-                                            <option value="escalated">Escalated Only</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="slds-form-element slds-m-top_medium">
-                                    <label class="slds-form-element__label">When multiple cases match, show list view with</label>
-                                    <div class="slds-form-element__control">
-                                        <span class="slds-checkbox">
-                                            <input type="checkbox" id="case-list-number" checked />
-                                            <label class="slds-checkbox__label" for="case-list-number">
-                                                <span class="slds-checkbox_faux"></span>
-                                                <span class="slds-form-element__label">Case Number</span>
-                                            </label>
-                                        </span>
-                                        <span class="slds-checkbox slds-m-left_medium">
-                                            <input type="checkbox" id="case-list-subject" checked />
-                                            <label class="slds-checkbox__label" for="case-list-subject">
-                                                <span class="slds-checkbox_faux"></span>
-                                                <span class="slds-form-element__label">Subject</span>
-                                            </label>
-                                        </span>
-                                        <span class="slds-checkbox slds-m-left_medium">
-                                            <input type="checkbox" id="case-list-status" checked />
-                                            <label class="slds-checkbox__label" for="case-list-status">
-                                                <span class="slds-checkbox_faux"></span>
-                                                <span class="slds-form-element__label">Status</span>
-                                            </label>
-                                        </span>
-                                        <span class="slds-checkbox slds-m-left_medium">
-                                            <input type="checkbox" id="case-list-priority" checked />
-                                            <label class="slds-checkbox__label" for="case-list-priority">
-                                                <span class="slds-checkbox_faux"></span>
-                                                <span class="slds-form-element__label">Priority</span>
-                                            </label>
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <h3 class="slds-text-heading_small slds-m-top_large slds-m-bottom_small">Opportunity Selection Criteria</h3>
-
-                                <div class="slds-form-element">
-                                    <label class="slds-form-element__label">When multiple opportunities match, show list view with</label>
-                                    <div class="slds-form-element__control">
-                                        <span class="slds-checkbox">
-                                            <input type="checkbox" id="opp-list-name" checked />
-                                            <label class="slds-checkbox__label" for="opp-list-name">
-                                                <span class="slds-checkbox_faux"></span>
-                                                <span class="slds-form-element__label">Opportunity Name</span>
-                                            </label>
-                                        </span>
-                                        <span class="slds-checkbox slds-m-left_medium">
-                                            <input type="checkbox" id="opp-list-stage" checked />
-                                            <label class="slds-checkbox__label" for="opp-list-stage">
-                                                <span class="slds-checkbox_faux"></span>
-                                                <span class="slds-form-element__label">Stage</span>
-                                            </label>
-                                        </span>
-                                        <span class="slds-checkbox slds-m-left_medium">
-                                            <input type="checkbox" id="opp-list-amount" checked />
-                                            <label class="slds-checkbox__label" for="opp-list-amount">
-                                                <span class="slds-checkbox_faux"></span>
-                                                <span class="slds-form-element__label">Amount</span>
-                                            </label>
-                                        </span>
-                                        <span class="slds-checkbox slds-m-left_medium">
-                                            <input type="checkbox" id="opp-list-closedate" checked />
-                                            <label class="slds-checkbox__label" for="opp-list-closedate">
-                                                <span class="slds-checkbox_faux"></span>
-                                                <span class="slds-form-element__label">Close Date</span>
-                                            </label>
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <div class="slds-form-element slds-m-top_medium">
-                                    <label class="slds-form-element__label" for="opp-exclude-stages">Exclude opportunities in these stages</label>
-                                    <div class="slds-form-element__control">
-                                        <textarea id="opp-exclude-stages" class="slds-textarea" rows="2" placeholder="Closed Won, Closed Lost">Closed Won, Closed Lost</textarea>
-                                    </div>
-                                    <div class="slds-form-element__help">Comma-separated list of stages to exclude from list view</div>
-                                </div>
-                            </div>
+    renderDataSyncTab() {
+        return `
+            <div class="slds-card">
+                <div class="slds-card__header slds-grid">
+                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                        <div class="slds-media__body">
+                            <h2 class="slds-card__header-title">Data Sync Settings</h2>
                         </div>
-                    </div>
-                </section>
-
-                <!-- Field Mapping -->
-                <section class="slds-accordion__section">
-                    <div class="slds-accordion__summary">
-                        <h2 class="slds-accordion__summary-heading">
-                            <button class="slds-button slds-button_reset slds-accordion__summary-action" type="button" data-accordion="field-mapping">
-                                <span class="slds-accordion__summary-content">Field Mapping</span>
-                            </button>
-                        </h2>
-                    </div>
-                    <div class="slds-accordion__content" id="field-mapping-content" style="display: none;">
-                        <div class="slds-p-around_medium">
-                            <div class="slds-form slds-form_stacked">
-                                <h3 class="slds-text-heading_small slds-m-bottom_small">Call Activity Mapping</h3>
-                                <p class="slds-m-bottom_medium">Map Dialpad call data to Salesforce Task fields</p>
-
-                                <div class="slds-form-element">
-                                    <label class="slds-form-element__label" for="map-call-duration">Call Duration maps to</label>
-                                    <div class="slds-form-element__control">
-                                        <select id="map-call-duration" class="slds-select">
-                                            <option value="CallDurationInSeconds" selected>CallDurationInSeconds</option>
-                                            <option value="custom-duration">Custom_Call_Duration__c</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="slds-form-element slds-m-top_medium">
-                                    <label class="slds-form-element__label" for="map-call-recording">Recording URL maps to</label>
-                                    <div class="slds-form-element__control">
-                                        <select id="map-call-recording" class="slds-select">
-                                            <option value="Description">Description (appended)</option>
-                                            <option value="custom-recording" selected>Custom_Recording_URL__c</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="slds-form-element slds-m-top_medium">
-                                    <label class="slds-form-element__label" for="map-call-disposition">Call Disposition maps to</label>
-                                    <div class="slds-form-element__control">
-                                        <select id="map-call-disposition" class="slds-select">
-                                            <option value="CallDisposition" selected>CallDisposition</option>
-                                            <option value="Subject">Subject (prefixed)</option>
-                                            <option value="custom-disposition">Custom_Disposition__c</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <h3 class="slds-text-heading_small slds-m-top_large slds-m-bottom_small">SMS Activity Mapping</h3>
-                                <p class="slds-m-bottom_medium">Map Dialpad SMS data to Salesforce Task fields</p>
-
-                                <div class="slds-form-element">
-                                    <label class="slds-form-element__label" for="map-sms-body">SMS Body maps to</label>
-                                    <div class="slds-form-element__control">
-                                        <select id="map-sms-body" class="slds-select">
-                                            <option value="Description" selected>Description</option>
-                                            <option value="custom-sms-body">Custom_SMS_Body__c</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="slds-form-element slds-m-top_medium">
-                                    <label class="slds-form-element__label" for="map-sms-direction">SMS Direction maps to</label>
-                                    <div class="slds-form-element__control">
-                                        <select id="map-sms-direction" class="slds-select">
-                                            <option value="Subject">Subject (Inbound/Outbound prefix)</option>
-                                            <option value="custom-direction" selected>Custom_SMS_Direction__c</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="slds-form-element slds-m-top_medium">
-                                    <label class="slds-form-element__label" for="map-sms-status">SMS Status maps to</label>
-                                    <div class="slds-form-element__control">
-                                        <select id="map-sms-status" class="slds-select">
-                                            <option value="Status" selected>Status</option>
-                                            <option value="custom-status">Custom_SMS_Status__c</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Number Configuration -->
-                <section class="slds-accordion__section">
-                    <div class="slds-accordion__summary">
-                        <h2 class="slds-accordion__summary-heading">
-                            <button class="slds-button slds-button_reset slds-accordion__summary-action" type="button" data-accordion="numbers">
-                                <span class="slds-accordion__summary-content">Number Configuration</span>
-                            </button>
-                        </h2>
-                    </div>
-                    <div class="slds-accordion__content" id="numbers-content" style="display: none;">
-                        <div class="slds-p-around_medium">
-                            <div class="slds-form slds-form_stacked">
-                                <div class="slds-form-element">
-                                    <label class="slds-form-element__label">Dialpad phone numbers</label>
-                                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-m-top_x-small">
-                                        <thead>
-                                            <tr class="slds-line-height_reset">
-                                                <th scope="col"><div class="slds-truncate">Phone Number</div></th>
-                                                <th scope="col"><div class="slds-truncate">Type</div></th>
-                                                <th scope="col"><div class="slds-truncate">Assigned To</div></th>
-                                                <th scope="col"><div class="slds-truncate">Sync Status</div></th>
-                                                <th scope="col"><div class="slds-truncate">Actions</div></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>+1 (555) 123-4567</td>
-                                                <td>Main Line</td>
-                                                <td>Company</td>
-                                                <td><span class="slds-badge slds-theme_success">Enabled</span></td>
-                                                <td><button class="slds-button slds-button_neutral slds-button_small" id="disable-number-1">Disable</button></td>
-                                            </tr>
-                                            <tr>
-                                                <td>+1 (555) 234-5678</td>
-                                                <td>Direct</td>
-                                                <td>Sales Team</td>
-                                                <td><span class="slds-badge slds-theme_success">Enabled</span></td>
-                                                <td><button class="slds-button slds-button_neutral slds-button_small" id="disable-number-2">Disable</button></td>
-                                            </tr>
-                                            <tr>
-                                                <td>+1 (555) 345-6789</td>
-                                                <td>Support</td>
-                                                <td>Support Team</td>
-                                                <td><span class="slds-badge slds-theme_error">Disabled</span></td>
-                                                <td><button class="slds-button slds-button_brand slds-button_small" id="enable-number-3">Enable</button></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <div class="slds-form-element__help">Manage which Dialpad numbers sync data to Salesforce</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Quota Configuration -->
-                <section class="slds-accordion__section">
-                    <div class="slds-accordion__summary">
-                        <h2 class="slds-accordion__summary-heading">
-                            <button class="slds-button slds-button_reset slds-accordion__summary-action" type="button" data-accordion="quota">
-                                <span class="slds-accordion__summary-content">Quota Configuration</span>
-                            </button>
-                        </h2>
-                    </div>
-                    <div class="slds-accordion__content" id="quota-content" style="display: none;">
-                        <div class="slds-p-around_medium">
-                            <div class="slds-form slds-form_stacked">
-                                <div class="slds-form-element">
-                                    <label class="slds-form-element__label" for="daily-quota">Daily call target (per agent)</label>
-                                    <div class="slds-form-element__control">
-                                        <input type="number" id="daily-quota" class="slds-input" value="${AppState.companyQuota.dailyCallTarget}" min="0" max="500" />
-                                    </div>
-                                    <div class="slds-form-element__help">Default daily call target for all agents</div>
-                                </div>
-
-                                <div class="slds-form-element slds-m-top_medium">
-                                    <label class="slds-form-element__label" for="weekly-quota">Weekly call target (per agent)</label>
-                                    <div class="slds-form-element__control">
-                                        <input type="number" id="weekly-quota" class="slds-input" value="${AppState.companyQuota.weeklyCallTarget}" min="0" max="2000" />
-                                    </div>
-                                    <div class="slds-form-element__help">Default weekly call target for all agents</div>
-                                </div>
-
-                                <div class="slds-form-element slds-m-top_medium">
-                                    <label class="slds-checkbox_toggle slds-grid">
-                                        <span class="slds-form-element__label slds-m-bottom_none">Enable quota tracking</span>
-                                        <input type="checkbox" id="quota-tracking-enabled" checked />
-                                        <span class="slds-checkbox_faux_container">
-                                            <span class="slds-checkbox_faux"></span>
-                                            <span class="slds-checkbox_on">Enabled</span>
-                                            <span class="slds-checkbox_off">Disabled</span>
-                                        </span>
-                                    </label>
-                                    <div class="slds-form-element__help">Show quota progress on agent dashboards</div>
-                                </div>
-
-                                <div class="slds-form-element slds-m-top_medium">
-                                    <label class="slds-checkbox_toggle slds-grid">
-                                        <span class="slds-form-element__label slds-m-bottom_none">Display quota on dashboard</span>
-                                        <input type="checkbox" id="quota-display-enabled" checked />
-                                        <span class="slds-checkbox_faux_container">
-                                            <span class="slds-checkbox_faux"></span>
-                                            <span class="slds-checkbox_on">Shown</span>
-                                            <span class="slds-checkbox_off">Hidden</span>
-                                        </span>
-                                    </label>
-                                    <div class="slds-form-element__help">Show quota widget on agent home page</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Sandbox Management -->
-                <section class="slds-accordion__section">
-                    <div class="slds-accordion__summary">
-                        <h2 class="slds-accordion__summary-heading">
-                            <button class="slds-button slds-button_reset slds-accordion__summary-action" type="button" data-accordion="sandbox">
-                                <span class="slds-accordion__summary-content">Sandbox Management</span>
-                            </button>
-                        </h2>
-                    </div>
-                    <div class="slds-accordion__content" id="sandbox-content" style="display: none;">
-                        <div class="slds-p-around_medium">
-                            <div class="slds-form slds-form_stacked">
-                                <div class="slds-form-element">
-                                    <label class="slds-form-element__label" for="sandbox-last-update">Last sandbox update</label>
-                                    <div class="slds-form-element__control">
-                                        <input type="text" id="sandbox-last-update" class="slds-input" value="2024-01-15" readonly />
-                                    </div>
-                                    <div class="slds-form-element__help">When the sandbox was last refreshed with production changes</div>
-                                </div>
-
-                                <div class="slds-form-element slds-m-top_medium">
-                                    <label class="slds-form-element__label" for="sandbox-reminder">Reminder frequency</label>
-                                    <div class="slds-form-element__control">
-                                        <select id="sandbox-reminder" class="slds-select">
-                                            <option value="weekly">Weekly</option>
-                                            <option value="monthly" selected>Monthly</option>
-                                            <option value="quarterly">Quarterly</option>
-                                        </select>
-                                    </div>
-                                    <div class="slds-form-element__help">How often to remind admins to update sandbox</div>
-                                </div>
-
-                                <div class="slds-form-element slds-m-top_medium">
-                                    <label class="slds-checkbox_toggle slds-grid">
-                                        <span class="slds-form-element__label slds-m-bottom_none">Test in sandbox before production</span>
-                                        <input type="checkbox" id="require-sandbox-testing" checked />
-                                        <span class="slds-checkbox_faux_container">
-                                            <span class="slds-checkbox_faux"></span>
-                                            <span class="slds-checkbox_on">Required</span>
-                                            <span class="slds-checkbox_off">Optional</span>
-                                        </span>
-                                    </label>
-                                    <div class="slds-form-element__help">Show warning when deploying updates without sandbox testing</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
+                    </header>
+                </div>
+                <div class="slds-card__body slds-card__body_inner">
+                    <p class="slds-text-color_weak">Configure data synchronization between Dialpad and Salesforce.</p>
+                    <p class="slds-m-top_medium"><em>Settings content coming soon...</em></p>
+                </div>
             </div>
         `;
     },
@@ -3645,6 +3156,19 @@ const App = {
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Production Implementation Note -->
+            <div class="slds-notify slds-notify_alert slds-alert_info slds-m-bottom_medium" role="alert">
+                <span class="slds-assistive-text">Info</span>
+                <span class="slds-icon_container slds-icon-utility-info slds-m-right_small" title="Information">
+                    <svg class="slds-icon slds-icon_x-small slds-icon-text-default" aria-hidden="true">
+                        <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#info"></use>
+                    </svg>
+                </span>
+                <h2>
+                    <strong>Prototype Note:</strong> In production, these reports will be organized as Salesforce report folders. The final structure and layout will follow Salesforce's native reporting interface patterns. Report layout and content pending customer feedback.
+                </h2>
             </div>
 
             <div class="slds-m-bottom_medium">
@@ -3963,69 +3487,31 @@ const App = {
     },
 
     attachSettingsPageListeners() {
-        // Accordion toggle functionality
-        const accordionButtons = document.querySelectorAll('[data-accordion]');
-        accordionButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
+        // Settings tab navigation
+        const settingsTabLinks = document.querySelectorAll('[data-settings-tab]');
+        settingsTabLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
                 e.preventDefault();
-                const section = button.closest('.slds-accordion__section');
-                const contentId = button.getAttribute('data-accordion') + '-content';
-                const content = document.getElementById(contentId);
+                const tab = link.getAttribute('data-settings-tab');
+                this.currentSettingsTab = tab;
 
-                if (section.classList.contains('slds-is-open')) {
-                    section.classList.remove('slds-is-open');
-                    if (content) content.style.display = 'none';
-                } else {
-                    section.classList.add('slds-is-open');
-                    if (content) content.style.display = 'block';
-                }
+                // Re-render the settings page to show the new tab
+                const content = document.getElementById('main-content');
+                const role = RoleManager.getRole();
+                content.innerHTML = this.renderSettingsPage(role);
+
+                // Re-attach listeners after re-rendering
+                this.attachSettingsPageListeners();
             });
         });
-
-        // Save Settings button
-        const saveSettingsButton = document.getElementById('save-settings');
-        if (saveSettingsButton) {
-            saveSettingsButton.addEventListener('click', () => {
-                // In production, this would save all settings via API
-                this.showToast('Settings saved successfully!', 'success');
-            });
-        }
-
-        // Cancel Settings button
-        const cancelSettingsButton = document.getElementById('cancel-settings');
-        if (cancelSettingsButton) {
-            cancelSettingsButton.addEventListener('click', () => {
-                // In production, this would revert changes
-                this.showToast('Changes cancelled', 'info');
-            });
-        }
-
-        // Test Connection button
-        const testConnectionButton = document.getElementById('test-connection');
-        if (testConnectionButton) {
-            testConnectionButton.addEventListener('click', () => {
-                this.showToast('Connection test successful! Integration is working properly.', 'success');
-            });
-        }
-
-        // View Integration Logs link
-        const viewLogsLink = document.getElementById('view-integration-logs');
-        if (viewLogsLink) {
-            viewLogsLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                alert('In production, this would open the integration logs viewer showing sync history, errors, and audit trails.');
-            });
-        }
 
         // Add Users button (demo)
-        const addUsersButtons = document.querySelectorAll('.slds-button_neutral');
-        addUsersButtons.forEach(btn => {
-            if (btn.textContent.includes('Add Users')) {
-                btn.addEventListener('click', () => {
-                    alert('In production, this would open a modal to select Salesforce users to connect with Dialpad.');
-                });
-            }
-        });
+        const addUsersButton = document.getElementById('add-users-btn');
+        if (addUsersButton) {
+            addUsersButton.addEventListener('click', () => {
+                alert('In production, this would open a modal to select Salesforce users to connect with Dialpad.');
+            });
+        }
 
         // Remove user buttons (demo)
         const removeButtons = document.querySelectorAll('.slds-button_destructive');
@@ -4035,18 +3521,6 @@ const App = {
                     alert('In production, this would disconnect the user from Dialpad integration.');
                 });
             }
-        });
-
-        // Enable/Disable number buttons (demo)
-        const numberActionButtons = document.querySelectorAll('#numbers-content .slds-button');
-        numberActionButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                if (btn.textContent === 'Enable') {
-                    alert('In production, this would enable call logging for this phone number.');
-                } else if (btn.textContent === 'Disable') {
-                    alert('In production, this would disable call logging for this phone number.');
-                }
-            });
         });
     },
 
