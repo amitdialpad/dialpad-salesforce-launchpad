@@ -884,33 +884,23 @@ const App = {
                         </div>
                     </header>
                 </div>
-                <div class="slds-card__body slds-card__body_inner">
+                <div class="slds-card__body slds-card__body_inner" style="padding: 0.75rem 1rem;">
                     ${alerts.length === 0 ? `
-                        <div style="text-align: center; padding: 2rem;">
-                            <svg class="slds-icon slds-icon_large slds-icon-text-success" aria-hidden="true">
-                                <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#check")}"></use>
-                            </svg>
-                            <p class="slds-m-top_small">All systems running smoothly</p>
+                        <div style="text-align: center; padding: 1rem;">
+                            <div style="font-size: 1.5rem; color: #04844b;">✓</div>
+                            <p class="slds-text-body_small slds-text-color_weak" style="margin-top: 0.25rem;">All systems normal</p>
                         </div>
                     ` : `
-                        <ul class="slds-has-dividers_top-space">
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                             ${alerts.map(alert => `
-                                <li class="slds-item slds-p-vertical_small">
-                                    <div class="slds-grid slds-grid_vertical-align-center">
-                                        <div class="slds-col slds-size_1-of-12">
-                                            <span class="slds-icon_container" title="${alert.type}">
-                                                <svg class="slds-icon slds-icon_x-small ${getAlertClass(alert.type)}" aria-hidden="true">
-                                                    <use xlink:href="${getAssetPath(`assets/icons/utility-sprite/svg/symbols.svg#${getAlertIcon(alert.type)}`)}"></use>
-                                                </svg>
-                                            </span>
-                                        </div>
-                                        <div class="slds-col slds-size_11-of-12">
-                                            <span class="slds-text-body_regular">${alert.message}</span>
-                                        </div>
-                                    </div>
-                                </li>
+                                <div style="display: flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.5rem; background: ${alert.type === 'error' ? '#fef5f5' : alert.type === 'warning' ? '#fef9f3' : '#f3f4f6'}; border-radius: 0.25rem;">
+                                    <svg class="slds-icon slds-icon_xx-small ${getAlertClass(alert.type)}" aria-hidden="true" style="flex-shrink: 0; width: 0.875rem; height: 0.875rem;">
+                                        <use xlink:href="${getAssetPath(`assets/icons/utility-sprite/svg/symbols.svg#${getAlertIcon(alert.type)}`)}"></use>
+                                    </svg>
+                                    <span style="font-size: 0.85rem; line-height: 1.3;">${alert.message}</span>
+                                </div>
                             `).join('')}
-                        </ul>
+                        </div>
                     `}
                 </div>
             </div>
