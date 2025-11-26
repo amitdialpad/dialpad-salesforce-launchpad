@@ -994,14 +994,9 @@ const App = {
                 </div>
                 <div class="slds-card__body slds-card__body_inner" style="padding: 0.75rem 1rem;">
 
-                    <!-- Active Now with Trend -->
+                    <!-- Active Now -->
                     <div style="margin-bottom: 1rem;">
-                        <div style="display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.25rem;">
-                            <span style="font-size: 2rem; font-weight: 700; color: #001642;">${activeNow}</span>
-                            <span style="font-size: 0.875rem; color: ${trendPercent >= 0 ? '#04844b' : '#c23934'}; font-weight: 600;">
-                                ${trendPercent >= 0 ? '↑' : '↓'} ${Math.abs(trendPercent)}% vs yesterday
-                            </span>
-                        </div>
+                        <div style="font-size: 2rem; font-weight: 700; color: #001642; margin-bottom: 0.25rem;">${activeNow}</div>
                         <div class="slds-text-body_small slds-text-color_weak">Active users now</div>
                     </div>
 
