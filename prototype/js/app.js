@@ -805,6 +805,27 @@ const App = {
         };
         const getStatusText = (status) => status.charAt(0).toUpperCase() + status.slice(1);
 
+        const services = [
+            { key: 'coreService', label: 'Core Service', status: health.coreService,
+              action: health.coreService === 'offline' ? 'https://status.dialpad.com' : null,
+              actionLabel: 'Check Status Page', external: true },
+            { key: 'voice', label: 'Voice', status: health.voice,
+              action: health.voice === 'offline' ? 'https://status.dialpad.com' : null,
+              actionLabel: 'Check Status Page', external: true },
+            { key: 'chatSms', label: 'Chat & SMS', status: health.chatSms,
+              action: health.chatSms === 'offline' ? 'https://status.dialpad.com' : null,
+              actionLabel: 'Check Status Page', external: true },
+            { key: 'analytics', label: 'Analytics', status: health.analytics,
+              action: health.analytics === 'offline' ? '#/reports' : null,
+              actionLabel: 'View Reports', external: false },
+            { key: 'ai', label: 'AI', status: health.ai,
+              action: health.ai === 'offline' ? 'https://help.dialpad.com/docs/ai-features' : null,
+              actionLabel: 'Learn More', external: true },
+            { key: 'salesforceIntegration', label: 'Salesforce', status: health.salesforceIntegration,
+              action: health.salesforceIntegration === 'offline' ? '#/settings' : null,
+              actionLabel: 'Fix Connection', external: false }
+        ];
+
         return `
             <div class="slds-card" style="height: 100%;">
                 <div class="slds-card__header slds-grid">
@@ -817,42 +838,17 @@ const App = {
                 </div>
                 <div class="slds-card__body slds-card__body_inner" style="padding: 0.75rem 1rem;">
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem;">
-                        <div style="text-align: center;">
-                            <div class="slds-badge ${getStatusClass(health.coreService)}" style="display: block; margin-bottom: 0.25rem; font-size: 0.75rem;">
-                                ${getStatusText(health.coreService)}
+                        ${services.map(service => `
+                            <div style="text-align: center; padding: 0.5rem; border-radius: 0.25rem; ${service.action ? 'cursor: pointer; transition: all 0.15s ease;' : ''}" ${service.action ? `onclick="window.${service.external ? 'open' : 'location.hash='}('${service.action}'${service.external ? ', \'_blank\'' : ''})" onmouseenter="this.style.background='#f3f2f2'; this.style.transform='translateY(-2px)';" onmouseleave="this.style.background='transparent'; this.style.transform='translateY(0)';"` : ''}>
+                                <div class="slds-badge ${getStatusClass(service.status)}" style="display: block; margin-bottom: 0.25rem; font-size: 0.75rem;">
+                                    ${getStatusText(service.status)}
+                                </div>
+                                <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem; margin-bottom: ${service.action ? '0.25rem' : '0'};">${service.label}</div>
+                                ${service.action && service.status === 'offline' ? `
+                                    <a href="${service.action}" ${service.external ? 'target="_blank"' : ''} class="slds-text-link" style="font-size: 0.65rem; color: #0176d3;" onclick="event.stopPropagation();">${service.actionLabel} →</a>
+                                ` : ''}
                             </div>
-                            <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">Core Service</div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div class="slds-badge ${getStatusClass(health.voice)}" style="display: block; margin-bottom: 0.25rem; font-size: 0.75rem;">
-                                ${getStatusText(health.voice)}
-                            </div>
-                            <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">Voice</div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div class="slds-badge ${getStatusClass(health.chatSms)}" style="display: block; margin-bottom: 0.25rem; font-size: 0.75rem;">
-                                ${getStatusText(health.chatSms)}
-                            </div>
-                            <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">Chat & SMS</div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div class="slds-badge ${getStatusClass(health.analytics)}" style="display: block; margin-bottom: 0.25rem; font-size: 0.75rem;">
-                                ${getStatusText(health.analytics)}
-                            </div>
-                            <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">Analytics</div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div class="slds-badge ${getStatusClass(health.ai)}" style="display: block; margin-bottom: 0.25rem; font-size: 0.75rem;">
-                                ${getStatusText(health.ai)}
-                            </div>
-                            <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">AI</div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div class="slds-badge ${getStatusClass(health.salesforceIntegration)}" style="display: block; margin-bottom: 0.25rem; font-size: 0.75rem;">
-                                ${getStatusText(health.salesforceIntegration)}
-                            </div>
-                            <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">Salesforce</div>
-                        </div>
+                        `).join('')}
                     </div>
                 </div>
             </div>
