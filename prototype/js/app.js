@@ -1015,6 +1015,11 @@ const App = {
         const licenses = metrics.licenses;
         const utilizationColor = licenses.utilization > 85 ? '#c23934' : licenses.utilization > 70 ? '#e07c3e' : '#04844b';
 
+        // Capacity planning calculations
+        const inactiveLicenses = Math.floor(licenses.used * 0.08); // ~8% inactive
+        const growthRate = 5; // 5 new licenses this month
+        const projectedMonths = Math.floor(licenses.available / growthRate);
+
         return `
             <div class="slds-card" style="height: 100%;">
                 <div class="slds-card__header slds-grid">
@@ -1025,11 +1030,12 @@ const App = {
                         </div>
                     </header>
                 </div>
-                <div class="slds-card__body slds-card__body_inner">
-                    <div style="margin-bottom: 1.5rem;">
+                <div class="slds-card__body slds-card__body_inner" style="padding: 0.75rem 1rem;">
+                    <!-- Main Progress Bar -->
+                    <div style="margin-bottom: 1rem;">
                         <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                            <span class="slds-text-body_regular">${licenses.used} of ${licenses.total} licenses used</span>
-                            <span class="slds-text-body_regular" style="color: ${utilizationColor}; font-weight: 600;">${licenses.utilization}%</span>
+                            <span class="slds-text-body_regular" style="font-size: 0.875rem; font-weight: 500;">${licenses.used} of ${licenses.total} licenses used</span>
+                            <span class="slds-text-body_regular" style="color: ${utilizationColor}; font-weight: 700;">${licenses.utilization}%</span>
                         </div>
                         <div class="slds-progress-bar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${licenses.utilization}" role="progressbar">
                             <span class="slds-progress-bar__value" style="width: ${licenses.utilization}%; background-color: ${utilizationColor};">
@@ -1037,23 +1043,52 @@ const App = {
                             </span>
                         </div>
                     </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                        <div>
-                            <div style="font-size: 1.5rem; font-weight: 700; color: #001642;">${licenses.available}</div>
-                            <div class="slds-text-body_small slds-text-color_weak">Licenses Available</div>
+
+                    <!-- Key Metrics Grid -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
+                        <div style="text-align: center; padding: 0.5rem; background: #f3f2f2; border-radius: 0.25rem;">
+                            <div style="font-size: 1.25rem; font-weight: 700; color: #001642;">${licenses.available}</div>
+                            <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">Available</div>
                         </div>
-                        <div>
-                            <div style="font-size: 1.5rem; font-weight: 700; color: #001642;">5</div>
-                            <div class="slds-text-body_small slds-text-color_weak">New This Month</div>
+                        <div style="text-align: center; padding: 0.5rem; background: #f3f2f2; border-radius: 0.25rem;">
+                            <div style="font-size: 1.25rem; font-weight: 700; color: #04844b;">+${growthRate}</div>
+                            <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">Added/Mo</div>
+                        </div>
+                        <div style="text-align: center; padding: 0.5rem; background: #f3f2f2; border-radius: 0.25rem;">
+                            <div style="font-size: 1.25rem; font-weight: 700; color: ${inactiveLicenses > 5 ? '#fe9339' : '#001642'};">${inactiveLicenses}</div>
+                            <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">Inactive</div>
                         </div>
                     </div>
-                    ${licenses.utilization > 85 ? `
-                        <div style="margin-top: 1rem; padding: 0.75rem; background-color: #ffeaa8; border-radius: 0.25rem;">
-                            <div class="slds-text-body_small">
-                                <strong>Action Recommended:</strong> Consider purchasing additional licenses
+
+                    <!-- License Type Breakdown -->
+                    <div style="margin-bottom: 0.75rem;">
+                        <div class="slds-text-body_small" style="font-weight: 600; margin-bottom: 0.5rem; font-size: 0.8rem;">License Types</div>
+                        <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 0.75rem; color: #3e3e3c;">Standard</span>
+                                <span style="font-size: 0.75rem; font-weight: 600;">${Math.floor(licenses.used * 0.6)} used</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 0.75rem; color: #3e3e3c;">Professional</span>
+                                <span style="font-size: 0.75rem; font-weight: 600;">${Math.floor(licenses.used * 0.3)} used</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 0.75rem; color: #3e3e3c;">Enterprise</span>
+                                <span style="font-size: 0.75rem; font-weight: 600;">${Math.floor(licenses.used * 0.1)} used</span>
                             </div>
                         </div>
-                    ` : ''}
+                    </div>
+
+                    <!-- Capacity Forecast -->
+                    <div style="padding: 0.75rem; background: ${licenses.utilization > 85 ? '#fef5f5' : '#f3f9f3'}; border-radius: 0.25rem; border-left: 3px solid ${licenses.utilization > 85 ? '#c23934' : '#04844b'};">
+                        <div class="slds-text-body_small" style="font-size: 0.75rem;">
+                            ${licenses.utilization > 85 ? `
+                                <strong style="color: #c23934;">Action Needed:</strong> At current growth (+${growthRate}/mo), capacity in ~${projectedMonths} months
+                            ` : `
+                                <strong style="color: #04844b;">Healthy Capacity:</strong> ${projectedMonths}+ months runway at current growth
+                            `}
+                        </div>
+                    </div>
                 </div>
             </div>
         `;
