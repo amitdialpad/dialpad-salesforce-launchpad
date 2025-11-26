@@ -2,8 +2,34 @@
 
 **Date:** November 26, 2025
 **Based on:** admin_feedback_final.md (PM-Approved)
-**Current Status:** Planning Phase
+**Current Status:** Branch Setup Complete - Ready for Implementation
 **Dev Server:** Running at http://localhost:8000/
+**Branch:** admin-refactor-v2
+
+---
+
+## Product Strategy Context (Nihar - Nov 26, 2025)
+
+**Timeline Shift:** Originally planned for Q4 POC → Now full development in Q4 with Balaji
+**Key Decision:** Focus on modules with clear requirements first, defer reports to customer input
+
+### Priority Modules (Clear Requirements - Build Now) 🚀
+
+1. **Calls Tab** ✅ - Structure and functionality clear
+2. **SMS Tab** ✅ - Structure and functionality clear
+3. **Dashboard "Attention Needed" Items** ✅ - Unlogged calls, at-risk agents, etc.
+4. **Integrate Existing Settings** ✅ - Known requirements
+
+### Deferred to Customer Input 🔄
+
+- **Reports Layout & Content** - Which reports to show and how
+- **Custom Analytics Views** - Pending customer feedback
+
+### Rationale
+> "These things won't change, what will change is which reports to show and how. For this, we will rely on customer's input. Since we have Balaji for this quarter, let's utilize him to the full extent and show some progress."
+> — Nihar Sawant, PM
+
+**Action:** Focus prototype work on the clear modules (Calls, SMS, Dashboard, Settings) to maximize Balaji's Q4 availability.
 
 ---
 
@@ -42,6 +68,24 @@ Transform the Admin dashboard from a **multi-page sidebar navigation** to a **si
 - **Phase 1 (Remove/Restructure):** 3-4 hours
 - **Phase 2 (Add New Components):** 6-8 hours
 - **Phase 3 (Modify Existing):** 3-4 hours
+
+### Updated Priority Based on PM Direction
+
+**HIGH PRIORITY (Clear Requirements - Prototype Now):**
+1. ✅ Calls Tab - Full functionality
+2. ✅ SMS Tab - Full functionality
+3. ✅ Dashboard "Attention Needed" panels
+4. ✅ Admin Settings integration
+
+**MEDIUM PRIORITY (Simplified for Prototype):**
+5. ⚠️ Daily Calls Chart - Simple version only
+6. ⚠️ System Status - Basic mock
+
+**LOW PRIORITY (Defer to Customer Input):**
+7. 🔄 Reports Page - Placeholder with note
+8. 🔄 Custom Analytics - Skip for now
+
+**Rationale:** Maximize Balaji's Q4 time on modules with confirmed requirements. Reports layout will be determined after customer feedback sessions.
 
 ---
 
