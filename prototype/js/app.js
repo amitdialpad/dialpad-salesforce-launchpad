@@ -890,14 +890,29 @@ const App = {
                         </div>
                     ` : `
                         <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                            ${alerts.map(alert => `
-                                <div style="display: flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.5rem; background: ${alert.type === 'error' ? '#fef5f5' : alert.type === 'warning' ? '#fef9f3' : '#f3f4f6'}; border-radius: 0.25rem;">
-                                    <svg class="slds-icon slds-icon_xx-small ${getAlertClass(alert.type)}" aria-hidden="true" style="flex-shrink: 0; width: 0.875rem; height: 0.875rem;">
-                                        <use xlink:href="${getAssetPath(`assets/icons/utility-sprite/svg/symbols.svg#${getAlertIcon(alert.type)}`)}"></use>
-                                    </svg>
-                                    <span style="font-size: 0.85rem; line-height: 1.3;">${alert.message}</span>
+                            ${alerts.map(alert => {
+                                const getAlertAction = (message) => {
+                                    if (message.includes('integration is disconnected')) return { href: '#/settings', label: 'Fix Connection' };
+                                    if (message.includes('AI service')) return { href: '#/settings', label: 'View Status' };
+                                    if (message.includes('connection issues')) return { href: '#/settings', label: 'View Users' };
+                                    if (message.includes('License utilization')) return { href: '#/settings', label: 'Manage Licenses' };
+                                    if (message.includes('Setup') && message.includes('complete')) return { href: '#/admin', label: 'Continue Setup' };
+                                    return null;
+                                };
+                                const action = getAlertAction(alert.message);
+                                return `
+                                <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.5rem 0.75rem; background: ${alert.type === 'error' ? '#fef5f5' : alert.type === 'warning' ? '#fef9f3' : '#f3f4f6'}; border-radius: 0.25rem; ${action ? 'cursor: pointer; transition: all 0.15s ease;' : ''}" ${action ? `onclick="window.location.hash='${action.href}'" onmouseenter="this.style.boxShadow='0 1px 4px rgba(0,0,0,0.1)'; this.style.transform='translateX(2px)';" onmouseleave="this.style.boxShadow=''; this.style.transform='translateX(0)';"` : ''}>
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; flex: 1;">
+                                        <svg class="slds-icon slds-icon_xx-small ${getAlertClass(alert.type)}" aria-hidden="true" style="flex-shrink: 0; width: 0.875rem; height: 0.875rem;">
+                                            <use xlink:href="${getAssetPath(`assets/icons/utility-sprite/svg/symbols.svg#${getAlertIcon(alert.type)}`)}"></use>
+                                        </svg>
+                                        <span style="font-size: 0.85rem; line-height: 1.3;">${alert.message}</span>
+                                    </div>
+                                    ${action ? `
+                                        <a href="${action.href}" class="slds-text-link" style="font-size: 0.8rem; white-space: nowrap; color: #0176d3; font-weight: 500;" onclick="event.stopPropagation();">${action.label} →</a>
+                                    ` : ''}
                                 </div>
-                            `).join('')}
+                            `}).join('')}
                         </div>
                     `}
                 </div>
