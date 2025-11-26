@@ -1054,23 +1054,6 @@ const App = {
                         </div>
                     ` : ''}
 
-                    <!-- Engagement Metrics -->
-                    <div style="margin-bottom: 1rem;">
-                        <div style="font-weight: 600; font-size: 0.8rem; margin-bottom: 0.5rem;">Activity Insights</div>
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.35rem;">
-                            <span style="font-size: 0.75rem;">Avg. Session Duration</span>
-                            <span style="font-size: 0.75rem; font-weight: 600;">${avgSessionDuration}</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.35rem;">
-                            <span style="font-size: 0.75rem;">Peak Usage</span>
-                            <span style="font-size: 0.75rem; font-weight: 600;">${isPeakHours ? 'Now' : '9 AM - 4 PM'}</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between;">
-                            <span style="font-size: 0.75rem;">Inactive (7+ days)</span>
-                            <span style="font-size: 0.75rem; font-weight: 600; color: ${inactiveUsers > 10 ? '#fe9339' : '#706e6b'};">${inactiveUsers} users</span>
-                        </div>
-                    </div>
-
                 </div>
             </div>
         `;
