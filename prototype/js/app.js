@@ -737,10 +737,10 @@ const App = {
             <div style="margin-top: 1.5rem;">
                 <!-- Row 1: Critical Health & Alerts (Above Fold) -->
                 <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; margin-bottom: 1rem;">
-                    <div style="grid-column: span 4;">
+                    <div style="grid-column: span 6;">
                         ${this.renderAdminSystemHealthCard(metrics)}
                     </div>
-                    <div style="grid-column: span 8;">
+                    <div style="grid-column: span 6;">
                         ${this.renderAdminAlertsCard(metrics)}
                     </div>
                 </div>
