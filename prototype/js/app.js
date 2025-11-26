@@ -1144,17 +1144,19 @@ const App = {
                     </div>
                     <ul class="slds-has-dividers_top-space">
                         ${setup.steps.map(step => `
-                            <li class="slds-item slds-p-vertical_small" style="opacity: ${step.status === 'completed' ? '0.7' : '1'};">
+                            <li class="slds-item slds-p-vertical_small">
                                 <div class="slds-grid slds-grid_vertical-align-center">
                                     <div class="slds-col slds-no-flex slds-m-right_small">
-                                        <span class="slds-icon_container" style="display: flex; align-items: center;">
-                                            <svg class="slds-icon slds-icon_small ${getStepClass(step.status)}" aria-hidden="true">
-                                                <use xlink:href="${getAssetPath(`assets/icons/utility-sprite/svg/symbols.svg#${getStepIcon(step.status)}`)}></use>
-                                            </svg>
-                                        </span>
+                                        ${step.status === 'completed' ? `
+                                            <span style="display: inline-block; width: 20px; height: 20px; border-radius: 50%; background: #04844b; color: white; text-align: center; line-height: 20px; font-size: 14px; font-weight: bold;">✓</span>
+                                        ` : step.status === 'in-progress' ? `
+                                            <span style="display: inline-block; width: 20px; height: 20px; border-radius: 50%; background: #fe9339; color: white; text-align: center; line-height: 20px; font-size: 14px;">●</span>
+                                        ` : `
+                                            <span style="display: inline-block; width: 20px; height: 20px; border-radius: 50%; border: 2px solid #dddbda; background: white;"></span>
+                                        `}
                                     </div>
                                     <div class="slds-col slds-has-flexi-truncate">
-                                        <span class="slds-text-body_regular ${step.status === 'completed' ? 'slds-text-color_weak' : 'slds-text-color_default'}" style="${step.status === 'completed' ? 'text-decoration: line-through;' : ''}">${step.name}</span>
+                                        <span class="slds-text-body_regular" style="${step.status === 'completed' ? 'text-decoration: line-through; color: #706e6b;' : 'color: #001642;'}">${step.name}</span>
                                         ${step.status === 'in-progress' ? '<span class="slds-badge slds-theme_warning slds-m-left_x-small" style="font-size: 0.7rem; padding: 0.125rem 0.35rem;">In Progress</span>' : ''}
                                     </div>
                                 </div>
