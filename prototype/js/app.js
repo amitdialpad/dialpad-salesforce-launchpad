@@ -707,16 +707,9 @@ const App = {
                 </div>
             </div>
 
-            <!-- Simplified Mission Control Layout -->
+            <!-- Admin Launchpad - 7 Section Layout (PM-Approved) -->
             <div style="margin-top: 1.5rem;">
-                <!-- Row 1: System Health Status (Full Width) -->
-                <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; margin-bottom: 1rem;">
-                    <div style="grid-column: span 12;">
-                        ${this.renderAdminSystemHealthCard(metrics)}
-                    </div>
-                </div>
-
-                <!-- Row 2: Alerts + Quick Actions -->
+                <!-- Section 1: Alerts / Attention Required -->
                 <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; margin-bottom: 1rem;">
                     <div style="grid-column: span 8;">
                         ${this.renderAdminAlertsCard(metrics)}
@@ -726,21 +719,54 @@ const App = {
                     </div>
                 </div>
 
-                <!-- Row 3: Contextual Cards (Only shown when needed) -->
-                ${metrics.setup.progress < 100 || metrics.users.connectionIssues > 0 ? `
+                <!-- Section 2: System Status -->
                 <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; margin-bottom: 1rem;">
-                    ${metrics.setup.progress < 100 ? `
-                    <div style="grid-column: span ${metrics.users.connectionIssues > 0 ? '6' : '12'};">
+                    <div style="grid-column: span 12;">
+                        ${this.renderAdminSystemHealthCard(metrics)}
+                    </div>
+                </div>
+
+                <!-- Section 3: Usage Metrics (Company-wide metrics + Unlogged Calls) -->
+                <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; margin-bottom: 1rem;">
+                    <div style="grid-column: span 12;">
+                        ${this.renderAdminCompanyMetricsCard(metrics)}
+                    </div>
+                </div>
+
+                <!-- Section 4: Users & Licenses -->
+                <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; margin-bottom: 1rem;">
+                    <div style="grid-column: span 6;">
+                        ${this.renderAdminUserOverviewCard(metrics)}
+                    </div>
+                    <div style="grid-column: span 6;">
+                        ${this.renderAdminLicenseCard(metrics)}
+                    </div>
+                </div>
+
+                <!-- Section 5: Setup Progress (Conditional - shown if incomplete) -->
+                ${metrics.setup.progress < 100 ? `
+                <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; margin-bottom: 1rem;">
+                    <div style="grid-column: span 12;">
                         ${this.renderAdminSetupCard(metrics)}
                     </div>
-                    ` : ''}
-                    ${metrics.users.connectionIssues > 0 ? `
-                    <div style="grid-column: span ${metrics.setup.progress < 100 ? '6' : '12'};">
-                        ${this.renderAdminUserConnectionCard(metrics)}
-                    </div>
-                    ` : ''}
                 </div>
                 ` : ''}
+
+                <!-- Section 6: User Connection Issues (Conditional - shown if issues exist) -->
+                ${metrics.users.connectionIssues > 0 ? `
+                <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; margin-bottom: 1rem;">
+                    <div style="grid-column: span 12;">
+                        ${this.renderAdminUserConnectionCard(metrics)}
+                    </div>
+                </div>
+                ` : ''}
+
+                <!-- Section 7: Product Updates & Announcements -->
+                <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; margin-bottom: 1rem;">
+                    <div style="grid-column: span 12;">
+                        ${this.renderAdminAnnouncementsCard(metrics)}
+                    </div>
+                </div>
             </div>
         `;
     },
