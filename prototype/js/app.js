@@ -936,6 +936,14 @@ const App = {
                         </div>
                     </header>
                 </div>
+
+                ${pendingInvites > 0 ? `
+                    <div style="padding: 0.75rem 1rem; background: #fef9f3; border-left: 3px solid #fe9339; border-bottom: 1px solid #f3f2f2;">
+                        <strong style="color: #fe9339; font-size: 0.875rem;">${pendingInvites} Pending Invitation${pendingInvites === 1 ? '' : 's'}</strong>
+                        <div style="font-size: 0.75rem; color: #3e3e3c; margin-top: 0.25rem;">User${pendingInvites === 1 ? '' : 's'} invited but not yet activated</div>
+                    </div>
+                ` : ''}
+
                 <div class="slds-card__body slds-card__body_inner">
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1rem;">
                         <div>
@@ -955,13 +963,6 @@ const App = {
                             <div class="slds-text-body_small slds-text-color_weak">Admins</div>
                         </div>
                     </div>
-
-                    ${pendingInvites > 0 ? `
-                        <div style="padding: 0.75rem; background: #fef9f3; border-left: 3px solid #fe9339; border-radius: 0.25rem; margin-bottom: 1rem;">
-                            <strong style="color: #fe9339; font-size: 0.875rem;">${pendingInvites} Pending Invitation${pendingInvites === 1 ? '' : 's'}</strong>
-                            <div style="font-size: 0.75rem; color: #3e3e3c; margin-top: 0.25rem;">User${pendingInvites === 1 ? '' : 's'} invited but not yet activated</div>
-                        </div>
-                    ` : ''}
 
                     <div style="padding-top: 1rem; border-top: 1px solid #dddbda;">
                         <div class="slds-text-body_small slds-text-color_weak">Recent Changes</div>
@@ -1004,6 +1005,20 @@ const App = {
                         </div>
                     </header>
                 </div>
+
+                <!-- Connection Status Alert -->
+                ${users.connectionIssues > 0 ? `
+                    <div style="padding: 0.75rem 1rem; background: #fef5f5; border-left: 3px solid #c23934; border-bottom: 1px solid #f3f2f2;">
+                        <strong style="color: #c23934; font-size: 0.875rem;">Action Required</strong>
+                        <div style="font-size: 0.75rem; color: #3e3e3c; margin-top: 0.25rem;">Review users unable to connect and provide support</div>
+                    </div>
+                ` : `
+                    <div style="padding: 0.75rem 1rem; background: #f3f9f3; border-left: 3px solid #04844b; border-bottom: 1px solid #f3f2f2;">
+                        <strong style="color: #04844b; font-size: 0.875rem;">✓ All Users Connected</strong>
+                        <div style="font-size: 0.75rem; color: #3e3e3c; margin-top: 0.25rem;">No connection issues detected</div>
+                    </div>
+                `}
+
                 <div class="slds-card__body slds-card__body_inner" style="padding: 0.75rem 1rem;">
 
                     <!-- Active Now -->
@@ -1056,19 +1071,6 @@ const App = {
                         </div>
                     </div>
 
-                    <!-- Connection Status Alert -->
-                    ${users.connectionIssues > 0 ? `
-                        <div style="padding: 0.75rem; background: #fef5f5; border-left: 3px solid #c23934; border-radius: 0.25rem;">
-                            <strong style="color: #c23934; font-size: 0.875rem;">Action Required</strong>
-                            <div style="font-size: 0.75rem; color: #3e3e3c; margin-top: 0.25rem;">Review users unable to connect and provide support</div>
-                        </div>
-                    ` : `
-                        <div style="padding: 0.75rem; background: #f3f9f3; border-left: 3px solid #04844b; border-radius: 0.25rem;">
-                            <strong style="color: #04844b; font-size: 0.875rem;">✓ All Users Connected</strong>
-                            <div style="font-size: 0.75rem; color: #3e3e3c; margin-top: 0.25rem;">No connection issues detected</div>
-                        </div>
-                    `}
-
                 </div>
             </div>
         `;
@@ -1096,6 +1098,18 @@ const App = {
                         </div>
                     </header>
                 </div>
+
+                <!-- Capacity Forecast Alert -->
+                <div style="padding: 0.75rem 1rem; background: ${licenses.utilization > 85 ? '#fef5f5' : '#f3f9f3'}; border-left: 3px solid ${licenses.utilization > 85 ? '#c23934' : '#04844b'}; border-bottom: 1px solid #f3f2f2;">
+                    ${licenses.utilization > 85 ? `
+                        <strong style="color: #c23934; font-size: 0.875rem;">Action Needed</strong>
+                        <div style="font-size: 0.75rem; color: #3e3e3c; margin-top: 0.25rem;">At current growth (+${growthRate}/mo), capacity in ~${projectedMonths} months</div>
+                    ` : `
+                        <strong style="color: #04844b; font-size: 0.875rem;">Healthy Capacity</strong>
+                        <div style="font-size: 0.75rem; color: #3e3e3c; margin-top: 0.25rem;">${projectedMonths}+ months runway at current growth</div>
+                    `}
+                </div>
+
                 <div class="slds-card__body slds-card__body_inner" style="padding: 0.75rem 1rem;">
                     <!-- Main Progress Bar -->
                     <div style="margin-bottom: 1rem;">
@@ -1142,17 +1156,6 @@ const App = {
                                 <span style="font-size: 0.75rem; color: #3e3e3c;">Enterprise</span>
                                 <span style="font-size: 0.75rem; font-weight: 600;">${Math.floor(licenses.used * 0.1)} used</span>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Capacity Forecast -->
-                    <div style="padding: 0.75rem; background: ${licenses.utilization > 85 ? '#fef5f5' : '#f3f9f3'}; border-radius: 0.25rem; border-left: 3px solid ${licenses.utilization > 85 ? '#c23934' : '#04844b'};">
-                        <div class="slds-text-body_small" style="font-size: 0.75rem;">
-                            ${licenses.utilization > 85 ? `
-                                <strong style="color: #c23934;">Action Needed:</strong> At current growth (+${growthRate}/mo), capacity in ~${projectedMonths} months
-                            ` : `
-                                <strong style="color: #04844b;">Healthy Capacity:</strong> ${projectedMonths}+ months runway at current growth
-                            `}
                         </div>
                     </div>
                 </div>
