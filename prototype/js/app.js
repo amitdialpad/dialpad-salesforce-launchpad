@@ -745,14 +745,26 @@ const App = {
                     </div>
                 </div>
 
-                <!-- Row 2: Primary KPIs (Above Fold) -->
+                <!-- Row 2: Primary KPIs Split (Above Fold) -->
                 <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; margin-bottom: 1rem;">
-                    <div style="grid-column: span 12;">
-                        ${this.renderAdminCompanyMetricsCard(metrics)}
-                    </div>
+                    ${this.renderAdminCompanyMetricCards(metrics)}
                 </div>
 
-                <!-- Row 3: User & License Management (Above Fold) -->
+                <!-- Row 3: Setup Progress & Announcements (Dismissible, Above Fold) -->
+                <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; margin-bottom: 1rem;">
+                    ${!AppState.dismissedSetupCard && metrics.setup.progress < 100 ? `
+                    <div style="grid-column: span 6;">
+                        ${this.renderAdminSetupCard(metrics)}
+                    </div>
+                    ` : ''}
+                    ${!AppState.dismissedAnnouncementsCard ? `
+                    <div style="grid-column: span ${!AppState.dismissedSetupCard && metrics.setup.progress < 100 ? '6' : '12'};">
+                        ${this.renderAdminAnnouncementsCard(metrics)}
+                    </div>
+                    ` : ''}
+                </div>
+
+                <!-- Row 4: User & License Management -->
                 <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; margin-bottom: 1rem;">
                     <div style="grid-column: span 4;">
                         ${this.renderAdminUserOverviewCard(metrics)}
@@ -763,22 +775,6 @@ const App = {
                     <div style="grid-column: span 4;">
                         ${this.renderAdminUserConnectionCard(metrics)}
                     </div>
-                </div>
-
-                <!-- Row 4: Setup & Updates (Below Fold) -->
-                <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; margin-bottom: 1rem;">
-                    ${metrics.setup.progress < 100 ? `
-                    <div style="grid-column: span 6;">
-                        ${this.renderAdminSetupCard(metrics)}
-                    </div>
-                    <div style="grid-column: span 6;">
-                        ${this.renderAdminAnnouncementsCard(metrics)}
-                    </div>
-                    ` : `
-                    <div style="grid-column: span 12;">
-                        ${this.renderAdminAnnouncementsCard(metrics)}
-                    </div>
-                    `}
                 </div>
             </div>
         `;
@@ -1129,6 +1125,14 @@ const App = {
                             <p class="slds-text-body_small slds-text-color_weak">${setup.completed} of ${setup.total} steps complete (${setup.progress}%)</p>
                         </div>
                     </header>
+                    <div class="slds-no-flex">
+                        <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="Dismiss" onclick="AppState.dismissedSetupCard = true; window.app.renderCurrentPage();">
+                            <svg class="slds-button__icon" aria-hidden="true">
+                                <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#close")}"></use>
+                            </svg>
+                            <span class="slds-assistive-text">Dismiss</span>
+                        </button>
+                    </div>
                 </div>
                 <div class="slds-card__body slds-card__body_inner">
                     <div class="slds-progress-bar slds-progress-bar_large slds-m-bottom_medium" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${setup.progress}" role="progressbar">
@@ -1157,6 +1161,27 @@ const App = {
                 </div>
             </div>
         `;
+    },
+
+    renderAdminCompanyMetricCards(metrics) {
+        const calls = metrics.calls;
+        const metricCards = [
+            { value: calls.total, label: 'Total Calls', color: '#001642' },
+            { value: DataService.formatDuration(calls.avgDuration), label: 'Avg Duration', color: '#001642' },
+            { value: calls.missed, label: 'Missed Calls', color: calls.missed > 20 ? '#c23934' : '#001642' },
+            { value: `${calls.serviceScore}%`, label: 'Service Score', color: '#001642' }
+        ];
+
+        return metricCards.map(metric => `
+            <div style="grid-column: span 3;">
+                <div class="slds-card clickable-card" style="cursor: pointer; transition: all 0.2s ease; height: 100%;" onclick="window.location.hash='#/calls'" onmouseenter="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.15)'" onmouseleave="this.style.transform='translateY(0)'; this.style.boxShadow=''">
+                    <div class="slds-card__body slds-card__body_inner" style="padding: 1rem; text-align: center;">
+                        <div style="font-size: 2rem; font-weight: 700; color: ${metric.color}; margin-bottom: 0.5rem;">${metric.value}</div>
+                        <div class="slds-text-body_small slds-text-color_weak">${metric.label}</div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
     },
 
     renderAdminCompanyMetricsCard(metrics) {
@@ -1210,7 +1235,12 @@ const App = {
                         </div>
                     </header>
                     <div class="slds-no-flex">
-                        <a href="#" class="slds-text-link">View All</a>
+                        <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="Dismiss" onclick="AppState.dismissedAnnouncementsCard = true; window.app.renderCurrentPage();">
+                            <svg class="slds-button__icon" aria-hidden="true">
+                                <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#close")}"></use>
+                            </svg>
+                            <span class="slds-assistive-text">Dismiss</span>
+                        </button>
                     </div>
                 </div>
                 <div class="slds-card__body slds-card__body_inner">

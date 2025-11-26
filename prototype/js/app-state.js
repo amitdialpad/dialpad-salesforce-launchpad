@@ -8,6 +8,10 @@ const AppState = {
     showFeatureTour: false,
     tourStep: 0,
 
+    // Dashboard card dismissal states
+    dismissedSetupCard: false,
+    dismissedAnnouncementsCard: false,
+
     // Package version states
     currentVersion: '2.3.0',
     latestVersion: '2.5.0',
