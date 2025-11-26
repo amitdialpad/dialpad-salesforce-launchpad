@@ -623,74 +623,19 @@ const App = {
 
     renderAdminDashboard() {
         const metrics = DataService.getAdminMetrics();
-        const currentSection = this.currentAdminSection || 'overview';
 
         return `
             ${this.getAlertBannersHTML()}
 
-            <!-- Admin Layout with Sidebar -->
-            <div style="display: flex; gap: 1.5rem;">
-                <!-- Left Sidebar Navigation -->
-                <div style="width: 240px; flex-shrink: 0;">
-                    ${this.renderAdminSidebar(currentSection)}
-                </div>
-
-                <!-- Main Content Area -->
-                <div style="flex: 1; min-width: 0;">
-                    ${this.renderAdminContent(currentSection, metrics)}
-                </div>
+            <!-- Single-Page Admin Launchpad -->
+            <div style="max-width: 1600px; margin: 0 auto;">
+                ${this.renderAdminLaunchpad(metrics)}
             </div>
         `;
     },
 
-    renderAdminSidebar(currentSection) {
-        const sections = [
-            { id: 'overview', label: 'Launchpad', icon: 'home' },
-            { id: 'analytics', label: 'Analytics', icon: 'chart' },
-            { id: 'users', label: 'Users & Licenses', icon: 'people' },
-            { id: 'integration', label: 'Integration Health', icon: 'connected_apps' },
-            { id: 'updates', label: 'Updates & Announcements', icon: 'notification' }
-        ];
 
-        return `
-            <nav class="slds-nav-vertical" aria-label="Admin Navigation">
-                <div class="slds-nav-vertical__section">
-                    <h2 class="slds-nav-vertical__title slds-text-title_caps">Admin Tools</h2>
-                    <ul>
-                        ${sections.map(section => `
-                            <li class="slds-nav-vertical__item ${currentSection === section.id ? 'slds-is-active' : ''}">
-                                <a href="#" class="slds-nav-vertical__action" data-admin-section="${section.id}">
-                                    <svg class="slds-icon slds-icon-text-default slds-icon_x-small slds-m-right_x-small" aria-hidden="true">
-                                        <use xlink:href="${getAssetPath(`assets/icons/utility-sprite/svg/symbols.svg#${section.icon}`)}"></use>
-                                    </svg>
-                                    ${section.label}
-                                </a>
-                            </li>
-                        `).join('')}
-                    </ul>
-                </div>
-            </nav>
-        `;
-    },
-
-    renderAdminContent(section, metrics) {
-        switch(section) {
-            case 'overview':
-                return this.renderAdminOverview(metrics);
-            case 'analytics':
-                return this.renderAdminAnalytics(metrics);
-            case 'users':
-                return this.renderAdminUsers(metrics);
-            case 'integration':
-                return this.renderAdminIntegration(metrics);
-            case 'updates':
-                return this.renderAdminUpdates(metrics);
-            default:
-                return this.renderAdminOverview(metrics);
-        }
-    },
-
-    renderAdminOverview(metrics) {
+    renderAdminLaunchpad(metrics) {
         return `
             <div class="slds-page-header">
                 <div class="slds-page-header__row">
@@ -800,276 +745,17 @@ const App = {
         `;
     },
 
-    renderAdminAnalytics(metrics) {
-        return `
-            <div class="slds-page-header">
-                <div class="slds-page-header__row">
-                    <div class="slds-page-header__col-title">
-                        <div class="slds-media">
-                            <div class="slds-media__body">
-                                <h1 class="slds-page-header__title slds-truncate">Analytics</h1>
-                                <p class="slds-page-header__meta-text">Company-wide metrics and reports</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="slds-page-header__col-actions">
-                        <div class="slds-page-header__controls">
-                            <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="Refresh">
-                                <svg class="slds-button__icon" aria-hidden="true">
-                                    <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#refresh")}"></use>
-                                </svg>
-                                <span class="slds-assistive-text">Refresh</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Filters Row -->
-                <div class="slds-page-header__row slds-m-top_small">
-                    <div class="slds-grid slds-grid_vertical-align-center" style="gap: 1.5rem;">
-                        <!-- Date Range Filter -->
-                        <div class="slds-form-element">
-                            <div class="slds-form-element__control">
-                                <div class="slds-select_container">
-                                    <select class="slds-select" id="admin-analytics-date-range-select" style="width: 180px;">
-                                        <option value="today" ${AppState.dateRange === 'today' ? 'selected' : ''}>Today</option>
-                                        <option value="this-week" ${AppState.dateRange === 'this-week' ? 'selected' : ''}>This Week</option>
-                                        <option value="this-month" ${AppState.dateRange === 'this-month' ? 'selected' : ''}>This Month</option>
-                                        <option value="last-30-days" ${AppState.dateRange === 'last-30-days' ? 'selected' : ''}>Last 30 Days</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
 
-                        <!-- Filter Section -->
-                        <div class="slds-grid slds-grid_vertical-align-center" style="gap: 0.5rem;">
-                            <span class="slds-text-body_regular slds-text-color_weak">Filter by:</span>
 
-                            <!-- Department Filter -->
-                            <div class="slds-form-element">
-                                <div class="slds-form-element__control">
-                                    <div class="slds-combobox_container">
-                                        <button class="slds-button slds-button_neutral">
-                                            <span class="slds-truncate">All Departments</span>
-                                            <svg class="slds-button__icon slds-button__icon_right" style="width: 0.875rem; height: 0.875rem; margin-left: 0.5rem;">
-                                                <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#down")}"></use>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <!-- Office Filter -->
-                            <div class="slds-form-element">
-                                <div class="slds-form-element__control">
-                                    <div class="slds-combobox_container">
-                                        <button class="slds-button slds-button_neutral">
-                                            <span class="slds-truncate">All Offices</span>
-                                            <svg class="slds-button__icon slds-button__icon_right" style="width: 0.875rem; height: 0.875rem; margin-left: 0.5rem;">
-                                                <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#down")}"></use>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <div style="margin-top: 1.5rem;">
-                <!-- Company Metrics -->
-                <div style="margin-bottom: 1rem;">
-                    ${this.renderAdminCompanyMetricsCard(metrics)}
-                </div>
 
-                <!-- Activity by Channel Chart -->
-                <div style="margin-bottom: 1rem;">
-                    <div class="slds-card">
-                        <div class="slds-card__header slds-grid">
-                            <header class="slds-media slds-media_center slds-has-flexi-truncate">
-                                <div class="slds-media__body">
-                                    <h2 class="slds-card__header-title">Activity by Channel</h2>
-                                    <p class="slds-text-body_small slds-text-color_weak">Last 24 hours</p>
-                                </div>
-                            </header>
-                        </div>
-                        <div class="slds-card__body slds-card__body_inner">
-                            <canvas id="admin-analytics-chart" height="250"></canvas>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Recent Activity -->
-                <div>
-                    ${this.renderAdminRecentActivityCard(metrics)}
-                </div>
-            </div>
-        `;
-    },
 
-    renderAdminUsers(metrics) {
-        return `
-            <div class="slds-page-header">
-                <div class="slds-page-header__row">
-                    <div class="slds-page-header__col-title">
-                        <div class="slds-media">
-                            <div class="slds-media__body">
-                                <h1 class="slds-page-header__title slds-truncate">Users & Licenses</h1>
-                                <p class="slds-page-header__meta-text">User management and capacity planning</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <div style="margin-top: 1.5rem;">
-                <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; margin-bottom: 1rem;">
-                    <div style="grid-column: span 6;">
-                        ${this.renderAdminUserOverviewCard(metrics)}
-                    </div>
-                    <div style="grid-column: span 6;">
-                        ${this.renderAdminLicenseCard(metrics)}
-                    </div>
-                </div>
 
-                ${metrics.users.connectionIssues > 0 ? `
-                <div style="margin-bottom: 1rem;">
-                    ${this.renderAdminUserConnectionCard(metrics)}
-                </div>
-                ` : ''}
-            </div>
-        `;
-    },
 
-    renderAdminIntegration(metrics) {
-        return `
-            <div class="slds-page-header">
-                <div class="slds-page-header__row">
-                    <div class="slds-page-header__col-title">
-                        <div class="slds-media">
-                            <div class="slds-media__body">
-                                <h1 class="slds-page-header__title slds-truncate">Integration Health</h1>
-                                <p class="slds-page-header__meta-text">Salesforce connection and sync status</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div style="margin-top: 1.5rem;">
-                <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; margin-bottom: 1rem;">
-                    <div style="grid-column: span 6;">
-                        ${this.renderAdminIntegrationCard(metrics)}
-                    </div>
-                    <div style="grid-column: span 6;">
-                        ${this.renderAdminSetupCard(metrics)}
-                    </div>
-                </div>
-            </div>
-        `;
-    },
-
-    renderAdminUpdates(metrics) {
-        return `
-            <div class="slds-page-header">
-                <div class="slds-page-header__row">
-                    <div class="slds-page-header__col-title">
-                        <div class="slds-media">
-                            <div class="slds-media__body">
-                                <h1 class="slds-page-header__title slds-truncate">Updates & Announcements</h1>
-                                <p class="slds-page-header__meta-text">Product updates and release notes</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div style="margin-top: 1.5rem;">
-                ${this.renderAdminAnnouncementsCard(metrics)}
-            </div>
-        `;
-    },
-
-    navigateAdminSection(sectionId) {
-        this.currentAdminSection = sectionId;
-
-        // Re-render the admin dashboard with new section
-        const content = document.getElementById('main-content');
-        const role = RoleManager.getRole();
-        content.innerHTML = this.renderHomePage(role);
-
-        // Re-attach event listeners
-        this.attachBannerListeners();
-        this.attachNotificationListeners();
-        this.attachHomePageListeners(role);
-
-        // Re-render charts if navigating to analytics
-        if (sectionId === 'analytics') {
-            setTimeout(() => this.renderAnalyticsCharts(), 100);
-        }
-    },
-
-    renderAnalyticsCharts() {
-        const activityCtx = document.getElementById('admin-analytics-chart');
-        if (activityCtx) {
-            const activityData = DataService.getActivityByChannel();
-            new Chart(activityCtx, {
-                type: 'line',
-                data: {
-                    labels: activityData.map(d => `${d.hour}:00`),
-                    datasets: [
-                        {
-                            label: 'Calls',
-                            data: activityData.map(d => d.calls),
-                            borderColor: '#3A49DA',
-                            backgroundColor: 'rgba(58, 73, 218, 0.1)',
-                            fill: false,
-                            tension: 0.4
-                        },
-                        {
-                            label: 'SMS',
-                            data: activityData.map(d => d.sms),
-                            borderColor: '#06A59A',
-                            backgroundColor: 'rgba(6, 165, 154, 0.1)',
-                            fill: false,
-                            tension: 0.4,
-                            borderDash: [5, 5]
-                        },
-                        {
-                            label: 'WhatsApp',
-                            data: activityData.map(d => d.whatsapp),
-                            borderColor: '#F9A03F',
-                            backgroundColor: 'rgba(249, 160, 63, 0.1)',
-                            fill: false,
-                            tension: 0.4,
-                            borderDash: [10, 5]
-                        },
-                        {
-                            label: 'Email',
-                            data: activityData.map(d => d.email),
-                            borderColor: '#C4699F',
-                            backgroundColor: 'rgba(196, 105, 159, 0.1)',
-                            fill: false,
-                            tension: 0.4,
-                            borderDash: [2, 2]
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom' }
-                    },
-                    scales: {
-                        y: { beginAtZero: true, ticks: { stepSize: 10 } },
-                        x: { grid: { display: false } }
-                    }
-                }
-            });
-        }
-    },
 
     // Admin Dashboard Card Components
 
