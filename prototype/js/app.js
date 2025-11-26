@@ -649,6 +649,60 @@ const App = {
                     </div>
                     <div class="slds-page-header__col-actions">
                         <div class="slds-page-header__controls">
+                            <!-- Actions Dropdown (Salesforce Lightning Pattern) -->
+                            <div class="slds-dropdown-trigger slds-dropdown-trigger_click" style="display: inline-block; margin-right: 0.5rem;">
+                                <button class="slds-button slds-button_neutral" aria-haspopup="true" onclick="document.getElementById('admin-actions-dropdown').classList.toggle('slds-is-open')">
+                                    Actions
+                                    <svg class="slds-button__icon slds-button__icon_right" aria-hidden="true">
+                                        <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#down")}"></use>
+                                    </svg>
+                                </button>
+                                <div id="admin-actions-dropdown" class="slds-dropdown slds-dropdown_right" style="min-width: 12rem;">
+                                    <ul class="slds-dropdown__list" role="menu">
+                                        <li class="slds-dropdown__item" role="presentation">
+                                            <a href="#/settings" role="menuitem" tabindex="0">
+                                                <span class="slds-truncate" title="Add User">
+                                                    <svg class="slds-icon slds-icon_x-small slds-icon-text-default slds-m-right_x-small" aria-hidden="true" style="width: 1rem; height: 1rem;">
+                                                        <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#add")}"></use>
+                                                    </svg>
+                                                    Add User
+                                                </span>
+                                            </a>
+                                        </li>
+                                        <li class="slds-dropdown__item" role="presentation">
+                                            <a href="#/settings" role="menuitem" tabindex="-1">
+                                                <span class="slds-truncate" title="Manage Permission Sets">
+                                                    <svg class="slds-icon slds-icon_x-small slds-icon-text-default slds-m-right_x-small" aria-hidden="true" style="width: 1rem; height: 1rem;">
+                                                        <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#settings")}"></use>
+                                                    </svg>
+                                                    Manage Permission Sets
+                                                </span>
+                                            </a>
+                                        </li>
+                                        <li class="slds-dropdown__item" role="presentation">
+                                            <a href="#/calls" role="menuitem" tabindex="-1">
+                                                <span class="slds-truncate" title="View Calls">
+                                                    <svg class="slds-icon slds-icon_x-small slds-icon-text-default slds-m-right_x-small" aria-hidden="true" style="width: 1rem; height: 1rem;">
+                                                        <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#call")}"></use>
+                                                    </svg>
+                                                    View Calls
+                                                </span>
+                                            </a>
+                                        </li>
+                                        <li class="slds-has-divider_top-space" role="separator"></li>
+                                        <li class="slds-dropdown__item" role="presentation">
+                                            <a href="javascript:void(0)" role="menuitem" tabindex="-1" onclick="alert('Onboarding Wizard will launch here!')">
+                                                <span class="slds-truncate" title="Launch Onboarding Wizard">
+                                                    <svg class="slds-icon slds-icon_x-small slds-icon-text-default slds-m-right_x-small" aria-hidden="true" style="width: 1rem; height: 1rem;">
+                                                        <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#forward")}"></use>
+                                                    </svg>
+                                                    Launch Onboarding Wizard
+                                                </span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                             <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="Refresh">
                                 <svg class="slds-button__icon" aria-hidden="true">
                                     <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#refresh")}"></use>
@@ -681,16 +735,13 @@ const App = {
 
             <!-- Admin Launchpad - Optimized Priority Layout -->
             <div style="margin-top: 1.5rem;">
-                <!-- Row 1: Critical Health & Actions (Above Fold) -->
+                <!-- Row 1: Critical Health & Alerts (Above Fold) -->
                 <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; margin-bottom: 1rem;">
                     <div style="grid-column: span 4;">
                         ${this.renderAdminSystemHealthCard(metrics)}
                     </div>
-                    <div style="grid-column: span 5;">
+                    <div style="grid-column: span 8;">
                         ${this.renderAdminAlertsCard(metrics)}
-                    </div>
-                    <div style="grid-column: span 3;">
-                        ${this.renderAdminQuickActionsCard()}
                     </div>
                 </div>
 
