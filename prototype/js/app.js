@@ -1148,16 +1148,15 @@ const App = {
                                 <div class="slds-grid slds-grid_vertical-align-center">
                                     <div class="slds-col slds-no-flex slds-m-right_small">
                                         ${step.status === 'completed' ? `
-                                            <span style="display: inline-block; width: 20px; height: 20px; border-radius: 50%; background: #04844b; color: white; text-align: center; line-height: 20px; font-size: 14px; font-weight: bold;">✓</span>
+                                            <span style="display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 3px; background: #04844b; color: white; font-size: 12px; font-weight: bold;">✓</span>
                                         ` : step.status === 'in-progress' ? `
-                                            <span style="display: inline-block; width: 20px; height: 20px; border-radius: 50%; background: #fe9339; color: white; text-align: center; line-height: 20px; font-size: 14px;">●</span>
+                                            <span style="display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 3px; background: #fe9339; color: white; font-size: 18px; font-weight: bold; line-height: 1;">−</span>
                                         ` : `
-                                            <span style="display: inline-block; width: 20px; height: 20px; border-radius: 50%; border: 2px solid #dddbda; background: white;"></span>
+                                            <span style="display: inline-block; width: 20px; height: 20px; border-radius: 3px; border: 2px solid #c9c7c5; background: white;"></span>
                                         `}
                                     </div>
                                     <div class="slds-col slds-has-flexi-truncate">
-                                        <span class="slds-text-body_regular" style="${step.status === 'completed' ? 'text-decoration: line-through; color: #706e6b;' : 'color: #001642;'}">${step.name}</span>
-                                        ${step.status === 'in-progress' ? '<span class="slds-badge slds-theme_warning slds-m-left_x-small" style="font-size: 0.7rem; padding: 0.125rem 0.35rem;">In Progress</span>' : ''}
+                                        <span class="slds-text-body_regular" style="${step.status === 'completed' ? 'text-decoration: line-through; color: #706e6b;' : step.status === 'in-progress' ? 'color: #001642; font-weight: 500;' : 'color: #3e3e3c;'}">${step.name}</span>
                                     </div>
                                 </div>
                             </li>
