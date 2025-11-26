@@ -662,7 +662,7 @@ const App = {
                 <!-- Filters Row -->
                 <div class="slds-page-header__row slds-m-top_small">
                     <div class="slds-grid slds-grid_vertical-align-center" style="gap: 1rem;">
-                        <!-- Date Range Filter -->
+                        <!-- Date Range Filter (Only filter for Admin per Salesforce limitations) -->
                         <div class="slds-form-element">
                             <div class="slds-form-element__control">
                                 <div class="slds-select_container">
@@ -672,34 +672,6 @@ const App = {
                                         <option value="this-month" ${AppState.dateRange === 'this-month' ? 'selected' : ''}>This Month</option>
                                         <option value="last-30-days" ${AppState.dateRange === 'last-30-days' ? 'selected' : ''}>Last 30 Days</option>
                                     </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Department Filter -->
-                        <div class="slds-form-element">
-                            <div class="slds-form-element__control">
-                                <div class="slds-combobox_container">
-                                    <button class="slds-button slds-button_neutral">
-                                        <span class="slds-truncate">All Departments</span>
-                                        <svg class="slds-button__icon slds-button__icon_right" style="width: 0.875rem; height: 0.875rem; margin-left: 0.5rem;">
-                                            <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#down")}"></use>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Office Filter -->
-                        <div class="slds-form-element">
-                            <div class="slds-form-element__control">
-                                <div class="slds-combobox_container">
-                                    <button class="slds-button slds-button_neutral">
-                                        <span class="slds-truncate">All Offices</span>
-                                        <svg class="slds-button__icon slds-button__icon_right" style="width: 0.875rem; height: 0.875rem; margin-left: 0.5rem;">
-                                            <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#down")}"></use>
-                                        </svg>
-                                    </button>
                                 </div>
                             </div>
                         </div>

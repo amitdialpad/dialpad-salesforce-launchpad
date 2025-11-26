@@ -29,6 +29,7 @@
 - **Renamed renderAdminOverview() → renderAdminLaunchpad()**
 - **Created 7-section single-page layout** (lines 710-770)
 - **Removed infeasible Quick Actions**: Bulk Import, Run Health Check
+- **Removed Department/Office filters** (Salesforce limitation - admins see company-wide data only)
 
 #### ✅ Phase 2: Add New Components (COMPLETE - Already Existed)
 All Phase 2 components were already built in the original prototype:
@@ -74,6 +75,25 @@ All Phase 2 components were already built in the original prototype:
 - ✅ Dev server running without errors
 - ✅ All pages load successfully
 - ⏳ Awaiting user acceptance testing
+
+---
+
+## Design Constraints & Limitations
+
+### Salesforce Platform Limitations
+
+**Admin Dashboard Filtering:**
+- **Department/Office Filters: NOT SUPPORTED**
+- **Rationale:** Salesforce org structure does not provide department/office metadata that can be reliably queried and filtered in Lightning Experience. These organizational hierarchies are often custom-defined and vary by customer implementation.
+- **Admin Behavior:** Admin dashboard shows **company-wide data only** with date range filtering.
+- **Alternative:** Supervisors have team-based filtering (users within their department), which is feasible as team membership is typically defined in User records.
+
+**What Was Removed:**
+- Department filter dropdown (previously at lines 679-691)
+- Office filter dropdown (previously at lines 693-705)
+
+**What Remains:**
+- Date range filter only (Today, This Week, This Month, Last 30 Days)
 
 ---
 
