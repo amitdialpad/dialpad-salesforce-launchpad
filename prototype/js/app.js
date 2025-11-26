@@ -679,65 +679,55 @@ const App = {
                 </div>
             </div>
 
-            <!-- Admin Launchpad - 7 Section Layout (PM-Approved) -->
+            <!-- Admin Launchpad - Optimized Priority Layout -->
             <div style="margin-top: 1.5rem;">
-                <!-- Section 1: Alerts / Attention Required -->
+                <!-- Row 1: Critical Health & Actions (Above Fold) -->
                 <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; margin-bottom: 1rem;">
-                    <div style="grid-column: span 8;">
+                    <div style="grid-column: span 4;">
+                        ${this.renderAdminSystemHealthCard(metrics)}
+                    </div>
+                    <div style="grid-column: span 5;">
                         ${this.renderAdminAlertsCard(metrics)}
                     </div>
-                    <div style="grid-column: span 4;">
+                    <div style="grid-column: span 3;">
                         ${this.renderAdminQuickActionsCard()}
                     </div>
                 </div>
 
-                <!-- Section 2: System Status -->
-                <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; margin-bottom: 1rem;">
-                    <div style="grid-column: span 12;">
-                        ${this.renderAdminSystemHealthCard(metrics)}
-                    </div>
-                </div>
-
-                <!-- Section 3: Usage Metrics (Company-wide metrics + Unlogged Calls) -->
+                <!-- Row 2: Primary KPIs (Above Fold) -->
                 <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; margin-bottom: 1rem;">
                     <div style="grid-column: span 12;">
                         ${this.renderAdminCompanyMetricsCard(metrics)}
                     </div>
                 </div>
 
-                <!-- Section 4: Users & Licenses -->
+                <!-- Row 3: User & License Management (Above Fold) -->
                 <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; margin-bottom: 1rem;">
-                    <div style="grid-column: span 6;">
+                    <div style="grid-column: span 4;">
                         ${this.renderAdminUserOverviewCard(metrics)}
                     </div>
-                    <div style="grid-column: span 6;">
+                    <div style="grid-column: span 4;">
                         ${this.renderAdminLicenseCard(metrics)}
                     </div>
-                </div>
-
-                <!-- Section 5: Setup Progress (Conditional - shown if incomplete) -->
-                ${metrics.setup.progress < 100 ? `
-                <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; margin-bottom: 1rem;">
-                    <div style="grid-column: span 12;">
-                        ${this.renderAdminSetupCard(metrics)}
-                    </div>
-                </div>
-                ` : ''}
-
-                <!-- Section 6: User Connection Issues (Conditional - shown if issues exist) -->
-                ${metrics.users.connectionIssues > 0 ? `
-                <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; margin-bottom: 1rem;">
-                    <div style="grid-column: span 12;">
+                    <div style="grid-column: span 4;">
                         ${this.renderAdminUserConnectionCard(metrics)}
                     </div>
                 </div>
-                ` : ''}
 
-                <!-- Section 7: Product Updates & Announcements -->
+                <!-- Row 4: Setup & Updates (Below Fold) -->
                 <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; margin-bottom: 1rem;">
+                    ${metrics.setup.progress < 100 ? `
+                    <div style="grid-column: span 6;">
+                        ${this.renderAdminSetupCard(metrics)}
+                    </div>
+                    <div style="grid-column: span 6;">
+                        ${this.renderAdminAnnouncementsCard(metrics)}
+                    </div>
+                    ` : `
                     <div style="grid-column: span 12;">
                         ${this.renderAdminAnnouncementsCard(metrics)}
                     </div>
+                    `}
                 </div>
             </div>
         `;
@@ -776,43 +766,43 @@ const App = {
                         </div>
                     </header>
                 </div>
-                <div class="slds-card__body slds-card__body_inner">
-                    <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 1rem;">
+                <div class="slds-card__body slds-card__body_inner" style="padding: 0.75rem 1rem;">
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem;">
                         <div style="text-align: center;">
-                            <div class="slds-badge ${getStatusClass(health.coreService)}" style="display: block; margin-bottom: 0.5rem;">
+                            <div class="slds-badge ${getStatusClass(health.coreService)}" style="display: block; margin-bottom: 0.25rem; font-size: 0.75rem;">
                                 ${getStatusText(health.coreService)}
                             </div>
-                            <div class="slds-text-body_small slds-text-color_weak">Core Service</div>
+                            <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">Core Service</div>
                         </div>
                         <div style="text-align: center;">
-                            <div class="slds-badge ${getStatusClass(health.voice)}" style="display: block; margin-bottom: 0.5rem;">
+                            <div class="slds-badge ${getStatusClass(health.voice)}" style="display: block; margin-bottom: 0.25rem; font-size: 0.75rem;">
                                 ${getStatusText(health.voice)}
                             </div>
-                            <div class="slds-text-body_small slds-text-color_weak">Voice</div>
+                            <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">Voice</div>
                         </div>
                         <div style="text-align: center;">
-                            <div class="slds-badge ${getStatusClass(health.chatSms)}" style="display: block; margin-bottom: 0.5rem;">
+                            <div class="slds-badge ${getStatusClass(health.chatSms)}" style="display: block; margin-bottom: 0.25rem; font-size: 0.75rem;">
                                 ${getStatusText(health.chatSms)}
                             </div>
-                            <div class="slds-text-body_small slds-text-color_weak">Chat & SMS</div>
+                            <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">Chat & SMS</div>
                         </div>
                         <div style="text-align: center;">
-                            <div class="slds-badge ${getStatusClass(health.analytics)}" style="display: block; margin-bottom: 0.5rem;">
+                            <div class="slds-badge ${getStatusClass(health.analytics)}" style="display: block; margin-bottom: 0.25rem; font-size: 0.75rem;">
                                 ${getStatusText(health.analytics)}
                             </div>
-                            <div class="slds-text-body_small slds-text-color_weak">Analytics</div>
+                            <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">Analytics</div>
                         </div>
                         <div style="text-align: center;">
-                            <div class="slds-badge ${getStatusClass(health.ai)}" style="display: block; margin-bottom: 0.5rem;">
+                            <div class="slds-badge ${getStatusClass(health.ai)}" style="display: block; margin-bottom: 0.25rem; font-size: 0.75rem;">
                                 ${getStatusText(health.ai)}
                             </div>
-                            <div class="slds-text-body_small slds-text-color_weak">AI</div>
+                            <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">AI</div>
                         </div>
                         <div style="text-align: center;">
-                            <div class="slds-badge ${getStatusClass(health.salesforceIntegration)}" style="display: block; margin-bottom: 0.5rem;">
+                            <div class="slds-badge ${getStatusClass(health.salesforceIntegration)}" style="display: block; margin-bottom: 0.25rem; font-size: 0.75rem;">
                                 ${getStatusText(health.salesforceIntegration)}
                             </div>
-                            <div class="slds-text-body_small slds-text-color_weak">Salesforce</div>
+                            <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">Salesforce</div>
                         </div>
                     </div>
                 </div>
@@ -929,31 +919,39 @@ const App = {
                 <div class="slds-card__header slds-grid">
                     <header class="slds-media slds-media_center slds-has-flexi-truncate">
                         <div class="slds-media__body">
-                            <h2 class="slds-card__header-title">
-                                <span class="slds-badge status-disconnected" style="margin-right: 0.5rem;">${users.connectionIssues}</span>
-                                Connection Issues
-                            </h2>
-                            <p class="slds-text-body_small slds-text-color_weak">Requires attention</p>
+                            <h2 class="slds-card__header-title">User Connections</h2>
+                            <p class="slds-text-body_small slds-text-color_weak">Real-time status</p>
                         </div>
                     </header>
                 </div>
-                <div class="slds-card__body slds-card__body_inner">
-                    <ul style="list-style: none; margin: 0; padding: 0;">
-                        ${usersWithIssues.map(user => `
-                            <li style="padding: 0.5rem 0; border-bottom: 1px solid #f3f3f3;">
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <div>
-                                        <div style="font-weight: 600;">${user.name}</div>
-                                        <div class="slds-text-body_small slds-text-color_weak">${user.role}</div>
+                <div class="slds-card__body slds-card__body_inner" style="padding: 0.75rem 1rem;">
+                    ${users.connectionIssues === 0 ? `
+                        <div style="text-align: center; padding: 1rem;">
+                            <div style="font-size: 1.75rem; font-weight: 700; color: #04844b;">✓</div>
+                            <div class="slds-text-body_small slds-text-color_weak" style="margin-top: 0.5rem;">All users connected</div>
+                        </div>
+                    ` : `
+                        <div style="margin-bottom: 0.75rem;">
+                            <span class="slds-badge status-disconnected" style="font-size: 0.875rem;">${users.connectionIssues} ${users.connectionIssues === 1 ? 'user' : 'users'} disconnected</span>
+                        </div>
+                        <ul style="list-style: none; margin: 0; padding: 0;">
+                            ${usersWithIssues.slice(0, 2).map(user => `
+                                <li style="padding: 0.35rem 0; border-bottom: 1px solid #f3f3f3;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <div>
+                                            <div style="font-weight: 600; font-size: 0.875rem;">${user.name}</div>
+                                        </div>
+                                        <div class="slds-badge status-disconnected" style="font-size: 0.7rem;">Offline</div>
                                     </div>
-                                    <div class="slds-badge status-disconnected">Disconnected</div>
-                                </div>
-                            </li>
-                        `).join('')}
-                    </ul>
-                    <div style="margin-top: 1rem; text-align: center;">
-                        <span class="slds-text-link" style="color: #3A49DA; font-weight: 600;">View All Users →</span>
-                    </div>
+                                </li>
+                            `).join('')}
+                        </ul>
+                        ${users.connectionIssues > 2 ? `
+                            <div style="margin-top: 0.5rem; text-align: center;">
+                                <span class="slds-text-link" style="color: #3A49DA; font-size: 0.8rem;">+${users.connectionIssues - 2} more →</span>
+                            </div>
+                        ` : ''}
+                    `}
                 </div>
             </div>
         `;
@@ -1134,27 +1132,23 @@ const App = {
                         </div>
                     </header>
                 </div>
-                <div class="slds-card__body slds-card__body_inner">
-                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem;">
+                <div class="slds-card__body slds-card__body_inner" style="padding: 0.75rem 1rem;">
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
                         <div style="text-align: center;">
-                            <div style="font-size: 2rem; font-weight: 700; color: #001642;">${calls.total}</div>
+                            <div style="font-size: 1.75rem; font-weight: 700; color: #001642;">${calls.total}</div>
                             <div class="slds-text-body_small slds-text-color_weak">Total Calls</div>
-                            <div class="slds-text-body_small metric-positive">+12% vs yesterday</div>
                         </div>
                         <div style="text-align: center;">
-                            <div style="font-size: 2rem; font-weight: 700; color: #001642;">${DataService.formatDuration(calls.avgDuration)}</div>
+                            <div style="font-size: 1.75rem; font-weight: 700; color: #001642;">${DataService.formatDuration(calls.avgDuration)}</div>
                             <div class="slds-text-body_small slds-text-color_weak">Avg Duration</div>
-                            <div class="slds-text-body_small">Across all calls</div>
                         </div>
                         <div style="text-align: center;">
-                            <div style="font-size: 2rem; font-weight: 700; color: ${calls.missed > 20 ? '#c23934' : '#001642'};">${calls.missed}</div>
+                            <div style="font-size: 1.75rem; font-weight: 700; color: ${calls.missed > 20 ? '#c23934' : '#001642'};">${calls.missed}</div>
                             <div class="slds-text-body_small slds-text-color_weak">Missed Calls</div>
-                            <div class="slds-text-body_small">${Math.round((calls.missed / calls.total) * 100)}% of total</div>
                         </div>
                         <div style="text-align: center;">
-                            <div style="font-size: 2rem; font-weight: 700; color: #001642;">${calls.serviceScore}%</div>
+                            <div style="font-size: 1.75rem; font-weight: 700; color: #001642;">${calls.serviceScore}%</div>
                             <div class="slds-text-body_small slds-text-color_weak">Service Score</div>
-                            <div class="slds-text-body_small metric-positive">Above target</div>
                         </div>
                     </div>
                 </div>
@@ -1211,41 +1205,21 @@ const App = {
                         </div>
                     </header>
                 </div>
-                <div class="slds-card__body slds-card__body_inner">
-                    <ul class="slds-has-dividers_bottom-space">
-                        <li class="slds-item slds-p-vertical_small">
-                            <button class="slds-button slds-button_neutral slds-button_stretch" onclick="window.location.hash='#/settings'">
-                                <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
-                                    <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#add")}"></use>
-                                </svg>
-                                Add User
-                            </button>
-                        </li>
-                        <li class="slds-item slds-p-vertical_small">
-                            <button class="slds-button slds-button_neutral slds-button_stretch" onclick="window.location.hash='#/settings'">
-                                <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
-                                    <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#settings")}"></use>
-                                </svg>
-                                Manage Permission Sets
-                            </button>
-                        </li>
-                        <li class="slds-item slds-p-vertical_small">
-                            <button class="slds-button slds-button_neutral slds-button_stretch" onclick="window.location.hash='#/calls'">
-                                <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
-                                    <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#call")}"></use>
-                                </svg>
-                                View Calls
-                            </button>
-                        </li>
-                        <li class="slds-item slds-p-vertical_small">
-                            <button class="slds-button slds-button_neutral slds-button_stretch" onclick="alert('Onboarding Wizard will launch here!')">
-                                <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
-                                    <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#forward")}"></use>
-                                </svg>
-                                Launch Onboarding Wizard
-                            </button>
-                        </li>
-                    </ul>
+                <div class="slds-card__body slds-card__body_inner" style="padding: 0.75rem 1rem;">
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <button class="slds-button slds-button_neutral slds-button_stretch" style="font-size: 0.8rem; padding: 0.4rem 0.75rem;" onclick="window.location.hash='#/settings'">
+                            Add User
+                        </button>
+                        <button class="slds-button slds-button_neutral slds-button_stretch" style="font-size: 0.8rem; padding: 0.4rem 0.75rem;" onclick="window.location.hash='#/settings'">
+                            Permissions
+                        </button>
+                        <button class="slds-button slds-button_neutral slds-button_stretch" style="font-size: 0.8rem; padding: 0.4rem 0.75rem;" onclick="window.location.hash='#/calls'">
+                            View Calls
+                        </button>
+                        <button class="slds-button slds-button_neutral slds-button_stretch" style="font-size: 0.8rem; padding: 0.4rem 0.75rem;" onclick="alert('Onboarding Wizard will launch here!')">
+                            Onboarding
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
