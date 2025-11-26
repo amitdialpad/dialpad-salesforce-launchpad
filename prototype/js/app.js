@@ -922,36 +922,48 @@ const App = {
 
     renderAdminUserOverviewCard(metrics) {
         const users = metrics.users;
+        const usersWithLicenses = Math.floor(users.total * 0.9); // 90% have licenses
+        const adminUsers = 2; // Mock: 2 admin users
+        const pendingInvites = 1; // Mock: 1 pending invitation
+
         return `
             <div class="slds-card clickable-card" style="cursor: pointer; transition: all 0.2s ease; height: 100%;" onclick="window.location.hash='#/settings'" onmouseenter="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.15)'" onmouseleave="this.style.transform='translateY(0)'; this.style.boxShadow=''">
                 <div class="slds-card__header slds-grid">
                     <header class="slds-media slds-media_center slds-has-flexi-truncate">
                         <div class="slds-media__body">
-                            <h2 class="slds-card__header-title">User Overview</h2>
-                            <p class="slds-text-body_small slds-text-color_weak">User provisioning & status</p>
+                            <h2 class="slds-card__header-title">User Management</h2>
+                            <p class="slds-text-body_small slds-text-color_weak">Provisioning & onboarding</p>
                         </div>
                     </header>
                 </div>
                 <div class="slds-card__body slds-card__body_inner">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1rem;">
                         <div>
                             <div style="font-size: 2rem; font-weight: 700; color: #001642;">${users.total}</div>
                             <div class="slds-text-body_small slds-text-color_weak">Total Users</div>
                         </div>
                         <div>
-                            <div style="font-size: 2rem; font-weight: 700; color: #001642;">${users.activeToday}</div>
-                            <div class="slds-text-body_small slds-text-color_weak">Active Today</div>
+                            <div style="font-size: 2rem; font-weight: 700; color: #001642;">${usersWithLicenses}</div>
+                            <div class="slds-text-body_small slds-text-color_weak">Licensed</div>
                         </div>
                         <div>
-                            <div style="font-size: 2rem; font-weight: 700; color: ${users.connectionIssues > 0 ? '#c23934' : '#001642'};">${users.connectionIssues}</div>
-                            <div class="slds-text-body_small slds-text-color_weak">Connection Issues</div>
-                        </div>
-                        <div>
-                            <div style="font-size: 2rem; font-weight: 700; color: #001642;">${users.neverLoggedIn}</div>
+                            <div style="font-size: 2rem; font-weight: 700; color: ${users.neverLoggedIn > 3 ? '#fe9339' : '#001642'};">${users.neverLoggedIn}</div>
                             <div class="slds-text-body_small slds-text-color_weak">Never Logged In</div>
                         </div>
+                        <div>
+                            <div style="font-size: 2rem; font-weight: 700; color: #001642;">${adminUsers}</div>
+                            <div class="slds-text-body_small slds-text-color_weak">Admins</div>
+                        </div>
                     </div>
-                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #dddbda;">
+
+                    ${pendingInvites > 0 ? `
+                        <div style="padding: 0.75rem; background: #fef9f3; border-left: 3px solid #fe9339; border-radius: 0.25rem; margin-bottom: 1rem;">
+                            <strong style="color: #fe9339; font-size: 0.875rem;">${pendingInvites} Pending Invitation${pendingInvites === 1 ? '' : 's'}</strong>
+                            <div style="font-size: 0.75rem; color: #3e3e3c; margin-top: 0.25rem;">User${pendingInvites === 1 ? '' : 's'} invited but not yet activated</div>
+                        </div>
+                    ` : ''}
+
+                    <div style="padding-top: 1rem; border-top: 1px solid #dddbda;">
                         <div class="slds-text-body_small slds-text-color_weak">Recent Changes</div>
                         <div style="font-size: 0.875rem; margin-top: 0.25rem;">3 users added this week</div>
                     </div>
