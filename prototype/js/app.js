@@ -1021,12 +1021,6 @@ const App = {
 
                 <div class="slds-card__body slds-card__body_inner" style="padding: 0.75rem 1rem;">
 
-                    <!-- Active Now -->
-                    <div style="margin-bottom: 1rem;">
-                        <div style="font-size: 2rem; font-weight: 700; color: #001642; margin-bottom: 0.25rem;">${activeNow}</div>
-                        <div class="slds-text-body_small slds-text-color_weak">Active users now</div>
-                    </div>
-
                     <!-- Users with Connection Issues -->
                     ${users.connectionIssues > 0 ? `
                         <div style="margin-bottom: 1rem;">
