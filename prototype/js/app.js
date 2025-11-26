@@ -963,10 +963,28 @@ const App = {
     renderAdminUserConnectionCard(metrics) {
         const users = metrics.users;
         const allUsers = DataService.getUsers('admin');
-        const usersWithIssues = allUsers.filter((u, i) => i < users.connectionIssues); // Mock: first N users have issues
+
+        // Connection analytics
+        const activeNow = users.activeToday;
+        const activeYesterday = Math.floor(activeNow * 0.92); // 8% growth trend
+        const activityTrend = activeNow - activeYesterday;
+        const trendPercent = Math.round((activityTrend / activeYesterday) * 100);
+
+        // Platform breakdown (mock data)
+        const desktopUsers = Math.floor(activeNow * 0.65); // 65% desktop
+        const mobileUsers = Math.floor(activeNow * 0.25);  // 25% mobile
+        const webUsers = activeNow - desktopUsers - mobileUsers; // 10% web
+
+        // Inactive users (haven't logged in 7+ days)
+        const inactiveUsers = Math.floor(users.total * 0.12); // 12% inactive
+        const avgSessionDuration = '3h 24m'; // Mock average
+
+        // Peak usage time
+        const currentHour = new Date().getHours();
+        const isPeakHours = currentHour >= 9 && currentHour <= 16;
 
         return `
-            <div class="slds-card" style="height: 100%; cursor: pointer; transition: all 0.2s ease;"
+            <div class="slds-card clickable-card" style="height: 100%; cursor: pointer; transition: all 0.2s ease;"
                  onclick="window.location.hash='#/settings'"
                  onmouseenter="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.15)'"
                  onmouseleave="this.style.transform='translateY(0)'; this.style.boxShadow=''">
@@ -974,38 +992,76 @@ const App = {
                     <header class="slds-media slds-media_center slds-has-flexi-truncate">
                         <div class="slds-media__body">
                             <h2 class="slds-card__header-title">User Connections</h2>
-                            <p class="slds-text-body_small slds-text-color_weak">Real-time status</p>
+                            <p class="slds-text-body_small slds-text-color_weak">Real-time status & activity</p>
                         </div>
                     </header>
                 </div>
                 <div class="slds-card__body slds-card__body_inner" style="padding: 0.75rem 1rem;">
-                    ${users.connectionIssues === 0 ? `
-                        <div style="text-align: center; padding: 1rem;">
-                            <div style="font-size: 1.75rem; font-weight: 700; color: #04844b;">✓</div>
-                            <div class="slds-text-body_small slds-text-color_weak" style="margin-top: 0.5rem;">All users connected</div>
+
+                    <!-- Active Now with Trend -->
+                    <div style="margin-bottom: 1rem;">
+                        <div style="display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.25rem;">
+                            <span style="font-size: 2rem; font-weight: 700; color: #001642;">${activeNow}</span>
+                            <span style="font-size: 0.875rem; color: ${trendPercent >= 0 ? '#04844b' : '#c23934'}; font-weight: 600;">
+                                ${trendPercent >= 0 ? '↑' : '↓'} ${Math.abs(trendPercent)}% vs yesterday
+                            </span>
+                        </div>
+                        <div class="slds-text-body_small slds-text-color_weak">Active users now</div>
+                    </div>
+
+                    <!-- Platform Breakdown -->
+                    <div style="margin-bottom: 1rem;">
+                        <div style="font-weight: 600; font-size: 0.8rem; margin-bottom: 0.5rem;">Connection Platforms</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem;">
+                            <div style="text-align: center; padding: 0.5rem; background: #f3f2f2; border-radius: 0.25rem;">
+                                <div style="font-size: 1.25rem; font-weight: 700;">${desktopUsers}</div>
+                                <div style="font-size: 0.7rem; color: #706e6b;">Desktop</div>
+                            </div>
+                            <div style="text-align: center; padding: 0.5rem; background: #f3f2f2; border-radius: 0.25rem;">
+                                <div style="font-size: 1.25rem; font-weight: 700;">${mobileUsers}</div>
+                                <div style="font-size: 0.7rem; color: #706e6b;">Mobile</div>
+                            </div>
+                            <div style="text-align: center; padding: 0.5rem; background: #f3f2f2; border-radius: 0.25rem;">
+                                <div style="font-size: 1.25rem; font-weight: 700;">${webUsers}</div>
+                                <div style="font-size: 0.7rem; color: #706e6b;">Web</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Engagement Metrics -->
+                    <div style="margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.35rem;">
+                            <span style="font-size: 0.75rem;">Avg. Session Duration</span>
+                            <span style="font-size: 0.75rem; font-weight: 600;">${avgSessionDuration}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.35rem;">
+                            <span style="font-size: 0.75rem;">Peak Usage</span>
+                            <span style="font-size: 0.75rem; font-weight: 600;">${isPeakHours ? 'Now' : '9 AM - 4 PM'}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="font-size: 0.75rem;">Inactive (7+ days)</span>
+                            <span style="font-size: 0.75rem; font-weight: 600; color: ${inactiveUsers > 10 ? '#fe9339' : '#706e6b'};">${inactiveUsers} users</span>
+                        </div>
+                    </div>
+
+                    <!-- Connection Issues Alert -->
+                    ${users.connectionIssues > 0 ? `
+                        <div style="padding: 0.75rem; background: #fef5f5; border-left: 3px solid #c23934; border-radius: 0.25rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <strong style="color: #c23934; font-size: 0.875rem;">${users.connectionIssues} Connection ${users.connectionIssues === 1 ? 'Issue' : 'Issues'}</strong>
+                                    <div style="font-size: 0.75rem; color: #3e3e3c; margin-top: 0.25rem;">Users unable to connect</div>
+                                </div>
+                                <span class="slds-text-link" style="color: #0176d3; font-size: 0.8rem; font-weight: 500;">View →</span>
+                            </div>
                         </div>
                     ` : `
-                        <div style="margin-bottom: 0.75rem;">
-                            <span class="slds-badge status-disconnected" style="font-size: 0.875rem;">${users.connectionIssues} ${users.connectionIssues === 1 ? 'user' : 'users'} disconnected</span>
+                        <div style="padding: 0.75rem; background: #f3f9f3; border-left: 3px solid #04844b; border-radius: 0.25rem;">
+                            <strong style="color: #04844b; font-size: 0.875rem;">✓ All Users Connected</strong>
+                            <div style="font-size: 0.75rem; color: #3e3e3c; margin-top: 0.25rem;">No connection issues detected</div>
                         </div>
-                        <ul style="list-style: none; margin: 0; padding: 0;">
-                            ${usersWithIssues.slice(0, 2).map(user => `
-                                <li style="padding: 0.35rem 0; border-bottom: 1px solid #f3f3f3;">
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                                        <div>
-                                            <div style="font-weight: 600; font-size: 0.875rem;">${user.name}</div>
-                                        </div>
-                                        <div class="slds-badge status-disconnected" style="font-size: 0.7rem;">Offline</div>
-                                    </div>
-                                </li>
-                            `).join('')}
-                        </ul>
-                        ${users.connectionIssues > 2 ? `
-                            <div style="margin-top: 0.5rem; text-align: center;">
-                                <span class="slds-text-link" style="color: #3A49DA; font-size: 0.8rem;">+${users.connectionIssues - 2} more →</span>
-                            </div>
-                        ` : ''}
                     `}
+
                 </div>
             </div>
         `;
