@@ -806,24 +806,12 @@ const App = {
         const getStatusText = (status) => status.charAt(0).toUpperCase() + status.slice(1);
 
         const services = [
-            { key: 'coreService', label: 'Core Service', status: health.coreService,
-              action: health.coreService === 'offline' ? 'https://status.dialpad.com' : null,
-              actionLabel: 'Check Status Page', external: true },
-            { key: 'voice', label: 'Voice', status: health.voice,
-              action: health.voice === 'offline' ? 'https://status.dialpad.com' : null,
-              actionLabel: 'Check Status Page', external: true },
-            { key: 'chatSms', label: 'Chat & SMS', status: health.chatSms,
-              action: health.chatSms === 'offline' ? 'https://status.dialpad.com' : null,
-              actionLabel: 'Check Status Page', external: true },
-            { key: 'analytics', label: 'Analytics', status: health.analytics,
-              action: health.analytics === 'offline' ? '#/reports' : null,
-              actionLabel: 'View Reports', external: false },
-            { key: 'ai', label: 'AI', status: health.ai,
-              action: health.ai === 'offline' ? 'https://help.dialpad.com/docs/ai-features' : null,
-              actionLabel: 'Learn More', external: true },
-            { key: 'salesforceIntegration', label: 'Salesforce', status: health.salesforceIntegration,
-              action: health.salesforceIntegration === 'offline' ? '#/settings' : null,
-              actionLabel: 'Fix Connection', external: false }
+            { label: 'Core Service', status: health.coreService, action: 'https://status.dialpad.com', external: true },
+            { label: 'Voice', status: health.voice, action: 'https://status.dialpad.com', external: true },
+            { label: 'Chat & SMS', status: health.chatSms, action: 'https://status.dialpad.com', external: true },
+            { label: 'Analytics', status: health.analytics, action: '#/reports', external: false },
+            { label: 'AI', status: health.ai, action: 'https://help.dialpad.com/docs/ai-features', external: true },
+            { label: 'Salesforce', status: health.salesforceIntegration, action: '#/settings', external: false }
         ];
 
         return `
@@ -839,14 +827,11 @@ const App = {
                 <div class="slds-card__body slds-card__body_inner" style="padding: 0.75rem 1rem;">
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem;">
                         ${services.map(service => `
-                            <div style="text-align: center; padding: 0.5rem; border-radius: 0.25rem; ${service.action ? 'cursor: pointer; transition: all 0.15s ease;' : ''}" ${service.action ? `onclick="window.${service.external ? 'open' : 'location.hash='}('${service.action}'${service.external ? ', \'_blank\'' : ''})" onmouseenter="this.style.background='#f3f2f2'; this.style.transform='translateY(-2px)';" onmouseleave="this.style.background='transparent'; this.style.transform='translateY(0)';"` : ''}>
-                                <div class="slds-badge ${getStatusClass(service.status)}" style="display: block; margin-bottom: 0.25rem; font-size: 0.75rem;">
+                            <div style="text-align: center;">
+                                <div class="slds-badge ${getStatusClass(service.status)}" style="display: inline-block; margin-bottom: 0.25rem; font-size: 0.75rem; ${service.status === 'offline' ? 'cursor: pointer; transition: all 0.15s ease;' : ''}" ${service.status === 'offline' ? `onclick="window.${service.external ? 'open' : 'location.hash='}('${service.action}'${service.external ? ', \'_blank\'' : ''})" onmouseenter="this.style.transform='scale(1.05)'; this.style.boxShadow='0 1px 3px rgba(0,0,0,0.2)';" onmouseleave="this.style.transform='scale(1)'; this.style.boxShadow='';" title="${service.external ? 'Check Status Page' : service.label === 'Salesforce' ? 'Fix Connection' : service.label === 'Analytics' ? 'View Reports' : 'Learn More'}"` : ''}>
                                     ${getStatusText(service.status)}
                                 </div>
-                                <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem; margin-bottom: ${service.action ? '0.25rem' : '0'};">${service.label}</div>
-                                ${service.action && service.status === 'offline' ? `
-                                    <a href="${service.action}" ${service.external ? 'target="_blank"' : ''} class="slds-text-link" style="font-size: 0.65rem; color: #0176d3;" onclick="event.stopPropagation();">${service.actionLabel} →</a>
-                                ` : ''}
+                                <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">${service.label}</div>
                             </div>
                         `).join('')}
                     </div>
