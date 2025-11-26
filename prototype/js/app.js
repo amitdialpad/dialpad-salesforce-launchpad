@@ -1021,7 +1021,10 @@ const App = {
         const projectedMonths = Math.floor(licenses.available / growthRate);
 
         return `
-            <div class="slds-card" style="height: 100%;">
+            <div class="slds-card clickable-card" style="height: 100%; cursor: pointer; transition: all 0.2s ease;"
+                 onclick="window.location.hash='#/settings'"
+                 onmouseenter="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.15)'"
+                 onmouseleave="this.style.transform='translateY(0)'; this.style.boxShadow=''">
                 <div class="slds-card__header slds-grid">
                     <header class="slds-media slds-media_center slds-has-flexi-truncate">
                         <div class="slds-media__body">
