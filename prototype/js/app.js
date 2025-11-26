@@ -805,15 +805,6 @@ const App = {
         };
         const getStatusText = (status) => status.charAt(0).toUpperCase() + status.slice(1);
 
-        const services = [
-            { label: 'Core Service', status: health.coreService, action: 'https://status.dialpad.com', external: true },
-            { label: 'Voice', status: health.voice, action: 'https://status.dialpad.com', external: true },
-            { label: 'Chat & SMS', status: health.chatSms, action: 'https://status.dialpad.com', external: true },
-            { label: 'Analytics', status: health.analytics, action: '#/reports', external: false },
-            { label: 'AI', status: health.ai, action: 'https://help.dialpad.com/docs/ai-features', external: true },
-            { label: 'Salesforce', status: health.salesforceIntegration, action: '#/settings', external: false }
-        ];
-
         return `
             <div class="slds-card" style="height: 100%;">
                 <div class="slds-card__header slds-grid">
@@ -826,14 +817,42 @@ const App = {
                 </div>
                 <div class="slds-card__body slds-card__body_inner" style="padding: 0.75rem 1rem;">
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem;">
-                        ${services.map(service => `
-                            <div style="text-align: center;">
-                                <div class="slds-badge ${getStatusClass(service.status)}" style="display: inline-block; margin-bottom: 0.25rem; font-size: 0.75rem; ${service.status === 'offline' ? 'cursor: pointer; transition: all 0.15s ease;' : ''}" ${service.status === 'offline' ? `onclick="window.${service.external ? 'open' : 'location.hash='}('${service.action}'${service.external ? ', \'_blank\'' : ''})" onmouseenter="this.style.transform='scale(1.05)'; this.style.boxShadow='0 1px 3px rgba(0,0,0,0.2)';" onmouseleave="this.style.transform='scale(1)'; this.style.boxShadow='';" title="${service.external ? 'Check Status Page' : service.label === 'Salesforce' ? 'Fix Connection' : service.label === 'Analytics' ? 'View Reports' : 'Learn More'}"` : ''}>
-                                    ${getStatusText(service.status)}
-                                </div>
-                                <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">${service.label}</div>
+                        <div style="text-align: center;">
+                            <div class="slds-badge ${getStatusClass(health.coreService)}" style="display: block; margin-bottom: 0.25rem; font-size: 0.75rem;">
+                                ${getStatusText(health.coreService)}
                             </div>
-                        `).join('')}
+                            <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">Core Service</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div class="slds-badge ${getStatusClass(health.voice)}" style="display: block; margin-bottom: 0.25rem; font-size: 0.75rem;">
+                                ${getStatusText(health.voice)}
+                            </div>
+                            <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">Voice</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div class="slds-badge ${getStatusClass(health.chatSms)}" style="display: block; margin-bottom: 0.25rem; font-size: 0.75rem;">
+                                ${getStatusText(health.chatSms)}
+                            </div>
+                            <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">Chat & SMS</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div class="slds-badge ${getStatusClass(health.analytics)}" style="display: block; margin-bottom: 0.25rem; font-size: 0.75rem;">
+                                ${getStatusText(health.analytics)}
+                            </div>
+                            <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">Analytics</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div class="slds-badge ${getStatusClass(health.ai)}" style="display: block; margin-bottom: 0.25rem; font-size: 0.75rem;">
+                                ${getStatusText(health.ai)}
+                            </div>
+                            <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">AI</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div class="slds-badge ${getStatusClass(health.salesforceIntegration)}" style="display: block; margin-bottom: 0.25rem; font-size: 0.75rem;">
+                                ${getStatusText(health.salesforceIntegration)}
+                            </div>
+                            <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">Salesforce</div>
+                        </div>
                     </div>
                 </div>
             </div>
