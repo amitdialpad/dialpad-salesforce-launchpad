@@ -963,17 +963,13 @@ const App = {
     renderAdminUserConnectionCard(metrics) {
         const users = metrics.users;
         const allUsers = DataService.getUsers('admin');
+        const usersWithIssues = allUsers.filter((u, i) => i < users.connectionIssues); // Mock: first N users have issues
 
         // Connection analytics
         const activeNow = users.activeToday;
         const activeYesterday = Math.floor(activeNow * 0.92); // 8% growth trend
         const activityTrend = activeNow - activeYesterday;
         const trendPercent = Math.round((activityTrend / activeYesterday) * 100);
-
-        // Platform breakdown (mock data)
-        const desktopUsers = Math.floor(activeNow * 0.65); // 65% desktop
-        const mobileUsers = Math.floor(activeNow * 0.25);  // 25% mobile
-        const webUsers = activeNow - desktopUsers - mobileUsers; // 10% web
 
         // Inactive users (haven't logged in 7+ days)
         const inactiveUsers = Math.floor(users.total * 0.12); // 12% inactive
@@ -1009,27 +1005,36 @@ const App = {
                         <div class="slds-text-body_small slds-text-color_weak">Active users now</div>
                     </div>
 
-                    <!-- Platform Breakdown -->
-                    <div style="margin-bottom: 1rem;">
-                        <div style="font-weight: 600; font-size: 0.8rem; margin-bottom: 0.5rem;">Connection Platforms</div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem;">
-                            <div style="text-align: center; padding: 0.5rem; background: #f3f2f2; border-radius: 0.25rem;">
-                                <div style="font-size: 1.25rem; font-weight: 700;">${desktopUsers}</div>
-                                <div style="font-size: 0.7rem; color: #706e6b;">Desktop</div>
+                    <!-- Users with Connection Issues -->
+                    ${users.connectionIssues > 0 ? `
+                        <div style="margin-bottom: 1rem;">
+                            <div style="font-weight: 600; font-size: 0.8rem; margin-bottom: 0.5rem; color: #c23934;">
+                                ${users.connectionIssues} User${users.connectionIssues === 1 ? '' : 's'} with Connection Issues
                             </div>
-                            <div style="text-align: center; padding: 0.5rem; background: #f3f2f2; border-radius: 0.25rem;">
-                                <div style="font-size: 1.25rem; font-weight: 700;">${mobileUsers}</div>
-                                <div style="font-size: 0.7rem; color: #706e6b;">Mobile</div>
-                            </div>
-                            <div style="text-align: center; padding: 0.5rem; background: #f3f2f2; border-radius: 0.25rem;">
-                                <div style="font-size: 1.25rem; font-weight: 700;">${webUsers}</div>
-                                <div style="font-size: 0.7rem; color: #706e6b;">Web</div>
-                            </div>
+                            <ul style="list-style: none; margin: 0; padding: 0;">
+                                ${usersWithIssues.slice(0, 3).map(user => `
+                                    <li style="padding: 0.5rem; border-bottom: 1px solid #f3f3f3;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <div>
+                                                <div style="font-weight: 600; font-size: 0.875rem;">${user.name}</div>
+                                                <div style="font-size: 0.7rem; color: #706e6b;">${user.email}</div>
+                                            </div>
+                                            <div class="slds-badge status-disconnected" style="font-size: 0.7rem;">Offline</div>
+                                        </div>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                            ${users.connectionIssues > 3 ? `
+                                <div style="margin-top: 0.5rem; text-align: center;">
+                                    <span class="slds-text-link" style="color: #0176d3; font-size: 0.8rem; font-weight: 500;">+${users.connectionIssues - 3} more →</span>
+                                </div>
+                            ` : ''}
                         </div>
-                    </div>
+                    ` : ''}
 
                     <!-- Engagement Metrics -->
                     <div style="margin-bottom: 1rem;">
+                        <div style="font-weight: 600; font-size: 0.8rem; margin-bottom: 0.5rem;">Activity Insights</div>
                         <div style="display: flex; justify-content: space-between; margin-bottom: 0.35rem;">
                             <span style="font-size: 0.75rem;">Avg. Session Duration</span>
                             <span style="font-size: 0.75rem; font-weight: 600;">${avgSessionDuration}</span>
@@ -1044,16 +1049,11 @@ const App = {
                         </div>
                     </div>
 
-                    <!-- Connection Issues Alert -->
+                    <!-- Connection Status Alert -->
                     ${users.connectionIssues > 0 ? `
                         <div style="padding: 0.75rem; background: #fef5f5; border-left: 3px solid #c23934; border-radius: 0.25rem;">
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <div>
-                                    <strong style="color: #c23934; font-size: 0.875rem;">${users.connectionIssues} Connection ${users.connectionIssues === 1 ? 'Issue' : 'Issues'}</strong>
-                                    <div style="font-size: 0.75rem; color: #3e3e3c; margin-top: 0.25rem;">Users unable to connect</div>
-                                </div>
-                                <span class="slds-text-link" style="color: #0176d3; font-size: 0.8rem; font-weight: 500;">View →</span>
-                            </div>
+                            <strong style="color: #c23934; font-size: 0.875rem;">Action Required</strong>
+                            <div style="font-size: 0.75rem; color: #3e3e3c; margin-top: 0.25rem;">Review users unable to connect and provide support</div>
                         </div>
                     ` : `
                         <div style="padding: 0.75rem; background: #f3f9f3; border-left: 3px solid #04844b; border-radius: 0.25rem;">
