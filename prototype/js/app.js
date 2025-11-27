@@ -704,7 +704,7 @@ const App = {
                                         </li>
                                         <li class="slds-has-divider_top-space" role="separator"></li>
                                         <li class="slds-dropdown__item" role="presentation">
-                                            <a href="javascript:void(0)" role="menuitem" tabindex="-1" onclick="alert('Onboarding Wizard will launch here!')">
+                                            <a href="javascript:void(0)" role="menuitem" tabindex="-1" id="launch-onboarding-action">
                                                 <span class="slds-truncate" title="Launch Onboarding Wizard">
                                                     <svg class="slds-icon slds-icon_x-small slds-icon-text-default slds-m-right_x-small" aria-hidden="true" style="width: 1rem; height: 1rem;">
                                                         <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#forward")}"></use>
@@ -2261,24 +2261,20 @@ const App = {
     renderCallsPage(role) {
         const calls = DataService.getCalls(role);
 
-        // Define views based on role (including Recorded Calls tab per PM feedback)
+        // Define views based on role per PM requirements
         const views = role === 'agent'
             ? [
-                { id: 'my-calls', label: 'My Calls', default: true },
-                { id: 'all-calls', label: 'All Calls', default: false },
-                { id: 'recorded-calls', label: 'Recorded Calls', default: false }
+                { id: 'my-calls', label: 'My Calls', default: true }
             ]
             : role === 'supervisor'
             ? [
-                { id: 'my-calls', label: 'My Calls', default: false },
                 { id: 'team-calls', label: 'My Team', default: true },
-                { id: 'all-calls', label: 'All Calls', default: false },
-                { id: 'recorded-calls', label: 'Recorded Calls', default: false }
+                { id: 'my-calls', label: 'My Calls', default: false }
             ]
             : [
-                // Admin: company-wide view, no team filtering
+                // Admin: All Calls and My Calls per PM feedback
                 { id: 'all-calls', label: 'All Calls', default: true },
-                { id: 'recorded-calls', label: 'Recorded Calls', default: false }
+                { id: 'my-calls', label: 'My Calls', default: false }
             ];
 
         const defaultView = views.find(v => v.default).id;
@@ -2514,17 +2510,20 @@ const App = {
             type: call.direction === 'Inbound' ? 'Received' : 'Sent'
         }));
 
-        // Define views based on role (no "My Team" for supervisor, admin has no tabs)
+        // Define views based on role per PM requirements (same structure as Calls)
         const views = role === 'agent'
             ? [
-                { id: 'my-sms', label: 'My Messages', default: true }
+                { id: 'my-sms', label: 'My Calls', default: true }
             ]
             : role === 'supervisor'
             ? [
-                { id: 'all-sms', label: 'All Messages', default: true }
+                { id: 'team-sms', label: 'My Team', default: true },
+                { id: 'my-sms', label: 'My Calls', default: false }
             ]
             : [
-                // Admin: no tabs (single view)
+                // Admin: All Calls and My Calls per PM feedback
+                { id: 'all-sms', label: 'All Calls', default: true },
+                { id: 'my-sms', label: 'My Calls', default: false }
             ];
 
         return `
@@ -4425,6 +4424,15 @@ const App = {
             if (agentDateRangeSelect) {
                 agentDateRangeSelect.addEventListener('change', (e) => {
                     AppState.setDateRange(e.target.value);
+                });
+            }
+
+            // Launch Onboarding Wizard action
+            const launchOnboardingAction = document.getElementById('launch-onboarding-action');
+            if (launchOnboardingAction) {
+                launchOnboardingAction.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.showOnboardingModal();
                 });
             }
         }
