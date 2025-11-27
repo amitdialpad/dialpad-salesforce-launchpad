@@ -5305,100 +5305,172 @@ const App = {
                 `
             },
             {
-                title: 'Configure Call Logging',
+                title: 'Recommended Settings',
                 content: `
                     <p class="slds-m-bottom_medium">
-                        Dialpad can automatically log all your calls to Salesforce. Let's make sure it's configured correctly.
+                        Configure your Dialpad integration with these recommended settings for optimal performance.
                     </p>
-                    <div class="slds-box slds-theme_default slds-m-bottom_medium">
-                        <div class="slds-media">
+                    <div class="slds-form slds-form_stacked">
+                        <fieldset class="slds-form-element">
+                            <legend class="slds-form-element__legend slds-form-element__label">
+                                <h4 class="slds-text-heading_small">Call Logging</h4>
+                            </legend>
+                            <div class="slds-form-element__control">
+                                <div class="slds-checkbox">
+                                    <input type="checkbox" id="setting-autolog" checked />
+                                    <label class="slds-checkbox__label" for="setting-autolog">
+                                        <span class="slds-checkbox_faux"></span>
+                                        <span class="slds-form-element__label">Enable automatic call logging</span>
+                                    </label>
+                                </div>
+                                <div class="slds-checkbox slds-m-top_x-small">
+                                    <input type="checkbox" id="setting-duration" checked />
+                                    <label class="slds-checkbox__label" for="setting-duration">
+                                        <span class="slds-checkbox_faux"></span>
+                                        <span class="slds-form-element__label">Log call duration and timestamps</span>
+                                    </label>
+                                </div>
+                                <div class="slds-checkbox slds-m-top_x-small">
+                                    <input type="checkbox" id="setting-recordings" checked />
+                                    <label class="slds-checkbox__label" for="setting-recordings">
+                                        <span class="slds-checkbox_faux"></span>
+                                        <span class="slds-form-element__label">Include call recordings (if available)</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="slds-form-element slds-m-top_medium">
+                            <legend class="slds-form-element__legend slds-form-element__label">
+                                <h4 class="slds-text-heading_small">SMS & Messaging</h4>
+                            </legend>
+                            <div class="slds-form-element__control">
+                                <div class="slds-checkbox">
+                                    <input type="checkbox" id="setting-sms" checked />
+                                    <label class="slds-checkbox__label" for="setting-sms">
+                                        <span class="slds-checkbox_faux"></span>
+                                        <span class="slds-form-element__label">Enable SMS logging to Salesforce</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="slds-form-element slds-m-top_medium">
+                            <legend class="slds-form-element__legend slds-form-element__label">
+                                <h4 class="slds-text-heading_small">Screen Pop</h4>
+                            </legend>
+                            <div class="slds-form-element__control">
+                                <div class="slds-checkbox">
+                                    <input type="checkbox" id="setting-screenpop" checked />
+                                    <label class="slds-checkbox__label" for="setting-screenpop">
+                                        <span class="slds-checkbox_faux"></span>
+                                        <span class="slds-form-element__label">Auto-open Contact/Lead record on incoming calls</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="slds-box slds-theme_info slds-theme_alert-texture slds-m-top_medium">
+                        <p class="slds-text-body_small">
+                            <strong>Note:</strong> You can change these settings anytime in Settings > Call Logging
+                        </p>
+                    </div>
+                `
+            },
+            {
+                title: 'Connect Your Dialpad Account',
+                content: `
+                    <p class="slds-m-bottom_medium">
+                        Connect your Dialpad account to enable call logging and real-time features.
+                    </p>
+                    <div class="slds-box slds-box_small slds-theme_default slds-m-bottom_medium">
+                        <div class="slds-media slds-media_center">
                             <div class="slds-media__figure">
-                                <span class="slds-icon_container slds-icon-standard-task" style="background-color: #0176D3;">
-                                    <span style="font-size: 1.5rem; color: white;">✓</span>
+                                <span class="slds-icon_container" style="background-color: #0176D3; border-radius: 0.25rem; padding: 0.5rem;">
+                                    <span style="font-size: 2rem; color: white;">📞</span>
                                 </span>
                             </div>
                             <div class="slds-media__body">
-                                <h4 class="slds-text-heading_small">Recommended Settings</h4>
-                                <ul class="slds-list_dotted slds-m-top_x-small">
-                                    <li>Enable auto-log for all calls</li>
-                                    <li>Set default call owner to user making the call</li>
-                                    <li>Log calls to related Contact or Lead</li>
-                                    <li>Include call recordings (if enabled)</li>
-                                </ul>
+                                <h4 class="slds-text-heading_small slds-m-bottom_xx-small">Dialpad Integration</h4>
+                                <p class="slds-text-body_small slds-text-color_weak">Status: Not Connected</p>
                             </div>
                         </div>
                     </div>
-                    <button class="slds-button slds-button_neutral" onclick="App.goToSettings()">
-                        Go to Settings
+                    <div class="slds-box slds-theme_shade slds-m-bottom_medium">
+                        <h4 class="slds-text-heading_small slds-m-bottom_small">What you'll need:</h4>
+                        <ul class="slds-list_dotted">
+                            <li>Dialpad account with admin permissions</li>
+                            <li>Your company's Dialpad API key</li>
+                            <li>Office ID for your main office</li>
+                        </ul>
+                    </div>
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label" for="dialpad-api-key">API Key</label>
+                        <div class="slds-form-element__control">
+                            <input type="password" id="dialpad-api-key" class="slds-input" placeholder="Enter your Dialpad API key" />
+                        </div>
+                    </div>
+                    <div class="slds-form-element slds-m-top_small">
+                        <label class="slds-form-element__label" for="dialpad-office-id">Office ID (optional)</label>
+                        <div class="slds-form-element__control">
+                            <input type="text" id="dialpad-office-id" class="slds-input" placeholder="Main office" />
+                        </div>
+                    </div>
+                    <button class="slds-button slds-button_brand slds-m-top_medium" onclick="alert('In production, this would authenticate with Dialpad API')">
+                        Connect to Dialpad
                     </button>
-                `
-            },
-            {
-                title: 'Explore Your Dashboard',
-                content: `
-                    <p class="slds-m-bottom_medium">
-                        Your dashboard shows different metrics based on your role. You can switch roles using the links in the header.
-                    </p>
-                    <div class="slds-grid slds-wrap slds-gutters_small slds-m-bottom_medium">
-                        <div class="slds-col slds-size_1-of-3">
-                            <div class="slds-box slds-box_x-small slds-text-align_center">
-                                <div class="slds-m-bottom_x-small" style="font-size: 2rem;">👤</div>
-                                <div class="slds-text-heading_small">Admin</div>
-                                <p class="slds-text-body_small">Company-wide metrics, user management</p>
-                            </div>
-                        </div>
-                        <div class="slds-col slds-size_1-of-3">
-                            <div class="slds-box slds-box_x-small slds-text-align_center">
-                                <div class="slds-m-bottom_x-small" style="font-size: 2rem;">👥</div>
-                                <div class="slds-text-heading_small">Supervisor</div>
-                                <p class="slds-text-body_small">Team performance, agent monitoring</p>
-                            </div>
-                        </div>
-                        <div class="slds-col slds-size_1-of-3">
-                            <div class="slds-box slds-box_x-small slds-text-align_center">
-                                <div class="slds-m-bottom_x-small" style="font-size: 2rem;">📞</div>
-                                <div class="slds-text-heading_small">Agent</div>
-                                <p class="slds-text-body_small">Personal stats, call history, quotas</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="slds-box slds-theme_info slds-theme_alert-texture">
-                        <p class="slds-text-body_small">
-                            <strong>Tip:</strong> Data refreshes automatically every 30 seconds on the Home page.
-                        </p>
+                    <div class="slds-m-top_small">
+                        <a href="#" class="slds-text-link">Where do I find my API key?</a>
                     </div>
                 `
             },
             {
-                title: 'Access Pre-built Reports',
+                title: 'Set Up Permissions',
                 content: `
                     <p class="slds-m-bottom_medium">
-                        We've included 20 pre-built reports to help you analyze your call data. Find them in the Reports tab.
+                        Choose which Salesforce users and profiles can access Dialpad features.
                     </p>
                     <div class="slds-box slds-theme_shade slds-m-bottom_medium">
-                        <h4 class="slds-text-heading_small slds-m-bottom_small">Report Categories:</h4>
-                        <div class="slds-grid slds-wrap slds-gutters_xx-small">
-                            <div class="slds-col slds-size_1-of-2">
-                                <span class="slds-badge slds-theme_default">Call Activity</span>
-                            </div>
-                            <div class="slds-col slds-size_1-of-2">
-                                <span class="slds-badge slds-theme_default">Performance</span>
-                            </div>
-                            <div class="slds-col slds-size_1-of-2">
-                                <span class="slds-badge slds-theme_default">Quality</span>
-                            </div>
-                            <div class="slds-col slds-size_1-of-2">
-                                <span class="slds-badge slds-theme_default">Powerdialer</span>
+                        <h4 class="slds-text-heading_small slds-m-bottom_small">Permission Sets Available:</h4>
+                        <div class="slds-form-element">
+                            <div class="slds-form-element__control">
+                                <div class="slds-checkbox">
+                                    <input type="checkbox" id="perm-admin" checked />
+                                    <label class="slds-checkbox__label" for="perm-admin">
+                                        <span class="slds-checkbox_faux"></span>
+                                        <span class="slds-form-element__label">
+                                            <strong>Dialpad Admin</strong> - Full access to all features and settings
+                                        </span>
+                                    </label>
+                                </div>
+                                <div class="slds-checkbox slds-m-top_small">
+                                    <input type="checkbox" id="perm-supervisor" checked />
+                                    <label class="slds-checkbox__label" for="perm-supervisor">
+                                        <span class="slds-checkbox_faux"></span>
+                                        <span class="slds-form-element__label">
+                                            <strong>Dialpad Supervisor</strong> - Team analytics and agent monitoring
+                                        </span>
+                                    </label>
+                                </div>
+                                <div class="slds-checkbox slds-m-top_small">
+                                    <input type="checkbox" id="perm-agent" checked />
+                                    <label class="slds-checkbox__label" for="perm-agent">
+                                        <span class="slds-checkbox_faux"></span>
+                                        <span class="slds-form-element__label">
+                                            <strong>Dialpad Agent</strong> - Call logging, personal dashboard
+                                        </span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="slds-box slds-theme_success slds-theme_alert-texture">
+                    <div class="slds-box slds-theme_warning slds-theme_alert-texture">
                         <p class="slds-text-body_small">
-                            ✓ All reports sync with your Dialpad analytics dashboard
+                            <strong>Important:</strong> Assign permission sets to users in Setup > Permission Sets after completing this wizard.
                         </p>
                     </div>
-                    <button class="slds-button slds-button_neutral slds-m-top_small" onclick="App.goToReports()">
-                        View Reports
+                    <button class="slds-button slds-button_neutral slds-m-top_medium" onclick="alert('In production, this would open Salesforce Permission Sets page')">
+                        Assign Permission Sets
                     </button>
                 `
             },
