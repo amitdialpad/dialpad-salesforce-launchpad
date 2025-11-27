@@ -2351,12 +2351,43 @@ const App = {
     },
 
     renderCallRecordsTable(calls, role) {
+        // Initialize pagination state if not exists
+        if (!this.callsPagination) {
+            this.callsPagination = {
+                currentPage: 1,
+                pageSize: 25
+            };
+        }
+
+        // Calculate pagination
+        const totalRecords = calls.length;
+        const totalPages = Math.ceil(totalRecords / this.callsPagination.pageSize);
+        const startIndex = (this.callsPagination.currentPage - 1) * this.callsPagination.pageSize;
+        const endIndex = Math.min(startIndex + this.callsPagination.pageSize, totalRecords);
+        const paginatedCalls = calls.slice(startIndex, endIndex);
+
+        // Generate page numbers to display (max 7 pages visible)
+        const pageNumbers = [];
+        if (totalPages <= 7) {
+            for (let i = 1; i <= totalPages; i++) {
+                pageNumbers.push(i);
+            }
+        } else {
+            if (this.callsPagination.currentPage <= 4) {
+                pageNumbers.push(1, 2, 3, 4, 5, '...', totalPages);
+            } else if (this.callsPagination.currentPage >= totalPages - 3) {
+                pageNumbers.push(1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+            } else {
+                pageNumbers.push(1, '...', this.callsPagination.currentPage - 1, this.callsPagination.currentPage, this.callsPagination.currentPage + 1, '...', totalPages);
+            }
+        }
+
         return `
             <div class="slds-card">
                 <div class="slds-card__header slds-grid">
                     <header class="slds-media slds-media_center slds-has-flexi-truncate">
                         <div class="slds-media__body">
-                            <h2 class="slds-card__header-title" id="calls-count">Call History (${calls.length} records)</h2>
+                            <h2 class="slds-card__header-title" id="calls-count">Call History (${totalRecords} records)</h2>
                         </div>
                     </header>
                     <div class="slds-no-flex">
@@ -2377,7 +2408,7 @@ const App = {
                             </tr>
                         </thead>
                         <tbody id="calls-table-body">
-                            ${calls.map(call => `
+                            ${paginatedCalls.map(call => `
                                 <tr>
                                     <td>${DataService.formatTimestamp(call.timestamp)}</td>
                                     <td>
@@ -2394,6 +2425,42 @@ const App = {
                             `).join('')}
                         </tbody>
                     </table>
+
+                    <!-- Pagination Controls -->
+                    ${totalRecords > 0 ? `
+                    <div class="slds-grid slds-grid_vertical-align-center slds-m-top_medium">
+                        <div class="slds-col slds-size_1-of-2">
+                            <span class="slds-text-body_small">
+                                Showing ${startIndex + 1}-${endIndex} of ${totalRecords} records
+                            </span>
+                            <span class="slds-m-left_medium">
+                                <label for="page-size-select" class="slds-text-body_small">View:</label>
+                                <select id="page-size-select" class="slds-select" style="width: auto; display: inline-block; margin-left: 0.25rem;">
+                                    <option value="25" ${this.callsPagination.pageSize === 25 ? 'selected' : ''}>25</option>
+                                    <option value="50" ${this.callsPagination.pageSize === 50 ? 'selected' : ''}>50</option>
+                                    <option value="100" ${this.callsPagination.pageSize === 100 ? 'selected' : ''}>100</option>
+                                </select>
+                                <span class="slds-text-body_small slds-m-left_xx-small">records per page</span>
+                            </span>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-text-align_right">
+                            <div class="slds-button-group" role="group">
+                                <button class="slds-button slds-button_neutral" id="prev-page" ${this.callsPagination.currentPage === 1 ? 'disabled' : ''}>
+                                    Previous
+                                </button>
+                                ${pageNumbers.map(page => {
+                                    if (page === '...') {
+                                        return '<span class="slds-button slds-button_neutral" disabled>...</span>';
+                                    }
+                                    return `<button class="slds-button slds-button_neutral ${page === this.callsPagination.currentPage ? 'slds-is-selected' : ''}" data-page="${page}">${page}</button>`;
+                                }).join('')}
+                                <button class="slds-button slds-button_neutral" id="next-page" ${this.callsPagination.currentPage === totalPages ? 'disabled' : ''}>
+                                    Next
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    ` : ''}
                 </div>
             </div>
         `;
@@ -4040,6 +4107,9 @@ const App = {
         const container = document.getElementById('calls-table-container');
 
         if (container) {
+            // Store filtered calls for pagination
+            this.filteredCalls = calls;
+
             // Re-render the call records table
             container.innerHTML = this.renderCallRecordsTable(calls, role);
 
@@ -4057,6 +4127,47 @@ const App = {
             if (exportButton) {
                 exportButton.addEventListener('click', () => this.exportCalls());
             }
+
+            // Attach pagination listeners
+            const prevButton = document.getElementById('prev-page');
+            const nextButton = document.getElementById('next-page');
+            const pageSizeSelect = document.getElementById('page-size-select');
+
+            if (prevButton) {
+                prevButton.addEventListener('click', () => {
+                    if (this.callsPagination.currentPage > 1) {
+                        this.callsPagination.currentPage--;
+                        this.updateCallsTable(this.filteredCalls);
+                    }
+                });
+            }
+
+            if (nextButton) {
+                nextButton.addEventListener('click', () => {
+                    const totalPages = Math.ceil(this.filteredCalls.length / this.callsPagination.pageSize);
+                    if (this.callsPagination.currentPage < totalPages) {
+                        this.callsPagination.currentPage++;
+                        this.updateCallsTable(this.filteredCalls);
+                    }
+                });
+            }
+
+            if (pageSizeSelect) {
+                pageSizeSelect.addEventListener('change', (e) => {
+                    this.callsPagination.pageSize = parseInt(e.target.value);
+                    this.callsPagination.currentPage = 1; // Reset to first page
+                    this.updateCallsTable(this.filteredCalls);
+                });
+            }
+
+            // Attach page number button listeners
+            document.querySelectorAll('[data-page]').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const page = parseInt(e.target.getAttribute('data-page'));
+                    this.callsPagination.currentPage = page;
+                    this.updateCallsTable(this.filteredCalls);
+                });
+            });
         }
     },
 
