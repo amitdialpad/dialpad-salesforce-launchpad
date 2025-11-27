@@ -329,7 +329,7 @@ const App = {
             if (updateLink) {
                 updateLink.addEventListener('click', (e) => {
                     e.preventDefault();
-                    alert('In a real implementation, this would redirect to Salesforce AppExchange or package installation page.');
+                    this.showUpdateConsentModal();
                 });
             }
 
@@ -689,6 +689,16 @@ const App = {
                                                         <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#call")}"></use>
                                                     </svg>
                                                     View Calls
+                                                </span>
+                                            </a>
+                                        </li>
+                                        <li class="slds-dropdown__item" role="presentation">
+                                            <a href="#/reports" role="menuitem" tabindex="-1">
+                                                <span class="slds-truncate" title="View Reports">
+                                                    <svg class="slds-icon slds-icon_x-small slds-icon-text-default slds-m-right_x-small" aria-hidden="true" style="width: 1rem; height: 1rem;">
+                                                        <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#chart")}"></use>
+                                                    </svg>
+                                                    View Reports
                                                 </span>
                                             </a>
                                         </li>
@@ -5656,7 +5666,120 @@ const App = {
 
             if (updateBtn) {
                 updateBtn.addEventListener('click', () => {
-                    alert('In a real implementation, this would redirect to:\n\nSalesforce AppExchange:\nhttps://appexchange.salesforce.com/dialpad\n\nOr directly to package installation URL.');
+                    closeModal();
+                    // Show consent modal instead of alert
+                    this.showUpdateConsentModal();
+                });
+            }
+        }, 0);
+    },
+
+    showUpdateConsentModal() {
+        const modalsContainer = document.getElementById('modals-container');
+        if (!modalsContainer) return;
+
+        modalsContainer.innerHTML = `
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open" aria-modal="true">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" id="close-update-consent">
+                            <span class="slds-icon_container">✕</span>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-modal__title slds-hyphenate">
+                            Update Dialpad Package to ${AppState.latestVersion}
+                        </h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <!-- Warning Box -->
+                        <div class="slds-notify slds-notify_alert slds-theme_warning" role="alert" style="margin-bottom: 1.5rem;">
+                            <span class="slds-assistive-text">warning</span>
+                            <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" style="fill: #fe9339;">
+                                <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                    <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#warning")}"></use>
+                                </svg>
+                            </span>
+                            <h2>
+                                <strong>Important:</strong> Test in Sandbox environment before updating Production
+                            </h2>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="slds-text-longform">
+                            <p class="slds-m-bottom_medium">
+                                Updating to version ${AppState.latestVersion} will modify your Salesforce environment.
+                                To ensure a smooth transition and avoid disruptions:
+                            </p>
+
+                            <div class="slds-box slds-box_x-small slds-theme_shade slds-m-bottom_medium">
+                                <h3 class="slds-text-heading_small slds-m-bottom_x-small">Recommended Steps:</h3>
+                                <ol class="slds-list_ordered">
+                                    <li>Install the update in your Sandbox environment first</li>
+                                    <li>Test critical workflows (call logging, screen pop, reports)</li>
+                                    <li>Verify integrations with your Dialpad account</li>
+                                    <li>Train your team on any new features</li>
+                                    <li>Only then proceed with Production update</li>
+                                </ol>
+                            </div>
+
+                            <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_medium">
+                                Need help? <a href="#">View our Sandbox Testing Guide</a> or <a href="#">Contact Support</a>
+                            </p>
+
+                            <!-- Consent Checkbox -->
+                            <div class="slds-form-element">
+                                <div class="slds-form-element__control">
+                                    <div class="slds-checkbox">
+                                        <input type="checkbox" id="sandbox-tested-checkbox" />
+                                        <label class="slds-checkbox__label" for="sandbox-tested-checkbox">
+                                            <span class="slds-checkbox_faux"></span>
+                                            <span class="slds-form-element__label">
+                                                <strong>I confirm that I have tested this update in a Sandbox environment</strong>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" id="cancel-update-btn">Cancel</button>
+                        <button class="slds-button slds-button_brand" id="proceed-update-btn" disabled>Proceed with Update</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        `;
+
+        // Attach event listeners
+        setTimeout(() => {
+            const closeBtn = document.getElementById('close-update-consent');
+            const cancelBtn = document.getElementById('cancel-update-btn');
+            const proceedBtn = document.getElementById('proceed-update-btn');
+            const checkbox = document.getElementById('sandbox-tested-checkbox');
+
+            const closeModal = () => {
+                modalsContainer.innerHTML = '';
+            };
+
+            // Enable/disable proceed button based on checkbox
+            if (checkbox && proceedBtn) {
+                checkbox.addEventListener('change', (e) => {
+                    proceedBtn.disabled = !e.target.checked;
+                });
+            }
+
+            if (closeBtn) closeBtn.addEventListener('click', closeModal);
+            if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+
+            if (proceedBtn) {
+                proceedBtn.addEventListener('click', () => {
+                    // Save acknowledgment
+                    AppState.hasTestedInSandbox = true;
+                    AppState.save();
+
+                    // In real implementation, redirect to package installation
+                    alert('In a real implementation, this would redirect to:\n\nSalesforce AppExchange:\nhttps://appexchange.salesforce.com/appxListingDetail/a0N30000000pvJfEAI\n\nOr directly to package installation URL.');
                     closeModal();
                 });
             }
