@@ -2304,12 +2304,12 @@ const App = {
                     <a href="#" id="clear-filters" class="slds-text-link">Clear all filters</a>
                 </div>
                 <div class="slds-grid slds-wrap slds-gutters">
-                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-${role === 'agent' ? '3' : '4'}">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-${role === 'agent' ? '4' : '5'}">
                         <label class="slds-form-element__label">Search</label>
                         <input type="text" id="filter-search" class="slds-input" placeholder="Search contact or agent..." />
                     </div>
                     ${role !== 'agent' ? `
-                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-5">
                         <label class="slds-form-element__label">Department</label>
                         <select id="filter-department" class="slds-select">
                             <option value="">All Departments</option>
@@ -2320,11 +2320,11 @@ const App = {
                         </select>
                     </div>
                     ` : ''}
-                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-${role === 'agent' ? '3' : '4'}">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-${role === 'agent' ? '4' : '5'}">
                         <label class="slds-form-element__label">Date</label>
                         <input type="date" id="filter-date" class="slds-input" />
                     </div>
-                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-${role === 'agent' ? '3' : '4'}">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-${role === 'agent' ? '4' : '5'}">
                         <label class="slds-form-element__label">Status</label>
                         <select id="filter-status" class="slds-select">
                             <option value="">All</option>
@@ -2332,7 +2332,7 @@ const App = {
                             <option value="Missed">Missed</option>
                         </select>
                     </div>
-                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-${role === 'agent' ? '3' : '4'}">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-${role === 'agent' ? '4' : '5'}">
                         <label class="slds-form-element__label">Direction</label>
                         <select id="filter-direction" class="slds-select">
                             <option value="">All</option>
