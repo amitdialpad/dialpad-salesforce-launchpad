@@ -3738,8 +3738,8 @@ const App = {
     },
 
     renderReportsPage(role) {
-        const reports = this.getReportsForRole(role);
-        const categories = ['All', 'Call Activity', 'Performance', 'Organization', 'Quality', 'Powerdialer'];
+        const currentReportsView = this.currentReportsView || 'all-folders';
+        const folders = this.getReportFolders();
 
         return `
             <div class="slds-page-header">
@@ -3747,8 +3747,7 @@ const App = {
                     <div class="slds-page-header__col-title">
                         <div class="slds-media">
                             <div class="slds-media__body">
-                                <h1 class="slds-page-header__title slds-truncate" title="Reports Library">Reports Library</h1>
-                                <p class="slds-page-header__meta-text">${reports.length} reports available</p>
+                                <h1 class="slds-page-header__title slds-truncate" title="Reports">Reports</h1>
                             </div>
                         </div>
                     </div>
@@ -3756,61 +3755,223 @@ const App = {
             </div>
 
             <!-- Production Implementation Note -->
-            <div class="slds-m-bottom_medium" style="background-color: #d8edff; border-left: 3px solid #1589ee; padding: 0.75rem 1rem; border-radius: 0.25rem;">
+            <div class="slds-m-bottom_medium slds-m-top_medium" style="background-color: #d8edff; border-left: 3px solid #1589ee; padding: 0.75rem 1rem; border-radius: 0.25rem;">
                 <p class="slds-text-body_small" style="color: #014486; margin: 0;">
-                    <strong>Prototype Note:</strong> In production, these reports will be organized as Salesforce report folders. The final structure and layout will follow Salesforce's native reporting interface patterns. Report layout and content pending customer feedback.
+                    <strong>Prototype Note:</strong> This prototype demonstrates the native Salesforce Reports interface pattern. In production, Dialpad will provide 15-20 pre-built report folders containing call analytics, agent performance, and quality metrics that integrate seamlessly with Salesforce's Report Builder.
                 </p>
             </div>
 
-            <div class="slds-m-bottom_medium">
-                <div class="slds-form-element">
-                    <div class="slds-form-element__control">
-                        <input type="text" id="reports-search" class="slds-input" placeholder="Search reports..." />
-                    </div>
+            <div style="display: flex; gap: 0; margin-top: 1.5rem;">
+                <!-- Left Sidebar Navigation -->
+                <div style="width: 240px; flex-shrink: 0; border-right: 1px solid #dddbda; padding-right: 1rem;">
+                    <nav class="slds-nav-vertical" aria-label="Reports Navigation">
+                        <div class="slds-nav-vertical__section">
+                            <h2 class="slds-nav-vertical__title">REPORTS</h2>
+                            <ul>
+                                <li class="slds-nav-vertical__item ${currentReportsView === 'recent' ? 'slds-is-active' : ''}">
+                                    <a href="#" class="slds-nav-vertical__action" data-reports-view="recent">Recent</a>
+                                </li>
+                                <li class="slds-nav-vertical__item ${currentReportsView === 'created-by-me' ? 'slds-is-active' : ''}">
+                                    <a href="#" class="slds-nav-vertical__action" data-reports-view="created-by-me">Created by Me</a>
+                                </li>
+                                <li class="slds-nav-vertical__item ${currentReportsView === 'private' ? 'slds-is-active' : ''}">
+                                    <a href="#" class="slds-nav-vertical__action" data-reports-view="private">Private Reports</a>
+                                </li>
+                                <li class="slds-nav-vertical__item ${currentReportsView === 'public' ? 'slds-is-active' : ''}">
+                                    <a href="#" class="slds-nav-vertical__action" data-reports-view="public">Public Reports</a>
+                                </li>
+                                <li class="slds-nav-vertical__item ${currentReportsView === 'all-reports' ? 'slds-is-active' : ''}">
+                                    <a href="#" class="slds-nav-vertical__action" data-reports-view="all-reports">All Reports</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="slds-nav-vertical__section">
+                            <h2 class="slds-nav-vertical__title">FOLDERS</h2>
+                            <ul>
+                                <li class="slds-nav-vertical__item ${currentReportsView === 'all-folders' ? 'slds-is-active' : ''}">
+                                    <a href="#" class="slds-nav-vertical__action" data-reports-view="all-folders">All Folders</a>
+                                </li>
+                                <li class="slds-nav-vertical__item ${currentReportsView === 'created-by-me-folders' ? 'slds-is-active' : ''}">
+                                    <a href="#" class="slds-nav-vertical__action" data-reports-view="created-by-me-folders">Created by Me</a>
+                                </li>
+                                <li class="slds-nav-vertical__item ${currentReportsView === 'shared' ? 'slds-is-active' : ''}">
+                                    <a href="#" class="slds-nav-vertical__action" data-reports-view="shared">Shared with Me</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="slds-nav-vertical__section">
+                            <h2 class="slds-nav-vertical__title">FAVORITES</h2>
+                            <ul>
+                                <li class="slds-nav-vertical__item ${currentReportsView === 'favorites' ? 'slds-is-active' : ''}">
+                                    <a href="#" class="slds-nav-vertical__action" data-reports-view="favorites">All Favorites</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
                 </div>
-            </div>
 
-            <div class="slds-tabs_default slds-m-bottom_medium">
-                <ul class="slds-tabs_default__nav" role="tablist">
-                    ${categories.map((category, index) => `
-                        <li class="slds-tabs_default__item ${index === 0 ? 'slds-is-active' : ''}" role="presentation">
-                            <a class="slds-tabs_default__link" href="#" role="tab" data-category="${category}" id="tab-${category.toLowerCase().replace(/\s+/g, '-')}">
-                                ${category}
-                            </a>
-                        </li>
-                    `).join('')}
-                </ul>
-            </div>
-
-            <div id="reports-container" class="slds-grid slds-wrap slds-gutters">
-                ${reports.map(report => `
-                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-3 slds-m-bottom_medium" data-report-name="${report.name.toLowerCase()}" data-report-category="${report.category}">
-                        <div class="slds-card">
-                            <div class="slds-card__header slds-grid">
-                                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <!-- Main Content Area -->
+                <div style="flex: 1; padding-left: 1.5rem;">
+                    <!-- Header with title and actions -->
+                    <div class="slds-page-header slds-page-header_record-home" style="padding: 0; border: none; margin-bottom: 1rem;">
+                        <div class="slds-page-header__row">
+                            <div class="slds-page-header__col-title">
+                                <div class="slds-media">
                                     <div class="slds-media__body">
-                                        <h2 class="slds-card__header-title">${report.name}</h2>
+                                        <div class="slds-page-header__name">
+                                            <div class="slds-page-header__name-title">
+                                                <h1>
+                                                    <span class="slds-page-header__title slds-truncate" title="All Folders">All Folders</span>
+                                                </h1>
+                                            </div>
+                                        </div>
+                                        <p class="slds-page-header__name-meta">${folders.length} items</p>
                                     </div>
-                                </header>
+                                </div>
                             </div>
-                            <div class="slds-card__body slds-card__body_inner">
-                                <p class="slds-m-bottom_small">${report.description}</p>
-                                <p class="slds-text-color_weak slds-m-bottom_x-small">
-                                    <small>Category: ${report.category}</small>
-                                </p>
-                                <p class="slds-text-color_weak slds-m-bottom_medium">
-                                    <small>Last run: ${this.getRandomLastRunDate()}</small>
-                                </p>
-                                <div class="slds-grid slds-grid_align-spread">
-                                    <button class="slds-button slds-button_brand report-run-btn" data-report-name="${report.name}">Run Report</button>
-                                    <button class="slds-button slds-button_neutral report-customize-btn" data-report-name="${report.name}">Customize</button>
+                            <div class="slds-page-header__col-actions">
+                                <div class="slds-page-header__controls">
+                                    <div class="slds-page-header__control">
+                                        <div class="slds-form-element">
+                                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left">
+                                                <svg class="slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default" aria-hidden="true">
+                                                    <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#search")}"></use>
+                                                </svg>
+                                                <input type="text" id="reports-folders-search" class="slds-input" placeholder="Search all folders..." style="width: 300px;" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-page-header__control">
+                                        <button class="slds-button slds-button_neutral">New Report</button>
+                                    </div>
+                                    <div class="slds-page-header__control">
+                                        <button class="slds-button slds-button_neutral">New Folder</button>
+                                    </div>
+                                    <div class="slds-page-header__control">
+                                        <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="Settings">
+                                            <svg class="slds-button__icon" aria-hidden="true">
+                                                <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#settings")}"></use>
+                                            </svg>
+                                            <span class="slds-assistive-text">Settings</span>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                `).join('')}
+
+                    <!-- Folders Table -->
+                    <div class="slds-card" style="margin-top: 1rem;">
+                        <div class="slds-card__body" style="margin: 0; padding: 0;">
+                            <table class="slds-table slds-table_bordered slds-table_cell-buffer" style="table-layout: fixed;">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" style="width: 30%;">
+                                            <div class="slds-truncate" title="Name">Name</div>
+                                        </th>
+                                        <th scope="col" style="width: 15%;">
+                                            <div class="slds-truncate" title="Created By">Created By</div>
+                                        </th>
+                                        <th scope="col" style="width: 17%;">
+                                            <div class="slds-truncate" title="Created On">Created On</div>
+                                        </th>
+                                        <th scope="col" style="width: 18%;">
+                                            <div class="slds-truncate" title="Last Modified By">Last Modified By</div>
+                                        </th>
+                                        <th scope="col" style="width: 17%;">
+                                            <div class="slds-truncate" title="Last Modified Date">Last Modified Date</div>
+                                        </th>
+                                        <th scope="col" style="width: 3%;">
+                                            <span class="slds-assistive-text">Actions</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${folders.map(folder => `
+                                        <tr>
+                                            <th scope="row">
+                                                <div class="slds-grid slds-grid_vertical-align-center">
+                                                    <svg class="slds-icon slds-icon_small slds-m-right_x-small" aria-hidden="true" style="fill: #706e6b;">
+                                                        <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#open_folder")}"></use>
+                                                    </svg>
+                                                    <a href="#" class="slds-truncate" title="${folder.name}">${folder.name}</a>
+                                                </div>
+                                            </th>
+                                            <td>
+                                                <div class="slds-truncate" title="${folder.createdBy}">${folder.createdBy}</div>
+                                            </td>
+                                            <td>
+                                                <div class="slds-truncate" title="${this.formatReportDate(folder.createdDate)}">${this.formatReportDate(folder.createdDate)}</div>
+                                            </td>
+                                            <td>
+                                                <div class="slds-truncate" title="${folder.lastModifiedBy}">${folder.lastModifiedBy}</div>
+                                            </td>
+                                            <td>
+                                                <div class="slds-truncate" title="${this.formatReportDate(folder.lastModifiedDate)}">${this.formatReportDate(folder.lastModifiedDate)}</div>
+                                            </td>
+                                            <td>
+                                                <div class="slds-dropdown-trigger slds-dropdown-trigger_click">
+                                                    <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-haspopup="true" title="Show Actions">
+                                                        <svg class="slds-button__icon" aria-hidden="true">
+                                                            <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#down")}"></use>
+                                                        </svg>
+                                                        <span class="slds-assistive-text">Show Actions</span>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         `;
+    },
+
+    getReportFolders() {
+        return [
+            {
+                id: 'FOLDER-001',
+                name: 'Dialpad Reports',
+                createdBy: 'SFDC OfficeAdmin',
+                createdDate: '2022-03-21T05:59:00Z',
+                lastModifiedBy: 'SFDC OfficeAdmin',
+                lastModifiedDate: '2022-03-21T05:59:00Z',
+                reportCount: 12
+            },
+            {
+                id: 'FOLDER-002',
+                name: 'Dialpad Call Analytics',
+                createdBy: 'SFDC OfficeAdmin',
+                createdDate: '2022-06-21T23:33:00Z',
+                lastModifiedBy: 'SFDC OfficeAdmin',
+                lastModifiedDate: '2022-06-21T23:33:00Z',
+                reportCount: 8
+            },
+            {
+                id: 'FOLDER-003',
+                name: 'Dialpad Agent Performance',
+                createdBy: 'SFDC OfficeAdmin',
+                createdDate: '2025-10-22T02:04:00Z',
+                lastModifiedBy: 'SFDC OfficeAdmin',
+                lastModifiedDate: '2025-10-22T02:04:00Z',
+                reportCount: 5
+            }
+        ];
+    },
+
+    formatReportDate(dateString) {
+        const date = new Date(dateString);
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        const year = date.getFullYear();
+        let hours = date.getHours();
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12 || 12;
+        return `${month}/${day}/${year}, ${hours}:${minutes} ${ampm}`;
     },
 
     getRandomLastRunDate() {
