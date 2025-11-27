@@ -2465,28 +2465,53 @@ const App = {
     },
 
     renderSmsPage(role) {
-        // For demo purposes, we'll use a subset of calls data as SMS messages
-        const messages = DataService.getCalls(role).slice(0, 15).map(call => ({
+        // Generate realistic message previews based on call data
+        const generateMessagePreview = (call) => {
+            const inbound = call.direction === 'Inbound';
+            const previews = {
+                'Closed Won': inbound ?
+                    ["I'd like to move forward with the purchase", "Yes, let's get started!", "Perfect, when can we begin?"] :
+                    ["Great! I'll send over the contract shortly", "Congratulations! Welcome aboard", "Deal closed! Next steps..."],
+                'Follow Up': inbound ?
+                    ["Following up on our conversation yesterday", "Did you have a chance to review?", "Any questions about the proposal?"] :
+                    ["Thanks for your time today. Let me know if...", "Following up from our call. Here's...", "Quick follow-up from our discussion..."],
+                'Interested': inbound ?
+                    ["I'd like to learn more about your services", "This looks interesting, tell me more", "Can we schedule a demo?"] :
+                    ["Thanks for your interest! Here's more info...", "I'd be happy to show you how it works", "Let me send you some details..."],
+                'Not Interested': inbound ?
+                    ["Thank you but not at this time", "Not interested, please remove me", "We're all set for now"] :
+                    ["No problem! Feel free to reach out if...", "Understood, I'll check back in...", "Thanks for letting me know"],
+                'Information': inbound ?
+                    ["Can you send me details about pricing?", "What integrations do you support?", "How does the trial period work?"] :
+                    ["Here's the information you requested...", "Let me answer your questions:", "I've sent over the details via email"],
+                'Voicemail': inbound ?
+                    ["Hi, please give me a call back at...", "Left you a voicemail, call me when you can", "Please return my call regarding..."] :
+                    ["I tried calling but got your voicemail", "Following up via text since I missed you", "Missed you earlier, let's connect..."],
+                'Busy': inbound ?
+                    ["Sorry I missed your call, I was in a meeting", "On another line, I'll call you back", "Can't talk now, text me details"] :
+                    ["I see you're busy, I'll try again later", "No problem, let me know when's good", "I'll follow up via email instead"]
+            };
+            const options = previews[call.disposition] || ["Message content...", "SMS conversation...", "Text message..."];
+            return options[Math.floor(Math.random() * options.length)];
+        };
+
+        const messages = DataService.getCalls(role).map(call => ({
             ...call,
-            messagePreview: 'Sample SMS message text...',
+            messagePreview: generateMessagePreview(call),
             type: call.direction === 'Inbound' ? 'Received' : 'Sent'
         }));
 
-        // Define views based on role
+        // Define views based on role (no "My Team" for supervisor, admin has no tabs)
         const views = role === 'agent'
             ? [
-                { id: 'my-sms', label: 'My Messages', default: true },
-                { id: 'all-sms', label: 'All Messages', default: false }
+                { id: 'my-sms', label: 'My Messages', default: true }
             ]
             : role === 'supervisor'
             ? [
-                { id: 'my-sms', label: 'My Messages', default: false },
-                { id: 'team-sms', label: 'My Team', default: true },
-                { id: 'all-sms', label: 'All Messages', default: false }
+                { id: 'all-sms', label: 'All Messages', default: true }
             ]
             : [
-                // Admin: company-wide view, no team filtering
-                { id: 'all-sms', label: 'All Messages', default: true }
+                // Admin: no tabs (single view)
             ];
 
         return `
@@ -2502,7 +2527,8 @@ const App = {
                 </div>
             </div>
 
-            <!-- View Selector (Predefined Views) -->
+            <!-- View Selector (only show if multiple views) -->
+            ${views.length > 1 ? `
             <div class="slds-m-bottom_medium">
                 <div class="slds-tabs_default">
                     <ul class="slds-tabs_default__nav" role="tablist">
@@ -2516,6 +2542,7 @@ const App = {
                     </ul>
                 </div>
             </div>
+            ` : ''}
 
             <div class="filters-section">
                 <div class="slds-grid slds-grid_align-spread slds-m-bottom_x-small">
@@ -2554,11 +2581,50 @@ const App = {
                 </div>
             </div>
 
+            <div id="sms-table-container">
+                ${this.renderSmsTable(messages, role)}
+            </div>
+        `;
+    },
+
+    renderSmsTable(messages, role) {
+        // Initialize pagination state
+        if (!this.smsPagination) {
+            this.smsPagination = {
+                currentPage: 1,
+                pageSize: 25
+            };
+        }
+
+        // Calculate pagination
+        const totalRecords = messages.length;
+        const totalPages = Math.ceil(totalRecords / this.smsPagination.pageSize);
+        const startIndex = (this.smsPagination.currentPage - 1) * this.smsPagination.pageSize;
+        const endIndex = Math.min(startIndex + this.smsPagination.pageSize, totalRecords);
+        const paginatedMessages = messages.slice(startIndex, endIndex);
+
+        // Generate page numbers (max 7 visible)
+        const pageNumbers = [];
+        if (totalPages <= 7) {
+            for (let i = 1; i <= totalPages; i++) {
+                pageNumbers.push(i);
+            }
+        } else {
+            if (this.smsPagination.currentPage <= 4) {
+                pageNumbers.push(1, 2, 3, 4, 5, '...', totalPages);
+            } else if (this.smsPagination.currentPage >= totalPages - 3) {
+                pageNumbers.push(1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+            } else {
+                pageNumbers.push(1, '...', this.smsPagination.currentPage - 1, this.smsPagination.currentPage, this.smsPagination.currentPage + 1, '...', totalPages);
+            }
+        }
+
+        return `
             <div class="slds-card">
                 <div class="slds-card__header slds-grid">
                     <header class="slds-media slds-media_center slds-has-flexi-truncate">
                         <div class="slds-media__body">
-                            <h2 class="slds-card__header-title" id="sms-count">Message History (${messages.length} records)</h2>
+                            <h2 class="slds-card__header-title" id="sms-count">Message History (${totalRecords} records)</h2>
                         </div>
                     </header>
                     <div class="slds-no-flex">
@@ -2573,14 +2639,16 @@ const App = {
                                 <th scope="col" class="sortable-sms" data-sort="contact">Contact <span class="sort-indicator"></span></th>
                                 <th scope="col" class="sortable-sms" data-sort="type">Type <span class="sort-indicator"></span></th>
                                 <th scope="col">Message Preview</th>
-                                ${role !== 'agent' ? '<th scope="col" class="sortable-sms" data-sort="userName">User <span class="sort-indicator"></span></th>' : ''}
+                                ${role !== 'agent' ? '<th scope="col" class="sortable-sms" data-sort="userName">Agent <span class="sort-indicator"></span></th>' : ''}
                             </tr>
                         </thead>
                         <tbody id="sms-table-body">
-                            ${messages.map(msg => `
+                            ${paginatedMessages.map(msg => `
                                 <tr>
                                     <td>${DataService.formatTimestamp(msg.timestamp)}</td>
-                                    <td>${msg.contact}</td>
+                                    <td onclick="alert('In production, this would open the Salesforce record for:\\n\\n${msg.contact}\\n\\nShowing full contact/lead/account details, conversation history, and related messages.');" style="cursor: pointer;">
+                                        <span class="slds-text-link">${msg.contact}</span>
+                                    </td>
                                     <td>${msg.type}</td>
                                     <td>${msg.messagePreview}</td>
                                     ${role !== 'agent' ? `<td>${msg.userName}</td>` : ''}
@@ -2588,6 +2656,41 @@ const App = {
                             `).join('')}
                         </tbody>
                     </table>
+
+                    <!-- Pagination Controls -->
+                    ${totalRecords > this.smsPagination.pageSize ? `
+                    <div class="slds-grid slds-grid_vertical-align-center" style="margin: 1rem;">
+                        <div class="slds-col slds-size_1-of-2">
+                            <span class="slds-text-body_small">
+                                Showing ${startIndex + 1}-${endIndex} of ${totalRecords} records
+                            </span>
+                            <span class="slds-m-left_medium">
+                                <label for="sms-page-size-select" class="slds-text-body_small">View:</label>
+                                <select id="sms-page-size-select" class="slds-select" style="width: auto; display: inline-block; margin-left: 0.25rem;">
+                                    <option value="25" ${this.smsPagination.pageSize === 25 ? 'selected' : ''}>25</option>
+                                    <option value="50" ${this.smsPagination.pageSize === 50 ? 'selected' : ''}>50</option>
+                                    <option value="100" ${this.smsPagination.pageSize === 100 ? 'selected' : ''}>100</option>
+                                </select>
+                            </span>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-text-align_right">
+                            <div class="slds-button-group" role="group">
+                                <button class="slds-button slds-button_neutral" id="sms-prev-page" ${this.smsPagination.currentPage === 1 ? 'disabled' : ''}>
+                                    Previous
+                                </button>
+                                ${pageNumbers.map(page => {
+                                    if (page === '...') {
+                                        return '<span class="slds-button slds-button_neutral" disabled>...</span>';
+                                    }
+                                    return `<button class="slds-button slds-button_neutral ${page === this.smsPagination.currentPage ? 'slds-is-selected' : ''}" data-sms-page="${page}">${page}</button>`;
+                                }).join('')}
+                                <button class="slds-button slds-button_neutral" id="sms-next-page" ${this.smsPagination.currentPage === totalPages ? 'disabled' : ''}>
+                                    Next
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    ` : ''}
                 </div>
             </div>
         `;
@@ -3715,6 +3818,47 @@ const App = {
                 this.sortSms(sortField);
             });
         });
+
+        // Attach pagination listeners
+        const smsPrevButton = document.getElementById('sms-prev-page');
+        const smsNextButton = document.getElementById('sms-next-page');
+        const smsPageSizeSelect = document.getElementById('sms-page-size-select');
+
+        if (smsPrevButton) {
+            smsPrevButton.addEventListener('click', () => {
+                if (this.smsPagination.currentPage > 1) {
+                    this.smsPagination.currentPage--;
+                    this.updateSmsTable(this.filteredSms || []);
+                }
+            });
+        }
+
+        if (smsNextButton) {
+            smsNextButton.addEventListener('click', () => {
+                const totalPages = Math.ceil((this.filteredSms || []).length / this.smsPagination.pageSize);
+                if (this.smsPagination.currentPage < totalPages) {
+                    this.smsPagination.currentPage++;
+                    this.updateSmsTable(this.filteredSms || []);
+                }
+            });
+        }
+
+        if (smsPageSizeSelect) {
+            smsPageSizeSelect.addEventListener('change', (e) => {
+                this.smsPagination.pageSize = parseInt(e.target.value);
+                this.smsPagination.currentPage = 1; // Reset to first page
+                this.updateSmsTable(this.filteredSms || []);
+            });
+        }
+
+        // Attach page number button listeners
+        document.querySelectorAll('[data-sms-page]').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const page = parseInt(e.target.getAttribute('data-sms-page'));
+                this.smsPagination.currentPage = page;
+                this.updateSmsTable(this.filteredSms || []);
+            });
+        });
     },
 
     attachSettingsPageListeners() {
@@ -4329,23 +4473,64 @@ const App = {
 
     updateSmsTable(messages) {
         const role = RoleManager.getRole();
-        const tbody = document.getElementById('sms-table-body');
-        const countEl = document.getElementById('sms-count');
+        const container = document.getElementById('sms-table-container');
 
-        if (!tbody) return;
+        if (container) {
+            // Store filtered messages for pagination
+            this.filteredSms = messages;
 
-        tbody.innerHTML = messages.map(msg => `
-            <tr>
-                <td>${DataService.formatTimestamp(msg.timestamp)}</td>
-                <td>${msg.contact}</td>
-                <td>${msg.type}</td>
-                <td>${msg.messagePreview}</td>
-                ${role !== 'agent' ? `<td>${msg.userName}</td>` : ''}
-            </tr>
-        `).join('');
+            // Re-render the SMS table with pagination
+            container.innerHTML = this.renderSmsTable(messages, role);
 
-        if (countEl) {
-            countEl.textContent = `Message History (${messages.length} records)`;
+            // Re-attach sorting listeners
+            const sortableHeaders = document.querySelectorAll('.sortable-sms');
+            sortableHeaders.forEach(header => {
+                header.addEventListener('click', (e) => {
+                    const sortField = e.currentTarget.getAttribute('data-sort');
+                    this.sortSms(sortField);
+                });
+            });
+
+            // Re-attach pagination listeners
+            const smsPrevButton = document.getElementById('sms-prev-page');
+            const smsNextButton = document.getElementById('sms-next-page');
+            const smsPageSizeSelect = document.getElementById('sms-page-size-select');
+
+            if (smsPrevButton) {
+                smsPrevButton.addEventListener('click', () => {
+                    if (this.smsPagination.currentPage > 1) {
+                        this.smsPagination.currentPage--;
+                        this.updateSmsTable(this.filteredSms);
+                    }
+                });
+            }
+
+            if (smsNextButton) {
+                smsNextButton.addEventListener('click', () => {
+                    const totalPages = Math.ceil(this.filteredSms.length / this.smsPagination.pageSize);
+                    if (this.smsPagination.currentPage < totalPages) {
+                        this.smsPagination.currentPage++;
+                        this.updateSmsTable(this.filteredSms);
+                    }
+                });
+            }
+
+            if (smsPageSizeSelect) {
+                smsPageSizeSelect.addEventListener('change', (e) => {
+                    this.smsPagination.pageSize = parseInt(e.target.value);
+                    this.smsPagination.currentPage = 1;
+                    this.updateSmsTable(this.filteredSms);
+                });
+            }
+
+            // Attach page number button listeners
+            document.querySelectorAll('[data-sms-page]').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const page = parseInt(e.target.getAttribute('data-sms-page'));
+                    this.smsPagination.currentPage = page;
+                    this.updateSmsTable(this.filteredSms);
+                });
+            });
         }
     },
 
