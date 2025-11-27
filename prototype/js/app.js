@@ -2395,16 +2395,16 @@ const App = {
                     </div>
                 </div>
                 <div class="slds-card__body">
-                    <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                    <table class="slds-table slds-table_bordered slds-table_cell-buffer" style="table-layout: fixed;">
                         <thead>
                             <tr>
-                                <th scope="col" class="sortable" data-sort="timestamp">Time <span class="sort-indicator"></span></th>
-                                <th scope="col" class="sortable" data-sort="contact">Contact <span class="sort-indicator"></span></th>
-                                <th scope="col" class="sortable" data-sort="direction">Direction <span class="sort-indicator"></span></th>
-                                <th scope="col" class="sortable" data-sort="duration">Duration <span class="sort-indicator"></span></th>
-                                <th scope="col" class="sortable" data-sort="status">Status <span class="sort-indicator"></span></th>
-                                <th scope="col" class="sortable" data-sort="disposition">Disposition <span class="sort-indicator"></span></th>
-                                ${role !== 'agent' ? '<th scope="col" class="sortable" data-sort="userName">Agent <span class="sort-indicator"></span></th>' : ''}
+                                <th scope="col" class="sortable" data-sort="timestamp" style="width: 12%;">Time <span class="sort-indicator"></span></th>
+                                <th scope="col" class="sortable" data-sort="contact" style="width: ${role !== 'agent' ? '16%' : '20%'};">Contact <span class="sort-indicator"></span></th>
+                                <th scope="col" class="sortable" data-sort="direction" style="width: ${role !== 'agent' ? '11%' : '14%'};">Direction <span class="sort-indicator"></span></th>
+                                <th scope="col" class="sortable" data-sort="duration" style="width: ${role !== 'agent' ? '10%' : '12%'};">Duration <span class="sort-indicator"></span></th>
+                                <th scope="col" class="sortable" data-sort="status" style="width: ${role !== 'agent' ? '11%' : '14%'};">Status <span class="sort-indicator"></span></th>
+                                <th scope="col" class="sortable" data-sort="disposition" style="width: ${role !== 'agent' ? '14%' : '18%'};">Disposition <span class="sort-indicator"></span></th>
+                                ${role !== 'agent' ? '<th scope="col" class="sortable" data-sort="userName" style="width: 18%;">Agent <span class="sort-indicator"></span></th>' : ''}
                             </tr>
                         </thead>
                         <tbody id="calls-table-body">
@@ -2632,14 +2632,14 @@ const App = {
                     </div>
                 </div>
                 <div class="slds-card__body">
-                    <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                    <table class="slds-table slds-table_bordered slds-table_cell-buffer" style="table-layout: fixed;">
                         <thead>
                             <tr>
-                                <th scope="col" class="sortable-sms" data-sort="timestamp">Time <span class="sort-indicator"></span></th>
-                                <th scope="col" class="sortable-sms" data-sort="contact">Contact <span class="sort-indicator"></span></th>
-                                <th scope="col" class="sortable-sms" data-sort="type">Type <span class="sort-indicator"></span></th>
-                                <th scope="col">Message Preview</th>
-                                ${role !== 'agent' ? '<th scope="col" class="sortable-sms" data-sort="userName">Agent <span class="sort-indicator"></span></th>' : ''}
+                                <th scope="col" class="sortable-sms" data-sort="timestamp" style="width: 12%;">Time <span class="sort-indicator"></span></th>
+                                <th scope="col" class="sortable-sms" data-sort="contact" style="width: ${role !== 'agent' ? '16%' : '20%'};">Contact <span class="sort-indicator"></span></th>
+                                <th scope="col" class="sortable-sms" data-sort="type" style="width: ${role !== 'agent' ? '10%' : '14%'};">Type <span class="sort-indicator"></span></th>
+                                <th scope="col" style="width: ${role !== 'agent' ? '44%' : '54%'};">Message Preview</th>
+                                ${role !== 'agent' ? '<th scope="col" class="sortable-sms" data-sort="userName" style="width: 18%;">Agent <span class="sort-indicator"></span></th>' : ''}
                             </tr>
                         </thead>
                         <tbody id="sms-table-body">
@@ -4234,14 +4234,14 @@ const App = {
             }
         });
 
-        // Update sort indicators
-        document.querySelectorAll('.sort-indicator').forEach(el => el.textContent = '');
-        const activeHeader = document.querySelector(`[data-sort="${field}"] .sort-indicator`);
-        if (activeHeader) {
-            activeHeader.textContent = this.sortState.direction === 'asc' ? ' ▲' : ' ▼';
-        }
-
         this.updateCallsTable(calls);
+
+        // Update sort indicators (after table update)
+        document.querySelectorAll('.sortable .sort-indicator').forEach(el => el.textContent = '');
+        const activeHeader = document.querySelector(`.sortable[data-sort="${field}"] .sort-indicator`);
+        if (activeHeader) {
+            activeHeader.textContent = this.sortState.direction === 'asc' ? '↑' : '↓';
+        }
     },
 
     updateCallsTable(calls) {
