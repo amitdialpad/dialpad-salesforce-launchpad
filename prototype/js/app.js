@@ -3079,7 +3079,7 @@ const App = {
 
                             <!-- Lists Table -->
                             <div class="slds-card">
-                                <div class="slds-card__body">
+                                <div class="slds-card__body" style="margin: 0; padding: 0;">
                                     <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_fixed-layout">
                                         <thead>
                                             <tr>
