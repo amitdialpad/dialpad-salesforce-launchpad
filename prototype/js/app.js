@@ -1364,6 +1364,11 @@ const App = {
                                 </li>
                             `).join('')}
                         </ul>
+                        <div style="text-align: center; padding: 0.75rem 0 0.25rem 0; border-top: 1px solid #f3f2f2; margin-top: 0.75rem;">
+                            <button class="slds-button slds-button_neutral" style="font-size: 0.8rem;" onclick="window.open('https://help.dialpad.com/docs/dialpad-for-salesforce-release-notes', '_blank')">
+                                View All Release Notes
+                            </button>
+                        </div>
                     `}
                 </div>
             </div>

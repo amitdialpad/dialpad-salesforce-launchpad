@@ -470,27 +470,27 @@ const DataService = {
         const announcements = [
             {
                 id: 1,
-                type: 'feature',
-                title: 'New Feature: AI Scorecards',
-                message: 'AI Scorecards are now available for all calls. Enable in Settings.',
-                date: new Date(Date.now() - 86400000 * 2), // 2 days ago
+                type: 'update',
+                title: 'Release 25.09.30: Auto-Restore Unsaved Fields',
+                message: 'Unsaved fields like notes, subject, and dispositions are now automatically restored when the Salesforce CTI or page is refreshed.',
+                date: new Date('2025-09-30'), // September 2025
                 read: false
             },
             {
                 id: 2,
-                type: 'update',
-                title: 'Package Update Available: v2.5.0',
-                message: 'New version includes performance improvements and bug fixes. Test in Sandbox first!',
-                date: new Date(Date.now() - 86400000 * 5), // 5 days ago
+                type: 'feature',
+                title: 'Release 25.07.01: Custom Objects Screen Pop',
+                message: 'Custom objects now show up with screen pop in both Dialpad and Salesforce. Incoming calls trigger the related Salesforce record tied to the caller.',
+                date: new Date('2025-07-01'), // July 2025
                 read: false
             },
             {
                 id: 3,
-                type: 'report',
-                title: 'New Report: Call Disposition Analytics',
-                message: 'Track call outcomes with the new Call Disposition report. Available in Reports tab.',
-                date: new Date(Date.now() - 86400000 * 7), // 7 days ago
-                read: true
+                type: 'feature',
+                title: 'Release 25.03.18 (V1.793): Call Dispositions',
+                message: 'Dialpad Connect users can now use call dispositions in the Salesforce CTI for richer data insights and improved call tracking.',
+                date: new Date('2025-03-18'), // March 2025
+                read: false
             }
         ];
 
