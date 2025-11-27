@@ -3868,7 +3868,7 @@ const App = {
                                             <div class="slds-truncate" title="Last Modified Date">Last Modified Date</div>
                                         </th>
                                         <th scope="col" style="width: 4%;">
-                                            <div class="slds-truncate" title="Actions">Actions</div>
+                                            <span class="slds-assistive-text">Actions</span>
                                         </th>
                                     </tr>
                                 </thead>
