@@ -2298,33 +2298,6 @@ const App = {
                 </div>
             </div>
 
-            <!-- Display Mode Toggle (Call Records vs User Statistics) -->
-            ${role !== 'agent' ? `
-            <div class="slds-m-bottom_medium">
-                <div class="slds-button-group" role="group">
-                    <button class="slds-button slds-button_neutral calls-display-mode active" data-mode="records" style="border-right: none;">
-                        <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true" style="width: 1rem; height: 1rem;">
-                            <use xlink:href="${getAssetPath('assets/icons/utility-sprite/svg/symbols.svg#list')}"></use>
-                        </svg>
-                        Call Records
-                    </button>
-                    <button class="slds-button slds-button_neutral calls-display-mode" data-mode="statistics">
-                        <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true" style="width: 1rem; height: 1rem;">
-                            <use xlink:href="${getAssetPath('assets/icons/utility-sprite/svg/symbols.svg#matrix')}"></use>
-                        </svg>
-                        User Statistics
-                    </button>
-                </div>
-                <style>
-                    .calls-display-mode.active {
-                        background-color: #0176d3;
-                        color: white;
-                        border-color: #0176d3;
-                    }
-                </style>
-            </div>
-            ` : ''}
-
             <div class="filters-section">
                 <div class="slds-grid slds-grid_align-spread slds-m-bottom_x-small">
                     <h3 class="slds-text-heading_small">Filters</h3>
@@ -2370,19 +2343,11 @@ const App = {
                 </div>
             </div>
 
-            <!-- Calls Table Container (Dynamic based on display mode) -->
+            <!-- Calls Table -->
             <div id="calls-table-container">
-                ${this.renderCallsTable(calls, role, 'records')}
+                ${this.renderCallRecordsTable(calls, role)}
             </div>
         `;
-    },
-
-    renderCallsTable(calls, role, displayMode = 'records') {
-        if (displayMode === 'statistics') {
-            return this.renderUserStatisticsTable(calls, role);
-        } else {
-            return this.renderCallRecordsTable(calls, role);
-        }
     },
 
     renderCallRecordsTable(calls, role) {
@@ -2428,176 +2393,6 @@ const App = {
                 </div>
             </div>
         `;
-    },
-
-    renderUserStatisticsTable(calls, role) {
-        // Aggregate statistics per user
-        const userStats = this.aggregateUserStatistics(calls);
-
-        return `
-            <div class="slds-card">
-                <div class="slds-card__header slds-grid">
-                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
-                        <div class="slds-media__body">
-                            <h2 class="slds-card__header-title" id="calls-count">User Statistics (${userStats.length} users)</h2>
-                        </div>
-                    </header>
-                    <div class="slds-no-flex">
-                        <button class="slds-button slds-button_neutral" id="export-calls">Export</button>
-                    </div>
-                </div>
-                <div class="slds-card__body">
-                    <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_fixed-layout">
-                        <thead>
-                            <tr>
-                                <th scope="col" style="width: 12%;">
-                                    <div class="slds-truncate">User</div>
-                                </th>
-                                <th scope="col" style="width: 10%;">
-                                    <div class="slds-truncate">Calls</div>
-                                </th>
-                                <th scope="col" style="width: 10%;">
-                                    <div class="slds-truncate">Total Duration</div>
-                                </th>
-                                <th scope="col" style="width: 10%;">
-                                    <div class="slds-truncate">Avg. Duration</div>
-                                </th>
-                                <th scope="col" style="width: 8%;">
-                                    <div class="slds-truncate">Placed</div>
-                                </th>
-                                <th scope="col" style="width: 8%;">
-                                    <div class="slds-truncate">Answered</div>
-                                </th>
-                                <th scope="col" style="width: 8%;">
-                                    <div class="slds-truncate">Missed: Total</div>
-                                </th>
-                                <th scope="col" style="width: 10%;">
-                                    <div class="slds-truncate">Missed: Ring No Answer</div>
-                                </th>
-                                <th scope="col" style="width: 8%;">
-                                    <div class="slds-truncate">Missed: Rejected</div>
-                                </th>
-                                <th scope="col" style="width: 8%;">
-                                    <div class="slds-truncate">Cancelled</div>
-                                </th>
-                                <th scope="col" style="width: 8%;">
-                                    <div class="slds-truncate">Abandoned</div>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody id="calls-table-body">
-                            ${userStats.map(stat => {
-                                const maxCalls = Math.max(...userStats.map(s => s.totalCalls));
-                                const barWidth = maxCalls > 0 ? (stat.totalCalls / maxCalls * 100) : 0;
-
-                                return `
-                                <tr>
-                                    <td>
-                                        <div class="slds-media slds-media_center">
-                                            <div class="slds-media__figure">
-                                                <span class="slds-avatar slds-avatar_circle slds-avatar_small" style="background-color: ${this.getAvatarColor(stat.userName)};">
-                                                    <abbr class="slds-avatar__initials" title="${stat.userName}">${this.getInitials(stat.userName)}</abbr>
-                                                </span>
-                                            </div>
-                                            <div class="slds-media__body">
-                                                <div class="slds-truncate" title="${stat.userName}" style="font-weight: 500;">${stat.userName}</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div style="font-weight: 600;">${stat.totalCalls.toLocaleString()}</div>
-                                        <div style="background: #e0e5ee; height: 4px; border-radius: 2px; margin-top: 4px;">
-                                            <div style="background: #5867e8; height: 4px; border-radius: 2px; width: ${barWidth}%;"></div>
-                                        </div>
-                                    </td>
-                                    <td><div class="slds-truncate">${this.formatDurationHHMM(stat.totalDuration)}</div></td>
-                                    <td><div class="slds-truncate">${stat.avgDuration}</div></td>
-                                    <td><div class="slds-truncate">${stat.placed}</div></td>
-                                    <td><div class="slds-truncate">${stat.answered}</div></td>
-                                    <td><div class="slds-truncate">${stat.missedTotal}</div></td>
-                                    <td><div class="slds-truncate">${stat.missedRingNoAnswer}</div></td>
-                                    <td><div class="slds-truncate">${stat.missedRejected}</div></td>
-                                    <td><div class="slds-truncate">${stat.cancelled}</div></td>
-                                    <td><div class="slds-truncate">${stat.abandoned}</div></td>
-                                </tr>
-                            `}).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        `;
-    },
-
-    aggregateUserStatistics(calls) {
-        const userMap = {};
-
-        calls.forEach(call => {
-            const userName = call.userName || 'Unknown';
-
-            if (!userMap[userName]) {
-                userMap[userName] = {
-                    userName,
-                    totalCalls: 0,
-                    totalDuration: 0,
-                    placed: 0,
-                    answered: 0,
-                    missedTotal: 0,
-                    missedRingNoAnswer: 0,
-                    missedRejected: 0,
-                    cancelled: 0,
-                    abandoned: 0
-                };
-            }
-
-            const stats = userMap[userName];
-            stats.totalCalls++;
-            stats.totalDuration += call.duration || 0;
-
-            // Count by direction and status
-            if (call.direction === 'Outbound') {
-                stats.placed++;
-            }
-
-            if (call.status === 'Completed') {
-                stats.answered++;
-            } else if (call.status === 'Missed') {
-                stats.missedTotal++;
-                // Determine missed call sub-type based on disposition or duration
-                if (call.disposition === 'No Answer' || call.duration === 0) {
-                    stats.missedRingNoAnswer++;
-                } else if (call.disposition === 'Rejected' || call.disposition === 'Busy') {
-                    stats.missedRejected++;
-                }
-            } else if (call.status === 'Cancelled') {
-                stats.cancelled++;
-            } else if (call.disposition === 'Abandoned') {
-                stats.abandoned++;
-            }
-        });
-
-        // Convert to array and add calculated fields
-        return Object.values(userMap).map(stats => ({
-            ...stats,
-            avgDuration: stats.totalCalls > 0
-                ? DataService.formatDuration(Math.floor(stats.totalDuration / stats.totalCalls))
-                : '0s'
-        })).sort((a, b) => b.totalCalls - a.totalCalls);
-    },
-
-    formatDurationHHMM(seconds) {
-        const hours = Math.floor(seconds / 3600);
-        const minutes = Math.floor((seconds % 3600) / 60);
-        return hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
-    },
-
-    getAvatarColor(userName) {
-        const colors = ['#e3abec', '#c2dbf7', '#9fd6ff', '#9de7da', '#ffadf2', '#feb478', '#fc6'];
-        const index = (userName.charCodeAt(0) + userName.length) % colors.length;
-        return colors[index];
-    },
-
-    getInitials(name) {
-        return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
     },
 
     renderSmsPage(role) {
@@ -3748,24 +3543,6 @@ const App = {
             });
         });
 
-        // Attach display mode toggle listeners (Call Records vs User Statistics)
-        const displayModeButtons = document.querySelectorAll('.calls-display-mode');
-        displayModeButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-                const mode = button.getAttribute('data-mode');
-
-                // Update active button
-                displayModeButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-
-                // Store display mode
-                this.currentCallsDisplayMode = mode;
-
-                // Re-render table with current filters
-                this.filterCalls();
-            });
-        });
-
         // Attach filter listeners
         const searchInput = document.getElementById('filter-search');
         const dateInput = document.getElementById('filter-date');
@@ -4256,23 +4033,20 @@ const App = {
 
     updateCallsTable(calls) {
         const role = RoleManager.getRole();
-        const displayMode = this.currentCallsDisplayMode || 'records';
         const container = document.getElementById('calls-table-container');
 
         if (container) {
-            // Re-render the entire table with the current display mode
-            container.innerHTML = this.renderCallsTable(calls, role, displayMode);
+            // Re-render the call records table
+            container.innerHTML = this.renderCallRecordsTable(calls, role);
 
-            // Re-attach sorting listeners if in records mode
-            if (displayMode === 'records') {
-                const sortableHeaders = document.querySelectorAll('.sortable');
-                sortableHeaders.forEach(header => {
-                    header.addEventListener('click', (e) => {
-                        const sortField = e.currentTarget.getAttribute('data-sort');
-                        this.sortCalls(sortField);
-                    });
+            // Re-attach sorting listeners
+            const sortableHeaders = document.querySelectorAll('.sortable');
+            sortableHeaders.forEach(header => {
+                header.addEventListener('click', (e) => {
+                    const sortField = e.currentTarget.getAttribute('data-sort');
+                    this.sortCalls(sortField);
                 });
-            }
+            });
 
             // Re-attach export button listener
             const exportButton = document.getElementById('export-calls');
