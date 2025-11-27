@@ -1196,7 +1196,7 @@ const App = {
                             <div class="slds-text-body_small slds-text-color_weak">Permission Sets</div>
                         </div>
                     </div>
-                    <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+                    <div style="margin: 1rem; display: flex; gap: 0.5rem;">
                         <button class="slds-button slds-button_neutral slds-button_stretch">Test Connection</button>
                         <button class="slds-button slds-button_neutral slds-button_stretch">View Logs</button>
                     </div>
@@ -2428,7 +2428,7 @@ const App = {
 
                     <!-- Pagination Controls -->
                     ${totalRecords > this.callsPagination.pageSize ? `
-                    <div class="slds-grid slds-grid_vertical-align-center" style="margin-top: 1rem;">
+                    <div class="slds-grid slds-grid_vertical-align-center" style="margin: 1rem;">
                         <div class="slds-col slds-size_1-of-2">
                             <span class="slds-text-body_small">
                                 Showing ${startIndex + 1}-${endIndex} of ${totalRecords} records
@@ -2671,14 +2671,14 @@ const App = {
                 </div>
 
                 ${hasActiveSession && isPaused ? `
-                    <div class="slds-notify slds-notify_alert slds-theme_warning" style="margin-top: 1rem;">
+                    <div class="slds-notify slds-notify_alert slds-theme_warning" style="margin: 1rem;">
                         <span class="slds-assistive-text">warning</span>
                         <h2>Session Paused</h2>
                     </div>
                 ` : ''}
 
                 ${hasActiveSession && currentContact ? `
-                    <div class="slds-grid slds-wrap slds-gutters" style="margin-top: 1rem;">
+                    <div class="slds-grid slds-wrap slds-gutters" style="margin: 1rem;">
                         <div class="slds-col slds-size_1-of-2">
                             <div class="slds-card" style="border-left: 4px solid #0176d3;">
                                 <div class="slds-card__header slds-grid">
@@ -2760,7 +2760,7 @@ const App = {
                     </div>
                 ` : ''}
 
-                <div class="slds-card" style="margin-top: 1rem;">
+                <div class="slds-card" style="margin: 1rem;">
                     <div class="slds-card__header slds-grid">
                         <header class="slds-media slds-media_center slds-has-flexi-truncate">
                             <div class="slds-media__body">
