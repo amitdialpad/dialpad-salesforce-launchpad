@@ -4365,9 +4365,40 @@ const App = {
 
     filterSms() {
         const role = RoleManager.getRole();
-        let messages = DataService.getCalls(role).slice(0, 15).map(call => ({
+
+        // Generate messages with real previews
+        const generateMessagePreview = (call) => {
+            const inbound = call.direction === 'Inbound';
+            const previews = {
+                'Closed Won': inbound ?
+                    ["I'd like to move forward with the purchase", "Yes, let's get started!", "Perfect, when can we begin?"] :
+                    ["Great! I'll send over the contract shortly", "Congratulations! Welcome aboard", "Deal closed! Next steps..."],
+                'Follow Up': inbound ?
+                    ["Following up on our conversation yesterday", "Did you have a chance to review?", "Any questions about the proposal?"] :
+                    ["Thanks for your time today. Let me know if...", "Following up from our call. Here's...", "Quick follow-up from our discussion..."],
+                'Interested': inbound ?
+                    ["I'd like to learn more about your services", "This looks interesting, tell me more", "Can we schedule a demo?"] :
+                    ["Thanks for your interest! Here's more info...", "I'd be happy to show you how it works", "Let me send you some details..."],
+                'Not Interested': inbound ?
+                    ["Thank you but not at this time", "Not interested, please remove me", "We're all set for now"] :
+                    ["No problem! Feel free to reach out if...", "Understood, I'll check back in...", "Thanks for letting me know"],
+                'Information': inbound ?
+                    ["Can you send me details about pricing?", "What integrations do you support?", "How does the trial period work?"] :
+                    ["Here's the information you requested...", "Let me answer your questions:", "I've sent over the details via email"],
+                'Voicemail': inbound ?
+                    ["Hi, please give me a call back at...", "Left you a voicemail, call me when you can", "Please return my call regarding..."] :
+                    ["I tried calling but got your voicemail", "Following up via text since I missed you", "Missed you earlier, let's connect..."],
+                'Busy': inbound ?
+                    ["Sorry I missed your call, I was in a meeting", "On another line, I'll call you back", "Can't talk now, text me details"] :
+                    ["I see you're busy, I'll try again later", "No problem, let me know when's good", "I'll follow up via email instead"]
+            };
+            const options = previews[call.disposition] || ["Message content...", "SMS conversation...", "Text message..."];
+            return options[Math.floor(Math.random() * options.length)];
+        };
+
+        let messages = DataService.getCalls(role).map(call => ({
             ...call,
-            messagePreview: 'Sample SMS message text...',
+            messagePreview: generateMessagePreview(call),
             type: call.direction === 'Inbound' ? 'Received' : 'Sent'
         }));
 
@@ -4435,12 +4466,47 @@ const App = {
             this.smsSortState.direction = 'asc';
         }
 
-        const role = RoleManager.getRole();
-        let messages = DataService.getCalls(role).slice(0, 15).map(call => ({
-            ...call,
-            messagePreview: 'Sample SMS message text...',
-            type: call.direction === 'Inbound' ? 'Received' : 'Sent'
-        }));
+        // Use existing filtered messages if available, otherwise get fresh data with real previews
+        let messages = this.filteredSms || [];
+
+        if (messages.length === 0) {
+            // Generate messages with real previews (same logic as renderSmsPage)
+            const generateMessagePreview = (call) => {
+                const inbound = call.direction === 'Inbound';
+                const previews = {
+                    'Closed Won': inbound ?
+                        ["I'd like to move forward with the purchase", "Yes, let's get started!", "Perfect, when can we begin?"] :
+                        ["Great! I'll send over the contract shortly", "Congratulations! Welcome aboard", "Deal closed! Next steps..."],
+                    'Follow Up': inbound ?
+                        ["Following up on our conversation yesterday", "Did you have a chance to review?", "Any questions about the proposal?"] :
+                        ["Thanks for your time today. Let me know if...", "Following up from our call. Here's...", "Quick follow-up from our discussion..."],
+                    'Interested': inbound ?
+                        ["I'd like to learn more about your services", "This looks interesting, tell me more", "Can we schedule a demo?"] :
+                        ["Thanks for your interest! Here's more info...", "I'd be happy to show you how it works", "Let me send you some details..."],
+                    'Not Interested': inbound ?
+                        ["Thank you but not at this time", "Not interested, please remove me", "We're all set for now"] :
+                        ["No problem! Feel free to reach out if...", "Understood, I'll check back in...", "Thanks for letting me know"],
+                    'Information': inbound ?
+                        ["Can you send me details about pricing?", "What integrations do you support?", "How does the trial period work?"] :
+                        ["Here's the information you requested...", "Let me answer your questions:", "I've sent over the details via email"],
+                    'Voicemail': inbound ?
+                        ["Hi, please give me a call back at...", "Left you a voicemail, call me when you can", "Please return my call regarding..."] :
+                        ["I tried calling but got your voicemail", "Following up via text since I missed you", "Missed you earlier, let's connect..."],
+                    'Busy': inbound ?
+                        ["Sorry I missed your call, I was in a meeting", "On another line, I'll call you back", "Can't talk now, text me details"] :
+                        ["I see you're busy, I'll try again later", "No problem, let me know when's good", "I'll follow up via email instead"]
+                };
+                const options = previews[call.disposition] || ["Message content...", "SMS conversation...", "Text message..."];
+                return options[Math.floor(Math.random() * options.length)];
+            };
+
+            const role = RoleManager.getRole();
+            messages = DataService.getCalls(role).map(call => ({
+                ...call,
+                messagePreview: generateMessagePreview(call),
+                type: call.direction === 'Inbound' ? 'Received' : 'Sent'
+            }));
+        }
 
         // Sort
         messages.sort((a, b) => {
