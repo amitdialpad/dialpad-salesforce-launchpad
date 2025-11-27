@@ -14,14 +14,24 @@
     <!-- Base path configuration for GitHub Pages vs Local -->
     <script>
         // Detect if running on GitHub Pages and set base paths
-        // Assets are in public/ folder, but css/ is in prototype root
-        window.BASE_PATH = window.location.hostname === 'amitdialpad.github.io'
-            ? '/dialpad-salesforce-launchpad/prototype/public/'
-            : '/';
+        const isGitHubPages = window.location.hostname === 'amitdialpad.github.io';
+        const isAdminRefactor = window.location.pathname.includes('/admin-refactor/');
 
-        window.CSS_PATH = window.location.hostname === 'amitdialpad.github.io'
-            ? '/dialpad-salesforce-launchpad/prototype/'
-            : '/';
+        if (isGitHubPages) {
+            if (isAdminRefactor) {
+                // Admin V2 deployment at /admin-refactor/
+                window.BASE_PATH = '/dialpad-salesforce-launchpad/admin-refactor/public/';
+                window.CSS_PATH = '/dialpad-salesforce-launchpad/admin-refactor/';
+            } else {
+                // North Star deployment at root
+                window.BASE_PATH = '/dialpad-salesforce-launchpad/public/';
+                window.CSS_PATH = '/dialpad-salesforce-launchpad/';
+            }
+        } else {
+            // Local development
+            window.BASE_PATH = '/public/';
+            window.CSS_PATH = '/';
+        }
 
         // Immediately write CSS link tags with correct paths
         // Add cache-busting version parameter to force reload
