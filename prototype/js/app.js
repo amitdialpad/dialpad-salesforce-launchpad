@@ -2380,7 +2380,11 @@ const App = {
                             ${calls.map(call => `
                                 <tr>
                                     <td>${DataService.formatTimestamp(call.timestamp)}</td>
-                                    <td>${call.contact}</td>
+                                    <td>
+                                        <a href="#" class="slds-text-link" onclick="event.preventDefault(); alert('In production, this would open the Salesforce record for:\\n\\n${call.contact}\\n\\nShowing full contact/lead/account details, open opportunities, cases, and activity history.');" style="cursor: pointer;">
+                                            ${call.contact}
+                                        </a>
+                                    </td>
                                     <td>${call.direction}</td>
                                     <td>${DataService.formatDuration(call.duration)}</td>
                                     <td>${call.status}</td>
