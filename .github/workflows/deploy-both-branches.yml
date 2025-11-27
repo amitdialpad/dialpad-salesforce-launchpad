@@ -1,4 +1,4 @@
-name: Deploy Both Branches to GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
@@ -13,51 +13,47 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  group: "pages-${{ github.ref }}"
+  cancel-in-progress: true
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      - name: Prepare deployment directory
+      - name: Fetch all branches
         run: |
-          mkdir -p deploy
+          git fetch --all
+          git branch -a
 
-      - name: Copy main branch files
+      - name: Build deployment
         run: |
+          mkdir -p _site
+
+          # Deploy main branch to root
+          echo "Copying main branch..."
           git checkout main
-          cp -r prototype/* deploy/
-          echo "Main branch copied to deploy/"
+          cp -r prototype/* _site/
 
-      - name: Copy admin-refactor-v2 branch files
-        run: |
+          # Deploy admin-refactor-v2 to /admin-refactor/
+          echo "Copying admin-refactor-v2 branch..."
           git checkout admin-refactor-v2
-          mkdir -p deploy/admin-refactor
-          cp -r prototype/* deploy/admin-refactor/
-          echo "Admin refactor branch copied to deploy/admin-refactor/"
+          mkdir -p _site/admin-refactor
+          cp -r prototype/* _site/admin-refactor/
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
+          echo "Deployment structure:"
+          ls -la _site/
+          ls -la _site/admin-refactor/ || echo "admin-refactor not found"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./deploy
+          path: ./_site
 
       - name: Deploy to GitHub Pages
         id: deployment
