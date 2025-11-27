@@ -3755,15 +3755,15 @@ const App = {
             </div>
 
             <!-- Production Implementation Note -->
-            <div class="slds-m-bottom_medium slds-m-top_medium" style="background-color: #d8edff; border-left: 3px solid #1589ee; padding: 0.75rem 1rem; border-radius: 0.25rem;">
+            <div class="slds-m-bottom_large slds-m-top_medium" style="background-color: #d8edff; border-left: 3px solid #1589ee; padding: 0.75rem 1rem; border-radius: 0.25rem;">
                 <p class="slds-text-body_small" style="color: #014486; margin: 0;">
                     <strong>Prototype Note:</strong> This prototype demonstrates the native Salesforce Reports interface pattern. In production, Dialpad will provide 15-20 pre-built report folders containing call analytics, agent performance, and quality metrics that integrate seamlessly with Salesforce's Report Builder.
                 </p>
             </div>
 
-            <div style="display: flex; gap: 0; margin-top: 1.5rem;">
+            <div style="display: flex; gap: 1.5rem; margin-top: 0;">
                 <!-- Left Sidebar Navigation -->
-                <div style="width: 240px; flex-shrink: 0; border-right: 1px solid #dddbda; padding-right: 1rem;">
+                <div style="width: 240px; flex-shrink: 0; border-right: 1px solid #dddbda; padding: 0.5rem 1rem 0 0;">
                     <nav class="slds-nav-vertical" aria-label="Reports Navigation">
                         <div class="slds-nav-vertical__section">
                             <h2 class="slds-nav-vertical__title">REPORTS</h2>
@@ -3811,9 +3811,9 @@ const App = {
                 </div>
 
                 <!-- Main Content Area -->
-                <div style="flex: 1; padding-left: 1.5rem;">
+                <div style="flex: 1; padding: 0;">
                     <!-- Header with title and actions -->
-                    <div class="slds-page-header slds-page-header_record-home" style="padding: 0; border: none; margin-bottom: 1rem;">
+                    <div class="slds-page-header slds-page-header_record-home" style="padding: 0 0 1rem 0; border: none; margin-bottom: 0.5rem;">
                         <div class="slds-page-header__row">
                             <div class="slds-page-header__col-title">
                                 <div class="slds-media">
@@ -3837,17 +3837,17 @@ const App = {
                                                 <svg class="slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default" aria-hidden="true">
                                                     <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#search")}"></use>
                                                 </svg>
-                                                <input type="text" id="reports-folders-search" class="slds-input" placeholder="Search all folders..." style="width: 300px;" />
+                                                <input type="text" id="reports-folders-search" class="slds-input" placeholder="Search all folders..." style="width: 280px;" />
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="slds-page-header__control">
-                                        <button class="slds-button slds-button_neutral">New Report</button>
+                                    <div class="slds-page-header__control" style="margin-left: 0.5rem;">
+                                        <div class="slds-button-group" role="group">
+                                            <button class="slds-button slds-button_neutral">New Report</button>
+                                            <button class="slds-button slds-button_neutral">New Folder</button>
+                                        </div>
                                     </div>
-                                    <div class="slds-page-header__control">
-                                        <button class="slds-button slds-button_neutral">New Folder</button>
-                                    </div>
-                                    <div class="slds-page-header__control">
+                                    <div class="slds-page-header__control" style="margin-left: 0.25rem;">
                                         <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="Settings">
                                             <svg class="slds-button__icon" aria-hidden="true">
                                                 <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#settings")}"></use>
@@ -3861,63 +3861,61 @@ const App = {
                     </div>
 
                     <!-- Folders Table -->
-                    <div class="slds-card" style="margin-top: 1rem;">
+                    <div class="slds-card">
                         <div class="slds-card__body" style="margin: 0; padding: 0;">
                             <table class="slds-table slds-table_bordered slds-table_cell-buffer" style="table-layout: fixed;">
                                 <thead>
-                                    <tr>
-                                        <th scope="col" style="width: 30%;">
+                                    <tr class="slds-line-height_reset">
+                                        <th scope="col" style="width: 32%; padding: 0.75rem 0.5rem;">
                                             <div class="slds-truncate" title="Name">Name</div>
                                         </th>
-                                        <th scope="col" style="width: 15%;">
+                                        <th scope="col" style="width: 16%; padding: 0.75rem 0.5rem;">
                                             <div class="slds-truncate" title="Created By">Created By</div>
                                         </th>
-                                        <th scope="col" style="width: 17%;">
+                                        <th scope="col" style="width: 17%; padding: 0.75rem 0.5rem;">
                                             <div class="slds-truncate" title="Created On">Created On</div>
                                         </th>
-                                        <th scope="col" style="width: 18%;">
+                                        <th scope="col" style="width: 16%; padding: 0.75rem 0.5rem;">
                                             <div class="slds-truncate" title="Last Modified By">Last Modified By</div>
                                         </th>
-                                        <th scope="col" style="width: 17%;">
+                                        <th scope="col" style="width: 16%; padding: 0.75rem 0.5rem;">
                                             <div class="slds-truncate" title="Last Modified Date">Last Modified Date</div>
                                         </th>
-                                        <th scope="col" style="width: 3%;">
+                                        <th scope="col" style="width: 3%; padding: 0.75rem 0.5rem; text-align: center;">
                                             <span class="slds-assistive-text">Actions</span>
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     ${folders.map(folder => `
-                                        <tr>
-                                            <th scope="row">
-                                                <div class="slds-grid slds-grid_vertical-align-center">
-                                                    <svg class="slds-icon slds-icon_small slds-m-right_x-small" aria-hidden="true" style="fill: #706e6b;">
+                                        <tr class="slds-hint-parent">
+                                            <th scope="row" style="padding: 0.75rem 0.5rem;">
+                                                <div class="slds-grid slds-grid_vertical-align-center" style="gap: 0.5rem;">
+                                                    <svg class="slds-icon slds-icon_small" aria-hidden="true" style="fill: #706e6b; flex-shrink: 0;">
                                                         <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#open_folder")}"></use>
                                                     </svg>
-                                                    <a href="#" class="slds-truncate" title="${folder.name}">${folder.name}</a>
+                                                    <a href="#" class="slds-truncate" title="${folder.name}" style="font-weight: 400;">${folder.name}</a>
                                                 </div>
                                             </th>
-                                            <td>
+                                            <td style="padding: 0.75rem 0.5rem;">
                                                 <div class="slds-truncate" title="${folder.createdBy}">${folder.createdBy}</div>
                                             </td>
-                                            <td>
+                                            <td style="padding: 0.75rem 0.5rem;">
                                                 <div class="slds-truncate" title="${this.formatReportDate(folder.createdDate)}">${this.formatReportDate(folder.createdDate)}</div>
                                             </td>
-                                            <td>
+                                            <td style="padding: 0.75rem 0.5rem;">
                                                 <div class="slds-truncate" title="${folder.lastModifiedBy}">${folder.lastModifiedBy}</div>
                                             </td>
-                                            <td>
+                                            <td style="padding: 0.75rem 0.5rem;">
                                                 <div class="slds-truncate" title="${this.formatReportDate(folder.lastModifiedDate)}">${this.formatReportDate(folder.lastModifiedDate)}</div>
                                             </td>
-                                            <td>
-                                                <div class="slds-dropdown-trigger slds-dropdown-trigger_click">
-                                                    <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-haspopup="true" title="Show Actions">
-                                                        <svg class="slds-button__icon" aria-hidden="true">
-                                                            <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#down")}"></use>
-                                                        </svg>
-                                                        <span class="slds-assistive-text">Show Actions</span>
-                                                    </button>
-                                                </div>
+                                            <td style="padding: 0.5rem; text-align: center;">
+                                                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-haspopup="true" title="Show Actions">
+                                                    <svg class="slds-button__icon" aria-hidden="true">
+                                                        <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#down")}"></use>
+                                                    </svg>
+                                                    <span class="slds-assistive-text">Show Actions</span>
+                                                </button>
                                             </td>
                                         </tr>
                                     `).join('')}
