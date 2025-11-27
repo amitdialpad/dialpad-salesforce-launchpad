@@ -2244,7 +2244,7 @@ const App = {
     renderCallsPage(role) {
         const calls = DataService.getCalls(role);
 
-        // Define views based on role per PM requirements
+        // Define views based on role
         const views = role === 'agent'
             ? [
                 { id: 'my-calls', label: 'My Calls', default: true }
@@ -2255,9 +2255,9 @@ const App = {
                 { id: 'my-calls', label: 'My Calls', default: false }
             ]
             : [
-                // Admin: All Calls and My Calls per PM feedback
+                // Admin: All Calls and Recorded Calls (merged from Voicemail)
                 { id: 'all-calls', label: 'All Calls', default: true },
-                { id: 'my-calls', label: 'My Calls', default: false }
+                { id: 'recorded-calls', label: 'Recorded Calls', default: false }
             ];
 
         const defaultView = views.find(v => v.default).id;
@@ -2493,22 +2493,6 @@ const App = {
             type: call.direction === 'Inbound' ? 'Received' : 'Sent'
         }));
 
-        // Define views based on role per PM requirements (same structure as Calls)
-        const views = role === 'agent'
-            ? [
-                { id: 'my-sms', label: 'My Calls', default: true }
-            ]
-            : role === 'supervisor'
-            ? [
-                { id: 'team-sms', label: 'My Team', default: true },
-                { id: 'my-sms', label: 'My Calls', default: false }
-            ]
-            : [
-                // Admin: All Calls and My Calls per PM feedback
-                { id: 'all-sms', label: 'All Calls', default: true },
-                { id: 'my-sms', label: 'My Calls', default: false }
-            ];
-
         return `
             <div class="slds-page-header">
                 <div class="slds-page-header__row">
@@ -2521,23 +2505,6 @@ const App = {
                     </div>
                 </div>
             </div>
-
-            <!-- View Selector (only show if multiple views) -->
-            ${views.length > 1 ? `
-            <div class="slds-m-bottom_medium">
-                <div class="slds-tabs_default">
-                    <ul class="slds-tabs_default__nav" role="tablist">
-                        ${views.map(view => `
-                            <li class="slds-tabs_default__item ${view.default ? 'slds-is-active' : ''}" role="presentation">
-                                <a class="slds-tabs_default__link sms-view-tab" href="#" role="tab" data-view="${view.id}">
-                                    ${view.label}
-                                </a>
-                            </li>
-                        `).join('')}
-                    </ul>
-                </div>
-            </div>
-            ` : ''}
 
             <div class="filters-section">
                 <div class="slds-grid slds-grid_align-spread slds-m-bottom_x-small">
