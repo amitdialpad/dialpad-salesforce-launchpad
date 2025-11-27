@@ -3006,7 +3006,7 @@ const App = {
                                             <div class="slds-page-header__control">
                                                 <button class="slds-button slds-button_brand">
                                                     <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
-                                                        <use xlink:href="/salesforce-lightning-design-system/assets/icons/utility-sprite/svg/symbols.svg#add"></use>
+                                                        <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#add")}"></use>
                                                     </svg>
                                                     Create New List
                                                 </button>
@@ -3030,7 +3030,7 @@ const App = {
                                                 <div class="slds-dropdown-trigger slds-dropdown-trigger_click">
                                                     <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-haspopup="true" title="More Actions">
                                                         <svg class="slds-button__icon" aria-hidden="true">
-                                                            <use xlink:href="/salesforce-lightning-design-system/assets/icons/utility-sprite/svg/symbols.svg#down"></use>
+                                                            <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#down")}"></use>
                                                         </svg>
                                                         <span class="slds-assistive-text">More Actions</span>
                                                     </button>
@@ -3047,7 +3047,7 @@ const App = {
                                     <div class="slds-form-element">
                                         <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left">
                                             <svg class="slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default" aria-hidden="true">
-                                                <use xlink:href="/salesforce-lightning-design-system/assets/icons/utility-sprite/svg/symbols.svg#search"></use>
+                                                <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#search")}"></use>
                                             </svg>
                                             <input type="text" class="slds-input" placeholder="Search lists..." id="powerdialer-search" value="${searchTerm}" />
                                         </div>
@@ -3057,19 +3057,19 @@ const App = {
                                     <div class="slds-button-group" role="group">
                                         <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="Refresh" onclick="DialpadApp.refreshPowerDialerPage()">
                                             <svg class="slds-button__icon" aria-hidden="true">
-                                                <use xlink:href="/salesforce-lightning-design-system/assets/icons/utility-sprite/svg/symbols.svg#refresh"></use>
+                                                <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#refresh")}"></use>
                                             </svg>
                                             <span class="slds-assistive-text">Refresh</span>
                                         </button>
                                         <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="Filter">
                                             <svg class="slds-button__icon" aria-hidden="true">
-                                                <use xlink:href="/salesforce-lightning-design-system/assets/icons/utility-sprite/svg/symbols.svg#filterList"></use>
+                                                <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#filterList")}"></use>
                                             </svg>
                                             <span class="slds-assistive-text">Filter</span>
                                         </button>
                                         <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="List View">
                                             <svg class="slds-button__icon" aria-hidden="true">
-                                                <use xlink:href="/salesforce-lightning-design-system/assets/icons/utility-sprite/svg/symbols.svg#table"></use>
+                                                <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#table")}"></use>
                                             </svg>
                                             <span class="slds-assistive-text">List View</span>
                                         </button>
@@ -3163,7 +3163,7 @@ const App = {
                                                         <div class="slds-dropdown-trigger slds-dropdown-trigger_click">
                                                             <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-haspopup="true" title="Show More">
                                                                 <svg class="slds-button__icon" aria-hidden="true">
-                                                                    <use xlink:href="/salesforce-lightning-design-system/assets/icons/utility-sprite/svg/symbols.svg#down"></use>
+                                                                    <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#down")}"></use>
                                                                 </svg>
                                                                 <span class="slds-assistive-text">Show More</span>
                                                             </button>
@@ -3197,7 +3197,7 @@ const App = {
                                                             ${currentPage === 1 ? 'disabled' : ''}
                                                             title="Previous Page">
                                                         <svg class="slds-button__icon" aria-hidden="true">
-                                                            <use xlink:href="/salesforce-lightning-design-system/assets/icons/utility-sprite/svg/symbols.svg#chevronleft"></use>
+                                                            <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#chevronleft")}"></use>
                                                         </svg>
                                                         <span class="slds-assistive-text">Previous</span>
                                                     </button>
@@ -3209,7 +3209,7 @@ const App = {
                                                             ${currentPage === totalPages ? 'disabled' : ''}
                                                             title="Next Page">
                                                         <svg class="slds-button__icon" aria-hidden="true">
-                                                            <use xlink:href="/salesforce-lightning-design-system/assets/icons/utility-sprite/svg/symbols.svg#chevronright"></use>
+                                                            <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#chevronright")}"></use>
                                                         </svg>
                                                         <span class="slds-assistive-text">Next</span>
                                                     </button>
