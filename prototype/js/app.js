@@ -261,7 +261,7 @@ const App = {
             const showSandboxWarning = AppState.showSandboxWarning && AppState.environment === 'production' && !AppState.hasTestedInSandbox;
 
             bannersHTML += `
-                <div class="slds-scoped-notification slds-media slds-media_center ${showSandboxWarning ? 'slds-theme_warning' : 'slds-scoped-notification_light'}" role="alert">
+                <div class="slds-scoped-notification slds-media slds-media_center ${showSandboxWarning ? 'slds-theme_warning' : 'slds-scoped-notification_light'}" role="alert" style="margin-bottom: 0.5rem;">
                     <div class="slds-media__figure">
                         <span class="slds-icon_container slds-icon-utility-info" title="information">
                             <svg class="slds-icon slds-icon-text-default slds-icon_small" aria-hidden="true">
@@ -270,31 +270,22 @@ const App = {
                         </span>
                     </div>
                     <div class="slds-media__body">
-                        <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
-                            <div class="slds-col">
-                                <p>
-                                    <strong>New Version Available: ${AppState.latestVersion}</strong>
-                                    <span class="slds-m-left_xx-small">
-                                        You're currently on version ${AppState.currentVersion}.
-                                    </span>
-                                    ${showSandboxWarning ? '<span class="slds-m-left_xx-small">We strongly recommend testing in a Sandbox environment first - <a href="#" id="sandbox-guide-link">Learn more</a></span>' : ''}
-                                </p>
-                            </div>
-                            <div class="slds-col slds-no-flex">
-                                <a href="#" id="view-changelog-link" class="slds-m-right_small">
-                                    View what's new
-                                </a>
-                                <a href="#" id="update-package-link">
-                                    Update now
-                                </a>
-                            </div>
-                        </div>
+                        <p>
+                            <strong>New Version Available: ${AppState.latestVersion}</strong>
+                            <span class="slds-m-left_xx-small">
+                                You're currently on version ${AppState.currentVersion}.
+                            </span>
+                            ${showSandboxWarning ? '<span class="slds-m-left_xx-small">We strongly recommend testing in a Sandbox environment first.</span>' : ''}
+                            <a href="#" id="view-changelog-link" class="slds-m-left_small">
+                                View what's new
+                            </a>
+                        </p>
                     </div>
                     <div class="slds-media__figure slds-media__figure_reverse">
-                        <button class="slds-button slds-button_icon slds-button_icon-border" id="close-version-banner" title="Dismiss">
-                            <span class="slds-icon_container">
-                                <span aria-hidden="true">✕</span>
-                            </span>
+                        <button class="slds-button slds-button_icon slds-button_icon-border-filled" id="close-version-banner" title="Dismiss">
+                            <svg class="slds-button__icon" aria-hidden="true">
+                                <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#close")}"></use>
+                            </svg>
                             <span class="slds-assistive-text">Dismiss</span>
                         </button>
                     </div>
@@ -322,14 +313,6 @@ const App = {
                 changelogLink.addEventListener('click', (e) => {
                     e.preventDefault();
                     this.showChangelogModal();
-                });
-            }
-
-            const updateLink = document.getElementById('update-package-link');
-            if (updateLink) {
-                updateLink.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    this.showUpdateConsentModal();
                 });
             }
 
