@@ -168,7 +168,10 @@ const App = {
                     break;
                 case 'powerdialer':
                     content.innerHTML = this.renderPowerdialerPage(role);
-                    setTimeout(() => this.attachBannerListeners(), 0);
+                    setTimeout(() => {
+                        this.attachBannerListeners();
+                        this.attachPowerDialerPageListeners();
+                    }, 0);
                     break;
                 case 'reports':
                     content.innerHTML = this.renderReportsPage(role);
@@ -2931,64 +2934,324 @@ const App = {
             `;
         } else {
             // Supervisor/Admin view
+            const currentPowerDialerTab = this.currentPowerDialerTab || 'manage-lists';
+            const searchTerm = this.powerDialerSearchTerm || '';
+            const currentPage = this.currentPowerDialerPage || 1;
+            const itemsPerPage = 10;
+
+            // Filter and paginate lists
+            let filteredLists = lists;
+            if (searchTerm) {
+                filteredLists = lists.filter(list =>
+                    list.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    list.createdBy.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    list.salesforceObject.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+            }
+
+            const totalPages = Math.ceil(filteredLists.length / itemsPerPage);
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, filteredLists.length);
+            const paginatedLists = filteredLists.slice(startIndex, endIndex);
+
             return `
                 <div class="slds-page-header">
                     <div class="slds-page-header__row">
                         <div class="slds-page-header__col-title">
                             <div class="slds-media">
                                 <div class="slds-media__body">
-                                    <h1 class="slds-page-header__title slds-truncate" title="Powerdialer">Powerdialer</h1>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="slds-page-header__col-actions">
-                            <div class="slds-page-header__controls">
-                                <div class="slds-page-header__control">
-                                    <button class="slds-button slds-button_brand">Create List</button>
+                                    <h1 class="slds-page-header__title slds-truncate" title="Powerdialer Setup">Powerdialer Setup</h1>
+                                    <p class="slds-page-header__meta-text">Manage calling lists and prioritization</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="slds-card">
-                    <div class="slds-card__header slds-grid">
-                        <header class="slds-media slds-media_center slds-has-flexi-truncate">
-                            <div class="slds-media__body">
-                                <h2 class="slds-card__header-title">Manage Lists</h2>
+                <div style="display: flex; gap: 1.5rem; margin-top: 1.5rem;">
+                    <!-- Setup Manager Navigation Sidebar -->
+                    <div style="width: 240px; flex-shrink: 0;">
+                        <nav class="slds-nav-vertical" aria-label="Powerdialer Setup Navigation">
+                            <div class="slds-nav-vertical__section">
+                                <h2 class="slds-nav-vertical__title">Setup Manager</h2>
+                                <ul>
+                                    <li class="slds-nav-vertical__item ${currentPowerDialerTab === 'manage-lists' ? 'slds-is-active' : ''}">
+                                        <a href="#" class="slds-nav-vertical__action" data-powerdialer-tab="manage-lists" aria-current="${currentPowerDialerTab === 'manage-lists' ? 'page' : 'false'}">
+                                            Manage Lists
+                                        </a>
+                                    </li>
+                                    <li class="slds-nav-vertical__item ${currentPowerDialerTab === 'list-prioritization' ? 'slds-is-active' : ''}">
+                                        <a href="#" class="slds-nav-vertical__action" data-powerdialer-tab="list-prioritization" aria-current="${currentPowerDialerTab === 'list-prioritization' ? 'page' : 'false'}">
+                                            List Prioritization
+                                        </a>
+                                    </li>
+                                    <li class="slds-nav-vertical__item ${currentPowerDialerTab === 'call-center-prioritization' ? 'slds-is-active' : ''}">
+                                        <a href="#" class="slds-nav-vertical__action" data-powerdialer-tab="call-center-prioritization" aria-current="${currentPowerDialerTab === 'call-center-prioritization' ? 'page' : 'false'}">
+                                            Call Center Prioritization
+                                        </a>
+                                    </li>
+                                </ul>
                             </div>
-                        </header>
+                        </nav>
                     </div>
-                    <div class="slds-card__body">
-                        <table class="slds-table slds-table_bordered slds-table_cell-buffer">
-                            <thead>
-                                <tr>
-                                    <th scope="col">List Name</th>
-                                    <th scope="col">Total Contacts</th>
-                                    <th scope="col">Completed</th>
-                                    <th scope="col">Assigned Agents</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${lists.map(list => {
-                                    const progress = Math.round((list.completedContacts / list.totalContacts) * 100);
-                                    return `
-                                        <tr>
-                                            <td>${list.name}</td>
-                                            <td>${list.totalContacts}</td>
-                                            <td>${list.completedContacts} (${progress}%)</td>
-                                            <td>${list.assignedAgents.length}</td>
-                                            <td><span class="slds-badge">${list.status}</span></td>
-                                            <td>
-                                                <button class="slds-button slds-button_neutral">Edit</button>
-                                            </td>
-                                        </tr>
-                                    `;
-                                }).join('')}
-                            </tbody>
-                        </table>
+
+                    <!-- Content Area -->
+                    <div style="flex: 1;">
+                        ${currentPowerDialerTab === 'manage-lists' ? `
+                            <!-- Top Action Bar -->
+                            <div class="slds-page-header" style="margin-bottom: 1rem;">
+                                <div class="slds-page-header__row">
+                                    <div class="slds-page-header__col-actions">
+                                        <div class="slds-page-header__controls">
+                                            <div class="slds-page-header__control">
+                                                <button class="slds-button slds-button_brand">
+                                                    <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
+                                                        <use xlink:href="/salesforce-lightning-design-system/assets/icons/utility-sprite/svg/symbols.svg#add"></use>
+                                                    </svg>
+                                                    Create New List
+                                                </button>
+                                            </div>
+                                            <div class="slds-page-header__control">
+                                                <button class="slds-button slds-button_neutral" ${paginatedLists.filter(l => l.selected).length === 0 ? 'disabled' : ''}>
+                                                    Activate
+                                                </button>
+                                            </div>
+                                            <div class="slds-page-header__control">
+                                                <button class="slds-button slds-button_neutral" ${paginatedLists.filter(l => l.selected).length === 0 ? 'disabled' : ''}>
+                                                    Deactivate
+                                                </button>
+                                            </div>
+                                            <div class="slds-page-header__control">
+                                                <button class="slds-button slds-button_neutral" ${paginatedLists.filter(l => l.selected).length === 0 ? 'disabled' : ''}>
+                                                    Assign
+                                                </button>
+                                            </div>
+                                            <div class="slds-page-header__control">
+                                                <div class="slds-dropdown-trigger slds-dropdown-trigger_click">
+                                                    <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-haspopup="true" title="More Actions">
+                                                        <svg class="slds-button__icon" aria-hidden="true">
+                                                            <use xlink:href="/salesforce-lightning-design-system/assets/icons/utility-sprite/svg/symbols.svg#down"></use>
+                                                        </svg>
+                                                        <span class="slds-assistive-text">More Actions</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Search and Filters -->
+                            <div class="slds-grid slds-grid_align-spread slds-m-bottom_small">
+                                <div class="slds-col slds-size_1-of-2">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left">
+                                            <svg class="slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default" aria-hidden="true">
+                                                <use xlink:href="/salesforce-lightning-design-system/assets/icons/utility-sprite/svg/symbols.svg#search"></use>
+                                            </svg>
+                                            <input type="text" class="slds-input" placeholder="Search lists..." id="powerdialer-search" value="${searchTerm}" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-no-flex">
+                                    <div class="slds-button-group" role="group">
+                                        <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="Refresh" onclick="DialpadApp.refreshPowerDialerPage()">
+                                            <svg class="slds-button__icon" aria-hidden="true">
+                                                <use xlink:href="/salesforce-lightning-design-system/assets/icons/utility-sprite/svg/symbols.svg#refresh"></use>
+                                            </svg>
+                                            <span class="slds-assistive-text">Refresh</span>
+                                        </button>
+                                        <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="Filter">
+                                            <svg class="slds-button__icon" aria-hidden="true">
+                                                <use xlink:href="/salesforce-lightning-design-system/assets/icons/utility-sprite/svg/symbols.svg#filterList"></use>
+                                            </svg>
+                                            <span class="slds-assistive-text">Filter</span>
+                                        </button>
+                                        <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="List View">
+                                            <svg class="slds-button__icon" aria-hidden="true">
+                                                <use xlink:href="/salesforce-lightning-design-system/assets/icons/utility-sprite/svg/symbols.svg#table"></use>
+                                            </svg>
+                                            <span class="slds-assistive-text">List View</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Lists Table -->
+                            <div class="slds-card">
+                                <div class="slds-card__body">
+                                    <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_fixed-layout">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col" style="width: 3rem;">
+                                                    <div class="slds-checkbox">
+                                                        <input type="checkbox" id="select-all-lists" />
+                                                        <label class="slds-checkbox__label" for="select-all-lists">
+                                                            <span class="slds-checkbox_faux"></span>
+                                                            <span class="slds-assistive-text">Select All</span>
+                                                        </label>
+                                                    </div>
+                                                </th>
+                                                <th scope="col" style="width: 18%;">
+                                                    <div class="slds-truncate" title="Name">Name</div>
+                                                </th>
+                                                <th scope="col" style="width: 10%;">
+                                                    <div class="slds-truncate" title="Created Date">Created Date</div>
+                                                </th>
+                                                <th scope="col" style="width: 10%;">
+                                                    <div class="slds-truncate" title="Last Modified">Last Modified</div>
+                                                </th>
+                                                <th scope="col" style="width: 12%;">
+                                                    <div class="slds-truncate" title="Created By">Created By</div>
+                                                </th>
+                                                <th scope="col" style="width: 12%;">
+                                                    <div class="slds-truncate" title="Last Modified By">Last Modified By</div>
+                                                </th>
+                                                <th scope="col" style="width: 10%;">
+                                                    <div class="slds-truncate" title="Total Records">Total Records</div>
+                                                </th>
+                                                <th scope="col" style="width: 10%;">
+                                                    <div class="slds-truncate" title="Salesforce Object">Salesforce Object</div>
+                                                </th>
+                                                <th scope="col" style="width: 8%;">
+                                                    <div class="slds-truncate" title="Status">Status</div>
+                                                </th>
+                                                <th scope="col" style="width: 7%;">
+                                                    <div class="slds-truncate" title="Actions">Actions</div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${paginatedLists.length > 0 ? paginatedLists.map(list => `
+                                                <tr>
+                                                    <td>
+                                                        <div class="slds-checkbox">
+                                                            <input type="checkbox" id="select-${list.id}" />
+                                                            <label class="slds-checkbox__label" for="select-${list.id}">
+                                                                <span class="slds-checkbox_faux"></span>
+                                                                <span class="slds-assistive-text">Select ${list.name}</span>
+                                                            </label>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="slds-truncate" title="${list.name}">
+                                                            <a href="#" class="slds-text-link">${list.name}</a>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="slds-truncate" title="${list.createdDate}">${list.createdDate}</div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="slds-truncate" title="${list.lastModifiedDate}">${list.lastModifiedDate}</div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="slds-truncate" title="${list.createdBy}">${list.createdBy}</div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="slds-truncate" title="${list.lastModifiedBy}">${list.lastModifiedBy}</div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="slds-truncate" title="${list.totalContacts}">${list.totalContacts}</div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="slds-truncate" title="${list.salesforceObject}">${list.salesforceObject}</div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="slds-badge ${list.status === 'Active' ? 'slds-theme_success' : ''}">${list.status}</span>
+                                                    </td>
+                                                    <td>
+                                                        <div class="slds-dropdown-trigger slds-dropdown-trigger_click">
+                                                            <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-haspopup="true" title="Show More">
+                                                                <svg class="slds-button__icon" aria-hidden="true">
+                                                                    <use xlink:href="/salesforce-lightning-design-system/assets/icons/utility-sprite/svg/symbols.svg#down"></use>
+                                                                </svg>
+                                                                <span class="slds-assistive-text">Show More</span>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            `).join('') : `
+                                                <tr>
+                                                    <td colspan="10" class="slds-text-align_center slds-text-color_weak">
+                                                        No lists found
+                                                    </td>
+                                                </tr>
+                                            `}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Pagination -->
+                                ${totalPages > 1 ? `
+                                    <div class="slds-card__footer">
+                                        <div class="slds-grid slds-grid_vertical-align-center">
+                                            <div class="slds-col">
+                                                <span class="slds-text-body_small slds-text-color_weak">
+                                                    Showing ${startIndex + 1}-${endIndex} of ${filteredLists.length} lists
+                                                </span>
+                                            </div>
+                                            <div class="slds-col slds-no-flex">
+                                                <div class="slds-button-group" role="group">
+                                                    <button class="slds-button slds-button_icon slds-button_icon-border-filled"
+                                                            onclick="DialpadApp.changePowerDialerPage(${currentPage - 1})"
+                                                            ${currentPage === 1 ? 'disabled' : ''}
+                                                            title="Previous Page">
+                                                        <svg class="slds-button__icon" aria-hidden="true">
+                                                            <use xlink:href="/salesforce-lightning-design-system/assets/icons/utility-sprite/svg/symbols.svg#chevronleft"></use>
+                                                        </svg>
+                                                        <span class="slds-assistive-text">Previous</span>
+                                                    </button>
+                                                    <span class="slds-button slds-button_icon slds-button_icon-border-filled" style="cursor: default;">
+                                                        <span class="slds-text-body_small">${currentPage} / ${totalPages}</span>
+                                                    </span>
+                                                    <button class="slds-button slds-button_icon slds-button_icon-border-filled"
+                                                            onclick="DialpadApp.changePowerDialerPage(${currentPage + 1})"
+                                                            ${currentPage === totalPages ? 'disabled' : ''}
+                                                            title="Next Page">
+                                                        <svg class="slds-button__icon" aria-hidden="true">
+                                                            <use xlink:href="/salesforce-lightning-design-system/assets/icons/utility-sprite/svg/symbols.svg#chevronright"></use>
+                                                        </svg>
+                                                        <span class="slds-assistive-text">Next</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        ` : currentPowerDialerTab === 'list-prioritization' ? `
+                            <div class="slds-card">
+                                <div class="slds-card__header slds-grid">
+                                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                        <div class="slds-media__body">
+                                            <h2 class="slds-card__header-title">List Prioritization</h2>
+                                            <p class="slds-text-body_small slds-text-color_weak">Set the order in which lists are called</p>
+                                        </div>
+                                    </header>
+                                </div>
+                                <div class="slds-card__body slds-card__body_inner">
+                                    <p class="slds-text-align_center slds-text-color_weak" style="padding: 3rem;">
+                                        List prioritization settings will be available here.
+                                    </p>
+                                </div>
+                            </div>
+                        ` : `
+                            <div class="slds-card">
+                                <div class="slds-card__header slds-grid">
+                                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                        <div class="slds-media__body">
+                                            <h2 class="slds-card__header-title">Call Center Prioritization</h2>
+                                            <p class="slds-text-body_small slds-text-color_weak">Configure call center queue prioritization</p>
+                                        </div>
+                                    </header>
+                                </div>
+                                <div class="slds-card__body slds-card__body_inner">
+                                    <p class="slds-text-align_center slds-text-color_weak" style="padding: 3rem;">
+                                        Call center prioritization settings will be available here.
+                                    </p>
+                                </div>
+                            </div>
+                        `}
                     </div>
                 </div>
             `;
@@ -3897,6 +4160,56 @@ const App = {
                 });
             }
         });
+    },
+
+    attachPowerDialerPageListeners() {
+        // Powerdialer tab navigation
+        const powerDialerTabLinks = document.querySelectorAll('[data-powerdialer-tab]');
+        powerDialerTabLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const tab = link.getAttribute('data-powerdialer-tab');
+                this.currentPowerDialerTab = tab;
+
+                // Re-render the powerdialer page to show the new tab
+                const content = document.getElementById('main-content');
+                const role = RoleManager.getRole();
+                content.innerHTML = this.renderPowerdialerPage(role);
+
+                // Re-attach listeners after re-rendering
+                this.attachPowerDialerPageListeners();
+            });
+        });
+
+        // Search input
+        const searchInput = document.getElementById('powerdialer-search');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                this.powerDialerSearchTerm = e.target.value;
+                this.currentPowerDialerPage = 1; // Reset to first page on search
+
+                // Re-render with search results
+                const content = document.getElementById('main-content');
+                const role = RoleManager.getRole();
+                content.innerHTML = this.renderPowerdialerPage(role);
+                this.attachPowerDialerPageListeners();
+            });
+        }
+    },
+
+    changePowerDialerPage(pageNumber) {
+        this.currentPowerDialerPage = pageNumber;
+        const content = document.getElementById('main-content');
+        const role = RoleManager.getRole();
+        content.innerHTML = this.renderPowerdialerPage(role);
+        this.attachPowerDialerPageListeners();
+    },
+
+    refreshPowerDialerPage() {
+        const content = document.getElementById('main-content');
+        const role = RoleManager.getRole();
+        content.innerHTML = this.renderPowerdialerPage(role);
+        this.attachPowerDialerPageListeners();
     },
 
     attachHomePageListeners(role) {

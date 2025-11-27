@@ -8,7 +8,11 @@
       "assignedAgents": ["005xx000001X8Uz", "005xx000001X8V0"],
       "status": "Active",
       "createdBy": "Michael Chen",
-      "createdDate": "2025-11-01"
+      "createdDate": "2025-11-01",
+      "lastModifiedBy": "Sarah Johnson",
+      "lastModifiedDate": "2025-11-25",
+      "salesforceObject": "Lead",
+      "contactsRemaining": 63
     },
     {
       "id": "LIST-002",
@@ -18,7 +22,11 @@
       "assignedAgents": ["005xx000001X8V2", "005xx000001X8V3"],
       "status": "Active",
       "createdBy": "Michael Chen",
-      "createdDate": "2025-11-10"
+      "createdDate": "2025-11-10",
+      "lastModifiedBy": "Michael Chen",
+      "lastModifiedDate": "2025-11-23",
+      "salesforceObject": "Contact",
+      "contactsRemaining": 30
     },
     {
       "id": "LIST-003",
@@ -28,7 +36,11 @@
       "assignedAgents": ["005xx000001X8V1"],
       "status": "Active",
       "createdBy": "Linda Rodriguez",
-      "createdDate": "2025-11-15"
+      "createdDate": "2025-11-15",
+      "lastModifiedBy": "Linda Rodriguez",
+      "lastModifiedDate": "2025-11-26",
+      "salesforceObject": "Contact",
+      "contactsRemaining": 2
     },
     {
       "id": "LIST-004",
@@ -38,7 +50,11 @@
       "assignedAgents": ["005xx000001X8Uz", "005xx000001X8V0", "005xx000001X8V8"],
       "status": "Active",
       "createdBy": "Michael Chen",
-      "createdDate": "2025-11-16"
+      "createdDate": "2025-11-16",
+      "lastModifiedBy": "Michael Chen",
+      "lastModifiedDate": "2025-11-27",
+      "salesforceObject": "Lead",
+      "contactsRemaining": 188
     },
     {
       "id": "LIST-005",
@@ -48,7 +64,11 @@
       "assignedAgents": ["005xx000001X8V2"],
       "status": "Completed",
       "createdBy": "Michael Chen",
-      "createdDate": "2025-10-20"
+      "createdDate": "2025-10-20",
+      "lastModifiedBy": "Sarah Johnson",
+      "lastModifiedDate": "2025-10-28",
+      "salesforceObject": "Lead",
+      "contactsRemaining": 0
     }
   ]
 }
