@@ -1122,16 +1122,20 @@ const App = {
                         <div class="slds-text-body_small" style="font-weight: 600; margin-bottom: 0.5rem; font-size: 0.8rem;">License Types</div>
                         <div style="display: flex; flex-direction: column; gap: 0.35rem;">
                             <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <span style="font-size: 0.75rem; color: #3e3e3c;">Standard</span>
-                                <span style="font-size: 0.75rem; font-weight: 600;">${Math.floor(licenses.used * 0.6)} used</span>
+                                <span style="font-size: 0.75rem; color: #3e3e3c;">Connect Standard ($15/user/mo)</span>
+                                <span style="font-size: 0.75rem; font-weight: 600;">${Math.floor(licenses.used * 0.5)} used</span>
                             </div>
                             <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <span style="font-size: 0.75rem; color: #3e3e3c;">Professional</span>
-                                <span style="font-size: 0.75rem; font-weight: 600;">${Math.floor(licenses.used * 0.3)} used</span>
+                                <span style="font-size: 0.75rem; color: #3e3e3c;">Connect Pro ($25/user/mo)</span>
+                                <span style="font-size: 0.75rem; font-weight: 600;">${Math.floor(licenses.used * 0.35)} used</span>
                             </div>
                             <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <span style="font-size: 0.75rem; color: #3e3e3c;">Enterprise</span>
+                                <span style="font-size: 0.75rem; color: #3e3e3c;">Connect Enterprise (Custom)</span>
                                 <span style="font-size: 0.75rem; font-weight: 600;">${Math.floor(licenses.used * 0.1)} used</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 0.75rem; color: #3e3e3c;">Dialpad Sell</span>
+                                <span style="font-size: 0.75rem; font-weight: 600;">${Math.floor(licenses.used * 0.05)} used</span>
                             </div>
                         </div>
                     </div>
