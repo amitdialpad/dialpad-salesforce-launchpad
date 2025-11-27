@@ -3756,16 +3756,10 @@ const App = {
             </div>
 
             <!-- Production Implementation Note -->
-            <div class="slds-notify slds-notify_alert slds-theme_info slds-m-bottom_medium" role="alert">
-                <span class="slds-assistive-text">Info</span>
-                <span class="slds-icon_container slds-icon-utility-info slds-m-right_small" title="Information">
-                    <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
-                        <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#info")}"></use>
-                    </svg>
-                </span>
-                <h2 class="slds-text-heading_small" style="color: #014486;">
+            <div class="slds-m-bottom_medium" style="background-color: #d8edff; border-left: 3px solid #1589ee; padding: 0.75rem 1rem; border-radius: 0.25rem;">
+                <p class="slds-text-body_small" style="color: #014486; margin: 0;">
                     <strong>Prototype Note:</strong> In production, these reports will be organized as Salesforce report folders. The final structure and layout will follow Salesforce's native reporting interface patterns. Report layout and content pending customer feedback.
-                </h2>
+                </p>
             </div>
 
             <div class="slds-m-bottom_medium">
