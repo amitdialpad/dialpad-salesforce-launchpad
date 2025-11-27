@@ -2411,10 +2411,8 @@ const App = {
                             ${paginatedCalls.map(call => `
                                 <tr>
                                     <td>${DataService.formatTimestamp(call.timestamp)}</td>
-                                    <td>
-                                        <a href="#" class="slds-text-link" onclick="event.preventDefault(); alert('In production, this would open the Salesforce record for:\\n\\n${call.contact}\\n\\nShowing full contact/lead/account details, open opportunities, cases, and activity history.');" style="cursor: pointer;">
-                                            ${call.contact}
-                                        </a>
+                                    <td onclick="alert('In production, this would open the Salesforce record for:\\n\\n${call.contact}\\n\\nShowing full contact/lead/account details, open opportunities, cases, and activity history.');" style="cursor: pointer;">
+                                        <span class="slds-text-link">${call.contact}</span>
                                     </td>
                                     <td>${call.direction}</td>
                                     <td>${DataService.formatDuration(call.duration)}</td>
