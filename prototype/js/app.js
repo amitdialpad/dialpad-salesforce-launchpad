@@ -2427,7 +2427,7 @@ const App = {
                     </table>
 
                     <!-- Pagination Controls -->
-                    ${totalRecords > 0 ? `
+                    ${totalRecords > this.callsPagination.pageSize ? `
                     <div class="slds-grid slds-grid_vertical-align-center" style="margin-top: 1rem;">
                         <div class="slds-col slds-size_1-of-2">
                             <span class="slds-text-body_small">
