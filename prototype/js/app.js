@@ -2373,7 +2373,7 @@ const App = {
                                 <th scope="col" class="sortable" data-sort="duration">Duration <span class="sort-indicator"></span></th>
                                 <th scope="col" class="sortable" data-sort="status">Status <span class="sort-indicator"></span></th>
                                 <th scope="col" class="sortable" data-sort="disposition">Disposition <span class="sort-indicator"></span></th>
-                                ${role !== 'agent' ? '<th scope="col" class="sortable" data-sort="userName">User <span class="sort-indicator"></span></th>' : ''}
+                                ${role !== 'agent' ? '<th scope="col" class="sortable" data-sort="userName">Agent <span class="sort-indicator"></span></th>' : ''}
                             </tr>
                         </thead>
                         <tbody id="calls-table-body">
@@ -4070,7 +4070,7 @@ const App = {
 
         // Create CSV content
         const headers = role !== 'agent'
-            ? ['Time', 'Contact', 'Direction', 'Duration', 'Status', 'Disposition', 'User']
+            ? ['Time', 'Contact', 'Direction', 'Duration', 'Status', 'Disposition', 'Agent']
             : ['Time', 'Contact', 'Direction', 'Duration', 'Status', 'Disposition'];
 
         const csvRows = [headers.join(',')];
