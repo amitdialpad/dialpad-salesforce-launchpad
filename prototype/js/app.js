@@ -1064,7 +1064,7 @@ const App = {
 
         return `
             <div class="slds-card clickable-card" style="height: 100%; cursor: pointer; transition: all 0.2s ease;"
-                 onclick="window.location.hash='#/settings'"
+                 onclick="window.open('https://dialpadbeta.com/licenses', '_blank')"
                  onmouseenter="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.15)'"
                  onmouseleave="this.style.transform='translateY(0)'; this.style.boxShadow=''">
                 <div class="slds-card__header slds-grid">
