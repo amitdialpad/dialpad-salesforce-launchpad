@@ -3742,6 +3742,13 @@ const App = {
         const folders = this.getReportFolders();
 
         return `
+            <!-- Production Implementation Note -->
+            <div style="background-color: #d8edff; border-left: 3px solid #1589ee; padding: 0.75rem 1rem; border-radius: 0.25rem; margin-bottom: 1rem;">
+                <p class="slds-text-body_small" style="color: #014486; margin: 0;">
+                    <strong>Prototype Note:</strong> This prototype demonstrates the native Salesforce Reports interface pattern. In production, Dialpad will provide 15-20 pre-built report folders containing call analytics, agent performance, and quality metrics that integrate seamlessly with Salesforce's Report Builder.
+                </p>
+            </div>
+
             <div class="slds-page-header">
                 <div class="slds-page-header__row">
                     <div class="slds-page-header__col-title">
@@ -3754,16 +3761,9 @@ const App = {
                 </div>
             </div>
 
-            <!-- Production Implementation Note -->
-            <div class="slds-m-bottom_large slds-m-top_medium" style="background-color: #d8edff; border-left: 3px solid #1589ee; padding: 0.75rem 1rem; border-radius: 0.25rem;">
-                <p class="slds-text-body_small" style="color: #014486; margin: 0;">
-                    <strong>Prototype Note:</strong> This prototype demonstrates the native Salesforce Reports interface pattern. In production, Dialpad will provide 15-20 pre-built report folders containing call analytics, agent performance, and quality metrics that integrate seamlessly with Salesforce's Report Builder.
-                </p>
-            </div>
-
-            <div style="display: flex; gap: 1.5rem; margin-top: 0;">
+            <div style="display: flex; gap: 1.5rem; margin-top: 1.5rem;">
                 <!-- Left Sidebar Navigation -->
-                <div style="width: 240px; flex-shrink: 0; border-right: 1px solid #dddbda; padding: 0.5rem 1rem 0 0;">
+                <div style="width: 240px; flex-shrink: 0;">
                     <nav class="slds-nav-vertical" aria-label="Reports Navigation">
                         <div class="slds-nav-vertical__section">
                             <h2 class="slds-nav-vertical__title">REPORTS</h2>
@@ -3811,24 +3811,10 @@ const App = {
                 </div>
 
                 <!-- Main Content Area -->
-                <div style="flex: 1; padding: 0;">
-                    <!-- Header with title and actions -->
-                    <div class="slds-page-header slds-page-header_record-home" style="padding: 0 0 1rem 0; border: none; margin-bottom: 0.5rem;">
+                <div style="flex: 1;">
+                    <!-- Top Action Bar -->
+                    <div class="slds-page-header" style="margin-bottom: 1rem;">
                         <div class="slds-page-header__row">
-                            <div class="slds-page-header__col-title">
-                                <div class="slds-media">
-                                    <div class="slds-media__body">
-                                        <div class="slds-page-header__name">
-                                            <div class="slds-page-header__name-title">
-                                                <h1>
-                                                    <span class="slds-page-header__title slds-truncate" title="All Folders">All Folders</span>
-                                                </h1>
-                                            </div>
-                                        </div>
-                                        <p class="slds-page-header__name-meta">${folders.length} items</p>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="slds-page-header__col-actions">
                                 <div class="slds-page-header__controls">
                                     <div class="slds-page-header__control">
@@ -3841,13 +3827,13 @@ const App = {
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="slds-page-header__control" style="margin-left: 0.5rem;">
+                                    <div class="slds-page-header__control">
                                         <div class="slds-button-group" role="group">
                                             <button class="slds-button slds-button_neutral">New Report</button>
                                             <button class="slds-button slds-button_neutral">New Folder</button>
                                         </div>
                                     </div>
-                                    <div class="slds-page-header__control" style="margin-left: 0.25rem;">
+                                    <div class="slds-page-header__control">
                                         <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="Settings">
                                             <svg class="slds-button__icon" aria-hidden="true">
                                                 <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#settings")}"></use>
