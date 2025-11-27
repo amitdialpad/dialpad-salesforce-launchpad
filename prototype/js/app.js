@@ -3852,56 +3852,55 @@ const App = {
                             <table class="slds-table slds-table_bordered slds-table_cell-buffer" style="table-layout: fixed;">
                                 <thead>
                                     <tr class="slds-line-height_reset">
-                                        <th scope="col" style="width: 32%; padding: 0.75rem 0.5rem;">
+                                        <th scope="col" style="width: 32%;">
                                             <div class="slds-truncate" title="Name">Name</div>
                                         </th>
-                                        <th scope="col" style="width: 16%; padding: 0.75rem 0.5rem;">
+                                        <th scope="col" style="width: 16%;">
                                             <div class="slds-truncate" title="Created By">Created By</div>
                                         </th>
-                                        <th scope="col" style="width: 17%; padding: 0.75rem 0.5rem;">
+                                        <th scope="col" style="width: 17%;">
                                             <div class="slds-truncate" title="Created On">Created On</div>
                                         </th>
-                                        <th scope="col" style="width: 16%; padding: 0.75rem 0.5rem;">
+                                        <th scope="col" style="width: 16%;">
                                             <div class="slds-truncate" title="Last Modified By">Last Modified By</div>
                                         </th>
-                                        <th scope="col" style="width: 16%; padding: 0.75rem 0.5rem;">
+                                        <th scope="col" style="width: 15%;">
                                             <div class="slds-truncate" title="Last Modified Date">Last Modified Date</div>
                                         </th>
-                                        <th scope="col" style="width: 3%; padding: 0.75rem 0.5rem; text-align: center;">
-                                            <span class="slds-assistive-text">Actions</span>
+                                        <th scope="col" style="width: 4%;">
+                                            <div class="slds-truncate" title="Actions">Actions</div>
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     ${folders.map(folder => `
-                                        <tr class="slds-hint-parent">
-                                            <th scope="row" style="padding: 0.75rem 0.5rem;">
-                                                <div class="slds-grid slds-grid_vertical-align-center" style="gap: 0.5rem;">
-                                                    <svg class="slds-icon slds-icon_small" aria-hidden="true" style="fill: #706e6b; flex-shrink: 0;">
-                                                        <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#open_folder")}"></use>
-                                                    </svg>
-                                                    <a href="#" class="slds-truncate" title="${folder.name}" style="font-weight: 400;">${folder.name}</a>
+                                        <tr>
+                                            <td>
+                                                <div class="slds-truncate" title="${folder.name}">
+                                                    <a href="#" class="slds-text-link">${folder.name}</a>
                                                 </div>
-                                            </th>
-                                            <td style="padding: 0.75rem 0.5rem;">
+                                            </td>
+                                            <td>
                                                 <div class="slds-truncate" title="${folder.createdBy}">${folder.createdBy}</div>
                                             </td>
-                                            <td style="padding: 0.75rem 0.5rem;">
+                                            <td>
                                                 <div class="slds-truncate" title="${this.formatReportDate(folder.createdDate)}">${this.formatReportDate(folder.createdDate)}</div>
                                             </td>
-                                            <td style="padding: 0.75rem 0.5rem;">
+                                            <td>
                                                 <div class="slds-truncate" title="${folder.lastModifiedBy}">${folder.lastModifiedBy}</div>
                                             </td>
-                                            <td style="padding: 0.75rem 0.5rem;">
+                                            <td>
                                                 <div class="slds-truncate" title="${this.formatReportDate(folder.lastModifiedDate)}">${this.formatReportDate(folder.lastModifiedDate)}</div>
                                             </td>
-                                            <td style="padding: 0.5rem; text-align: center;">
-                                                <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-haspopup="true" title="Show Actions">
-                                                    <svg class="slds-button__icon" aria-hidden="true">
-                                                        <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#down")}"></use>
-                                                    </svg>
-                                                    <span class="slds-assistive-text">Show Actions</span>
-                                                </button>
+                                            <td style="text-align: center;">
+                                                <div class="slds-dropdown-trigger slds-dropdown-trigger_click">
+                                                    <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-haspopup="true" title="Show More">
+                                                        <svg class="slds-button__icon" aria-hidden="true">
+                                                            <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#down")}"></use>
+                                                        </svg>
+                                                        <span class="slds-assistive-text">Show More</span>
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     `).join('')}
