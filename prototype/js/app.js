@@ -2263,9 +2263,8 @@ const App = {
                 { id: 'recorded-calls', label: 'Recorded Calls', default: false }
             ]
             : [
-                // Admin: no "My Calls" - admins don't typically make calls
-                { id: 'team-calls', label: 'My Team', default: true },
-                { id: 'all-calls', label: 'All Calls', default: false },
+                // Admin: company-wide view, no team filtering
+                { id: 'all-calls', label: 'All Calls', default: true },
                 { id: 'recorded-calls', label: 'Recorded Calls', default: false }
             ];
 
@@ -2408,9 +2407,8 @@ const App = {
                 { id: 'all-sms', label: 'All Messages', default: false }
             ]
             : [
-                // Admin: no "My Messages" - admins don't typically send SMS
-                { id: 'team-sms', label: 'My Team', default: true },
-                { id: 'all-sms', label: 'All Messages', default: false }
+                // Admin: company-wide view, no team filtering
+                { id: 'all-sms', label: 'All Messages', default: true }
             ];
 
         return `
@@ -3875,7 +3873,7 @@ const App = {
         let calls = DataService.getCalls(role);
 
         // Apply view filter (predefined views)
-        const currentView = this.currentCallsView || (role === 'agent' ? 'my-calls' : 'team-calls');
+        const currentView = this.currentCallsView || (role === 'agent' ? 'my-calls' : role === 'supervisor' ? 'team-calls' : 'all-calls');
 
         if (currentView === 'my-calls') {
             // Filter to only current user's calls
@@ -4107,7 +4105,7 @@ const App = {
         }));
 
         // Apply view filter
-        const currentView = this.currentSmsView || (role === 'agent' ? 'my-sms' : 'team-sms');
+        const currentView = this.currentSmsView || (role === 'agent' ? 'my-sms' : role === 'supervisor' ? 'team-sms' : 'all-sms');
 
         if (currentView === 'my-sms') {
             const currentUser = role === 'agent' ? 'Sarah Johnson' : RoleManager.getCurrentUserName();
