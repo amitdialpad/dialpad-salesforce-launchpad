@@ -15,8 +15,27 @@
     /* SLDS 2 Text Colors */
     --slds-text-primary: #03234D;
     --slds-text-heading: #001642;
-    --slds-text-body: #444444;
-    --slds-text-secondary: #5C5C5C;
+    --slds-text-body: #3e3e3c;
+    --slds-text-secondary: #706e6b;
+    --slds-text-weak: #706e6b;
+
+    /* SLDS 2 Status Colors */
+    --slds-color-status-error: #c23934;
+    --slds-color-status-success: #04844b;
+    --slds-color-status-warning: #fe9339;
+    --slds-color-status-info: #0176d3;
+
+    /* SLDS 2 Background Colors */
+    --slds-color-background-alt: #f3f3f3;
+    --slds-color-background-alt-2: #f3f2f2;
+    --slds-color-background-error: #fef5f5;
+    --slds-color-background-success: #f3f9f3;
+    --slds-color-background-warning: #fef9f3;
+
+    /* SLDS 2 Border Colors */
+    --slds-color-border: #dddbda;
+    --slds-color-border-light: #f3f3f3;
+    --slds-color-border-medium: #e5e5e5;
 
     /* Border Radius (SLDS 2 uses more rounded corners) */
     --cosmos-border-radius-small: 4px;

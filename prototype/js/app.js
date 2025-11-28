@@ -238,7 +238,7 @@ const App = {
                 <div class="slds-scoped-notification slds-media slds-media_center slds-theme_error" role="alert" style="margin-bottom: 0.5rem;">
                     <div class="slds-media__figure">
                         <span class="slds-icon_container slds-icon-utility-error" title="error">
-                            <svg class="slds-icon slds-icon_small" aria-hidden="true" style="fill: #c23934;">
+                            <svg class="slds-icon slds-icon_small" aria-hidden="true" style="fill: var(--slds-color-status-error);">
                                 <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#error")}"></use>
                             </svg>
                         </span>
@@ -249,7 +249,7 @@ const App = {
                             <span class="slds-m-left_xx-small">
                                 Call logging and data sync are currently disabled. Reconnect to resume normal operations.
                             </span>
-                            <a href="#" id="go-to-integration-health" class="slds-m-left_small" style="color: #001642; text-decoration: underline;">View Integration Health</a>
+                            <a href="#" id="go-to-integration-health" class="slds-m-left_small" style="color: var(--slds-text-heading); text-decoration: underline;">View Integration Health</a>
                         </p>
                     </div>
                 </div>
@@ -361,14 +361,14 @@ const App = {
         `;
 
         notifications.forEach(notification => {
-            let iconColor = '#0176d3';
+            let iconColor = 'var(--slds-color-status-info)';
             let textColorClass = 'slds-text-color_default';
             if (notification.type === 'error') {
-                iconColor = '#c23934';
+                iconColor = 'var(--slds-color-status-error)';
                 textColorClass = 'slds-text-color_error';
             }
             if (notification.type === 'warning') {
-                iconColor = '#fe9339';
+                iconColor = 'var(--slds-color-status-warning)';
                 textColorClass = 'slds-text-color_error';
             }
 
@@ -456,14 +456,14 @@ const App = {
         }
 
         notificationsList.innerHTML = notifications.map(notification => {
-            let iconColor = '#0176d3';
+            let iconColor = 'var(--slds-color-status-info)';
             let textColorClass = 'slds-text-color_default';
             if (notification.type === 'error') {
-                iconColor = '#c23934';
+                iconColor = 'var(--slds-color-status-error)';
                 textColorClass = 'slds-text-color_error';
             }
             if (notification.type === 'warning') {
-                iconColor = '#fe9339';
+                iconColor = 'var(--slds-color-status-warning)';
                 textColorClass = 'slds-text-color_error';
             }
 
@@ -800,12 +800,22 @@ const App = {
     renderAdminSystemHealthCard(metrics) {
         const health = metrics.systemHealth;
         const integration = metrics.integration;
-        const getStatusClass = (status) => {
-            if (status === 'online') return 'status-connected';
-            if (status === 'offline') return 'status-disconnected';
-            return 'status-wrap-up';
+
+        const renderServiceStatus = (status, label) => {
+            const dotColor = status === 'offline' ? 'var(--slds-color-status-error)' : 'var(--slds-color-status-success)';
+            const statusText = status === 'offline' ? 'Offline' : 'Online';
+            const statusColor = status === 'offline' ? 'var(--slds-color-status-error)' : 'var(--slds-text-body)';
+
+            return `
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--slds-color-background-alt);">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <div style="width: 8px; height: 8px; border-radius: 50%; background: ${dotColor}; flex-shrink: 0;"></div>
+                        <span style="font-size: 0.75rem; color: var(--slds-text-body);">${label}</span>
+                    </div>
+                    <span style="font-size: 0.75rem; color: ${statusColor}; font-weight: 500;">${statusText}</span>
+                </div>
+            `;
         };
-        const getStatusText = (status) => status.charAt(0).toUpperCase() + status.slice(1);
 
         // Calculate health summary
         const services = [health.coreService, health.voice, health.chatSms, health.analytics, health.ai, health.salesforceIntegration];
@@ -817,7 +827,7 @@ const App = {
         const apiUsed = integration.apiUsage;
         const apiLimit = integration.apiLimit;
         const apiPercent = Math.round((apiUsed / apiLimit) * 100);
-        const apiColor = apiPercent > 80 ? '#c23934' : apiPercent > 60 ? '#fe9339' : '#04844b';
+        const apiColor = apiPercent > 80 ? 'var(--slds-color-status-error)' : apiPercent > 60 ? 'var(--slds-color-status-warning)' : 'var(--slds-text-secondary)';
 
         return `
             <div class="slds-card" style="height: 100%;">
@@ -825,92 +835,62 @@ const App = {
                     <header class="slds-media slds-media_center slds-has-flexi-truncate">
                         <div class="slds-media__body">
                             <h2 class="slds-card__header-title">System Health</h2>
-                            <p class="slds-text-body_small slds-text-color_weak">${onlineCount} of ${totalCount} services online (${healthPercent}%)</p>
+                            <p class="slds-text-body_small slds-text-color_weak">${onlineCount} of ${totalCount} services online</p>
                         </div>
                     </header>
                 </div>
                 <div class="slds-card__body slds-card__body_inner" style="padding: 0.75rem 1rem;">
-                    <!-- Service Status Grid -->
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1rem;">
-                        <div style="text-align: center;">
-                            <div class="slds-badge ${getStatusClass(health.coreService)}" style="display: block; margin-bottom: 0.25rem; font-size: 0.75rem;">
-                                ${getStatusText(health.coreService)}
-                            </div>
-                            <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">Core Service</div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div class="slds-badge ${getStatusClass(health.voice)}" style="display: block; margin-bottom: 0.25rem; font-size: 0.75rem;">
-                                ${getStatusText(health.voice)}
-                            </div>
-                            <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">Voice</div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div class="slds-badge ${getStatusClass(health.chatSms)}" style="display: block; margin-bottom: 0.25rem; font-size: 0.75rem;">
-                                ${getStatusText(health.chatSms)}
-                            </div>
-                            <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">Chat & SMS</div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div class="slds-badge ${getStatusClass(health.analytics)}" style="display: block; margin-bottom: 0.25rem; font-size: 0.75rem;">
-                                ${getStatusText(health.analytics)}
-                            </div>
-                            <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">Analytics</div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div class="slds-badge ${getStatusClass(health.ai)}" style="display: block; margin-bottom: 0.25rem; font-size: 0.75rem;">
-                                ${getStatusText(health.ai)}
-                            </div>
-                            <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">AI</div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div class="slds-badge ${getStatusClass(health.salesforceIntegration)}" style="display: block; margin-bottom: 0.25rem; font-size: 0.75rem;">
-                                ${getStatusText(health.salesforceIntegration)}
-                            </div>
-                            <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">Salesforce</div>
-                        </div>
+                    <!-- Service Status List -->
+                    <div style="margin-bottom: 1rem;">
+                        ${renderServiceStatus(health.coreService, 'Core Service')}
+                        ${renderServiceStatus(health.voice, 'Voice')}
+                        ${renderServiceStatus(health.chatSms, 'Chat & SMS')}
+                        ${renderServiceStatus(health.analytics, 'Analytics')}
+                        ${renderServiceStatus(health.ai, 'AI')}
+                        ${renderServiceStatus(health.salesforceIntegration, 'Salesforce')}
                     </div>
 
                     <!-- API Usage -->
-                    <div style="border-top: 1px solid #f3f3f3; padding-top: 0.75rem; margin-bottom: 0.75rem;">
+                    <div style="padding-top: 0.75rem; margin-bottom: 0.75rem;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
                             <span style="font-size: 0.75rem; font-weight: 600;">Salesforce API Usage</span>
                             <span style="font-size: 0.75rem; color: ${apiColor}; font-weight: 600;">${apiUsed.toLocaleString()} / ${apiLimit.toLocaleString()}</span>
                         </div>
-                        <div style="width: 100%; height: 6px; background: #f3f3f3; border-radius: 3px; overflow: hidden;">
+                        <div style="width: 100%; height: 6px; background: var(--slds-color-background-alt); border-radius: 3px; overflow: hidden;">
                             <div style="width: ${apiPercent}%; height: 100%; background: ${apiColor}; transition: width 0.3s ease;"></div>
                         </div>
-                        <div style="font-size: 0.65rem; color: #706e6b; margin-top: 0.25rem;">Last updated: 30 seconds ago</div>
+                        <div style="font-size: 0.65rem; color: var(--slds-text-secondary); margin-top: 0.25rem;">Last updated: 30 seconds ago</div>
                     </div>
 
                     <!-- System Uptime -->
-                    <div style="border-top: 1px solid #f3f3f3; padding-top: 0.75rem;">
+                    <div style="border-top: 1px solid var(--slds-color-background-alt); padding-top: 0.75rem;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
                             <span style="font-size: 0.75rem; font-weight: 600;">System Uptime</span>
-                            <span style="font-size: 0.75rem; color: #04844b; font-weight: 600;">99.8%</span>
+                            <span style="font-size: 0.75rem; color: var(--slds-color-status-success); font-weight: 600;">99.8%</span>
                         </div>
                         <div style="position: relative; width: 100%; margin-bottom: 0.5rem;">
-                            <div style="width: 100%; height: 6px; background: #f3f3f3; border-radius: 3px; overflow: visible; cursor: pointer;"
+                            <div style="width: 100%; height: 6px; background: var(--slds-color-background-alt); border-radius: 3px; overflow: visible; cursor: pointer;"
                                  onmouseenter="this.querySelector('.uptime-bar').style.filter='brightness(1.1)'; this.querySelector('.uptime-tooltip').style.display='block';"
                                  onmouseleave="this.querySelector('.uptime-bar').style.filter='brightness(1)'; this.querySelector('.uptime-tooltip').style.display='none';">
-                                <div class="uptime-bar" style="width: 99.8%; height: 100%; background: #04844b; transition: all 0.2s ease;"></div>
-                                <div class="uptime-tooltip" style="display: none; position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); background: white; border: 1px solid #e5e5e5; border-radius: 0.25rem; padding: 0.75rem; box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 1000; min-width: 250px;">
+                                <div class="uptime-bar" style="width: 99.8%; height: 100%; background: var(--slds-color-status-success); transition: all 0.2s ease;"></div>
+                                <div class="uptime-tooltip" style="display: none; position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); background: white; border: 1px solid var(--slds-color-border-medium); border-radius: 0.25rem; padding: 0.75rem; box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 1000; min-width: 250px;">
                                     <div style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem;">November 26, 2025</div>
-                                    <div style="display: flex; align-items: center; gap: 0.5rem; background: #fef9f3; padding: 0.5rem; border-radius: 0.25rem; margin-bottom: 0.5rem;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; background: var(--slds-color-background-warning); padding: 0.5rem; border-radius: 0.25rem; margin-bottom: 0.5rem;">
                                         <svg class="slds-icon slds-icon_xx-small slds-icon-text-warning" style="width: 1rem; height: 1rem;" aria-hidden="true">
                                             <use xlink:href="${getAssetPath('assets/icons/utility-sprite/svg/symbols.svg#warning')}"></use>
                                         </svg>
                                         <div>
                                             <div style="font-size: 0.8rem; font-weight: 600;">API Performance Degradation</div>
-                                            <div style="font-size: 0.7rem; color: #706e6b;">Duration: 5 minutes</div>
+                                            <div style="font-size: 0.7rem; color: var(--slds-text-secondary);">Duration: 5 minutes</div>
                                         </div>
                                     </div>
-                                    <div style="font-size: 0.7rem; color: #706e6b; padding-top: 0.5rem; border-top: 1px solid #f3f3f3;">
+                                    <div style="font-size: 0.7rem; color: var(--slds-text-secondary); padding-top: 0.5rem; border-top: 1px solid var(--slds-color-background-alt);">
                                         <strong>Impact:</strong> Brief slowdown in Salesforce API responses
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div style="font-size: 0.65rem; color: #706e6b;">Last incident: 2 days ago • Hover for details</div>
+                        <div style="font-size: 0.65rem; color: var(--slds-text-secondary);">Last incident: 2 days ago • Hover for details</div>
                     </div>
                 </div>
             </div>
@@ -939,37 +919,45 @@ const App = {
                         </div>
                     </header>
                 </div>
+
+                <!-- Failed Logs Alert Banner -->
+                ${oauth.failedCallLogs24h > 0 ? `
+                    <div style="padding: 0.75rem 1rem; background: var(--slds-color-background-error); border-left: 3px solid var(--slds-color-status-error); border-bottom: 1px solid var(--slds-color-background-alt-2);">
+                        <strong style="color: var(--slds-color-status-error); font-size: 0.875rem;">Action Required</strong>
+                        <div style="font-size: 0.75rem; margin-top: 0.25rem;">
+                            <a href="#/calls" class="slds-text-link" style="color: var(--slds-text-body); text-decoration: underline;">${oauth.failedCallLogs24h} call logs failed to sync</a>
+                        </div>
+                    </div>
+                ` : ''}
+
                 <div class="slds-card__body slds-card__body_inner" style="padding: 0.75rem 1rem;">
                     ${oauth.failedCallLogs24h === 0 ? `
                         <div style="text-align: center; padding: 1rem;">
-                            <div style="font-size: 1.5rem; color: #04844b;">✓</div>
+                            <div style="font-size: 1.5rem; color: var(--slds-text-secondary);">✓</div>
                             <p class="slds-text-body_small slds-text-color_weak" style="margin-top: 0.25rem;">No failed call logs</p>
                         </div>
                     ` : `
-                        <div style="font-size: 0.75rem; font-weight: 600; color: #c23934; margin-bottom: 0.75rem;">
-                            ${oauth.failedCallLogs24h} call logs failed to sync
-                        </div>
                         <div style="overflow-x: auto;">
                             <table style="width: 100%; font-size: 0.75rem; border-collapse: collapse;">
                                 <thead>
-                                    <tr style="border-bottom: 1px solid #e5e5e5;">
-                                        <th style="text-align: left; padding: 0.5rem 0.25rem; font-weight: 600; color: #706e6b;">Time</th>
-                                        <th style="text-align: left; padding: 0.5rem 0.25rem; font-weight: 600; color: #706e6b;">User</th>
-                                        <th style="text-align: left; padding: 0.5rem 0.25rem; font-weight: 600; color: #706e6b;">Reason</th>
+                                    <tr style="border-bottom: 1px solid var(--slds-color-border-medium);">
+                                        <th style="text-align: left; padding: 0.5rem 0.25rem; font-weight: 600; color: var(--slds-text-secondary);">Time</th>
+                                        <th style="text-align: left; padding: 0.5rem 0.25rem; font-weight: 600; color: var(--slds-text-secondary);">User</th>
+                                        <th style="text-align: left; padding: 0.5rem 0.25rem; font-weight: 600; color: var(--slds-text-secondary);">Reason</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     ${failedLogs.slice(0, 5).map(log => `
-                                        <tr style="border-bottom: 1px solid #f3f3f3;">
-                                            <td style="padding: 0.5rem 0.25rem; color: #3e3e3c;">${log.time}</td>
-                                            <td style="padding: 0.5rem 0.25rem; color: #3e3e3c;">${log.user}</td>
-                                            <td style="padding: 0.5rem 0.25rem; color: #c23934;">${log.reason}</td>
+                                        <tr style="border-bottom: 1px solid var(--slds-color-background-alt);">
+                                            <td style="padding: 0.5rem 0.25rem; color: var(--slds-text-body);">${log.time}</td>
+                                            <td style="padding: 0.5rem 0.25rem; color: var(--slds-text-body);">${log.user}</td>
+                                            <td style="padding: 0.5rem 0.25rem; color: var(--slds-text-body);">${log.reason}</td>
                                         </tr>
                                     `).join('')}
                                 </tbody>
                             </table>
                             <div style="text-align: center; margin-top: 0.75rem;">
-                                <a href="#/calls" class="slds-text-link" style="font-size: 0.75rem; color: #0176d3; font-weight: 500;">View all failed logs →</a>
+                                <a href="#/calls" class="slds-text-link" style="font-size: 0.75rem; color: var(--slds-color-status-info); font-weight: 500;">View all failed logs →</a>
                             </div>
                         </div>
                     `}
@@ -995,7 +983,7 @@ const App = {
         const getAlertAction = (message) => {
             // OAuth-specific alerts
             if (message.includes('not connected to Salesforce')) return { href: '#/settings', label: 'View Users' };
-            if (message.includes('failed call logs')) return { href: '#/calls', label: 'View Logs' };
+            if (message.includes('call logs failed')) return { href: '#/calls', label: 'View Logs' };
             if (message.includes('OAuth tokens expired')) return { href: '#/settings', label: 'View Users' };
             if (message.includes('OAuth tokens expiring')) return { href: '#/settings', label: 'View Users' };
 
@@ -1014,7 +1002,7 @@ const App = {
         const infoAlerts = alerts.filter(a => a.severity === 'low');
 
         // Initialize collapsed state if not exists
-        if (AppState.alertsInfoCollapsed === undefined) AppState.alertsInfoCollapsed = true;
+        if (AppState.alertsInfoCollapsed === undefined) AppState.alertsInfoCollapsed = false;
         if (AppState.alertsFailedLogsCollapsed === undefined) AppState.alertsFailedLogsCollapsed = true;
 
         // Mock failed logs data
@@ -1030,7 +1018,7 @@ const App = {
             if (sectionAlerts.length === 0) return '';
             return `
                 <div style="margin-bottom: 1rem;">
-                    <div style="font-size: 0.75rem; font-weight: 700; color: #3e3e3c; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                    <div style="font-size: 0.75rem; font-weight: 700; color: var(--slds-text-body); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px;">
                         ${icon} ${title} (${sectionAlerts.length})
                     </div>
                     ${sectionAlerts.map(alert => {
@@ -1044,7 +1032,7 @@ const App = {
                                 <span style="font-size: 0.85rem; line-height: 1.3;">${alert.message}</span>
                             </div>
                             ${action ? `
-                                <a href="${action.href}" class="slds-text-link" style="font-size: 0.8rem; white-space: nowrap; color: #0176d3; font-weight: 500;" onclick="event.stopPropagation();">${action.label} →</a>
+                                <a href="${action.href}" class="slds-text-link" style="font-size: 0.8rem; white-space: nowrap; color: var(--slds-color-status-info); font-weight: 500;" onclick="event.stopPropagation();">→</a>
                             ` : ''}
                         </div>
                     `}).join('')}
@@ -1065,20 +1053,19 @@ const App = {
                 <div class="slds-card__body slds-card__body_inner" style="padding: 0.75rem 1rem;">
                     ${alerts.length === 0 ? `
                         <div style="text-align: center; padding: 1rem;">
-                            <div style="font-size: 1.5rem; color: #04844b;">✓</div>
+                            <div style="font-size: 1.5rem; color: var(--slds-text-secondary);">✓</div>
                             <p class="slds-text-body_small slds-text-color_weak" style="margin-top: 0.25rem;">All systems normal</p>
                         </div>
                     ` : `
-                        ${renderAlertSection(criticalAlerts, '🔴', 'CRITICAL', '#fef5f5')}
-                        ${renderAlertSection(importantAlerts, '⚠️', 'IMPORTANT', '#fef9f3')}
+                        ${renderAlertSection(criticalAlerts, '🔴', 'CRITICAL', 'var(--slds-color-background-error)')}
+                        ${renderAlertSection(importantAlerts, '⚠️', 'IMPORTANT', 'var(--slds-color-background-warning)')}
 
                         ${infoAlerts.length > 0 ? `
                             <div style="margin-bottom: 1rem;">
-                                <div style="font-size: 0.75rem; font-weight: 700; color: #3e3e3c; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;" onclick="AppState.alertsInfoCollapsed = !AppState.alertsInfoCollapsed; window.app.renderCurrentPage();">
-                                    <span>ℹ️ INFO (${infoAlerts.length})</span>
-                                    <span style="font-size: 0.7rem;">${AppState.alertsInfoCollapsed ? '▶' : '▼'}</span>
+                                <div style="font-size: 0.75rem; font-weight: 700; color: var(--slds-text-body); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                                    ℹ️ INFO (${infoAlerts.length})
                                 </div>
-                                ${!AppState.alertsInfoCollapsed ? infoAlerts.map(alert => {
+                                ${infoAlerts.map(alert => {
                                     const action = getAlertAction(alert.message);
                                     return `
                                     <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.5rem 0.75rem; background: #f3f4f6; border-radius: 0.25rem; margin-bottom: 0.5rem; ${action ? 'cursor: pointer; transition: all 0.15s ease;' : ''}" ${action ? `onclick="window.location.hash='${action.href}'" onmouseenter="this.style.boxShadow='0 1px 4px rgba(0,0,0,0.1)'; this.style.transform='translateX(2px)';" onmouseleave="this.style.boxShadow=''; this.style.transform='translateX(0)';"` : ''}>
@@ -1089,10 +1076,10 @@ const App = {
                                             <span style="font-size: 0.85rem; line-height: 1.3;">${alert.message}</span>
                                         </div>
                                         ${action ? `
-                                            <a href="${action.href}" class="slds-text-link" style="font-size: 0.8rem; white-space: nowrap; color: #0176d3; font-weight: 500;" onclick="event.stopPropagation();">${action.label} →</a>
+                                            <a href="${action.href}" class="slds-text-link" style="font-size: 0.8rem; white-space: nowrap; color: var(--slds-color-status-info); font-weight: 500;" onclick="event.stopPropagation();">→</a>
                                         ` : ''}
                                     </div>
-                                `}).join('') : ''}
+                                `}).join('')}
                             </div>
                         ` : ''}
                     `}
@@ -1119,33 +1106,33 @@ const App = {
                 </div>
 
                 ${pendingInvites > 0 ? `
-                    <div style="padding: 0.75rem 1rem; background: #fef9f3; border-left: 3px solid #fe9339; border-bottom: 1px solid #f3f2f2;">
-                        <strong style="color: #fe9339; font-size: 0.875rem;">${pendingInvites} Pending Invitation${pendingInvites === 1 ? '' : 's'}</strong>
-                        <div style="font-size: 0.75rem; color: #3e3e3c; margin-top: 0.25rem;">User${pendingInvites === 1 ? '' : 's'} invited but not yet activated</div>
+                    <div style="padding: 0.75rem 1rem; background: var(--slds-color-background-warning); border-left: 3px solid var(--slds-color-status-warning); border-bottom: 1px solid var(--slds-color-background-alt-2);">
+                        <strong style="color: var(--slds-color-status-warning); font-size: 0.875rem;">${pendingInvites} Pending Invitation${pendingInvites === 1 ? '' : 's'}</strong>
+                        <div style="font-size: 0.75rem; color: var(--slds-text-body); margin-top: 0.25rem;">User${pendingInvites === 1 ? '' : 's'} invited but not yet activated</div>
                     </div>
                 ` : ''}
 
                 <div class="slds-card__body slds-card__body_inner">
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1rem;">
                         <div>
-                            <div style="font-size: 2rem; font-weight: 700; color: #001642;">${users.total}</div>
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--slds-text-heading);">${users.total}</div>
                             <div class="slds-text-body_small slds-text-color_weak">Total Users</div>
                         </div>
                         <div>
-                            <div style="font-size: 2rem; font-weight: 700; color: #001642;">${usersWithLicenses}</div>
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--slds-text-heading);">${usersWithLicenses}</div>
                             <div class="slds-text-body_small slds-text-color_weak">Licensed</div>
                         </div>
                         <div>
-                            <div style="font-size: 2rem; font-weight: 700; color: ${users.neverLoggedIn > 3 ? '#fe9339' : '#001642'};">${users.neverLoggedIn}</div>
+                            <div style="font-size: 2rem; font-weight: 700; color: ${users.neverLoggedIn > 3 ? 'var(--slds-color-status-warning)' : 'var(--slds-text-heading)'};">${users.neverLoggedIn}</div>
                             <div class="slds-text-body_small slds-text-color_weak">Never Logged In</div>
                         </div>
                         <div>
-                            <div style="font-size: 2rem; font-weight: 700; color: #001642;">${adminUsers}</div>
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--slds-text-heading);">${adminUsers}</div>
                             <div class="slds-text-body_small slds-text-color_weak">Admins</div>
                         </div>
                     </div>
 
-                    <div style="padding-top: 1rem; border-top: 1px solid #dddbda;">
+                    <div style="padding-top: 1rem; border-top: 1px solid var(--slds-color-border);">
                         <div class="slds-text-body_small slds-text-color_weak">Recent Changes</div>
                         <div style="font-size: 0.875rem; margin-top: 0.25rem;">3 users added this week</div>
                     </div>
@@ -1176,14 +1163,14 @@ const App = {
 
                 <!-- OAuth Status Alert -->
                 ${hasOAuthIssues ? `
-                    <div style="padding: 0.75rem 1rem; background: #fef5f5; border-left: 3px solid #c23934; border-bottom: 1px solid #f3f2f2;">
-                        <strong style="color: #c23934; font-size: 0.875rem;">Action Required</strong>
-                        <div style="font-size: 0.75rem; color: #3e3e3c; margin-top: 0.25rem;">Users need to reconnect to Salesforce to enable call logging</div>
+                    <div style="padding: 0.75rem 1rem; background: var(--slds-color-background-error); border-left: 3px solid var(--slds-color-status-error); border-bottom: 1px solid var(--slds-color-background-alt-2);">
+                        <strong style="color: var(--slds-color-status-error); font-size: 0.875rem;">Action Required</strong>
+                        <div style="font-size: 0.75rem; color: var(--slds-text-body); margin-top: 0.25rem;">Users need to reconnect to Salesforce to enable call logging</div>
                     </div>
                 ` : `
-                    <div style="padding: 0.75rem 1rem; background: #f3f9f3; border-left: 3px solid #04844b; border-bottom: 1px solid #f3f2f2;">
-                        <strong style="color: #04844b; font-size: 0.875rem;">All Users Connected</strong>
-                        <div style="font-size: 0.75rem; color: #3e3e3c; margin-top: 0.25rem;">OAuth tokens active, call logging enabled</div>
+                    <div style="padding: 0.75rem 1rem; background: var(--slds-color-background-success); border-left: 3px solid var(--slds-color-status-success); border-bottom: 1px solid var(--slds-color-background-alt-2);">
+                        <strong style="color: var(--slds-color-status-success); font-size: 0.875rem;">All Users Connected</strong>
+                        <div style="font-size: 0.75rem; color: var(--slds-text-body); margin-top: 0.25rem;">OAuth tokens active, call logging enabled</div>
                     </div>
                 `}
 
@@ -1192,27 +1179,27 @@ const App = {
                     <!-- OAuth Status Grid -->
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
                         <div>
-                            <div style="font-size: 1.5rem; font-weight: 700; color: #04844b;">${oauth.connected}</div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--slds-text-secondary);">${oauth.connected}</div>
                             <div class="slds-text-body_small slds-text-color_weak">Connected</div>
                         </div>
                         <div>
-                            <div style="font-size: 1.5rem; font-weight: 700; color: ${oauth.disconnected > 0 ? '#c23934' : '#001642'};">${oauth.disconnected}</div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: ${oauth.disconnected > 0 ? 'var(--slds-color-status-error)' : 'var(--slds-text-heading)'};">${oauth.disconnected}</div>
                             <div class="slds-text-body_small slds-text-color_weak">Disconnected</div>
                         </div>
                         <div>
-                            <div style="font-size: 1.5rem; font-weight: 700; color: ${oauth.expired > 0 ? '#fe9339' : '#001642'};">${oauth.expired}</div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: ${oauth.expired > 0 ? 'var(--slds-color-status-warning)' : 'var(--slds-text-heading)'};">${oauth.expired}</div>
                             <div class="slds-text-body_small slds-text-color_weak">Expired</div>
                         </div>
                         <div>
-                            <div style="font-size: 1.5rem; font-weight: 700; color: ${oauth.expiringSoon > 0 ? '#fe9339' : '#001642'};">${oauth.expiringSoon}</div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: ${oauth.expiringSoon > 0 ? 'var(--slds-color-status-warning)' : 'var(--slds-text-heading)'};">${oauth.expiringSoon}</div>
                             <div class="slds-text-body_small slds-text-color_weak">Expiring Soon</div>
                         </div>
                     </div>
 
                     <!-- Action Link -->
                     ${hasOAuthIssues ? `
-                        <div style="border-top: 1px solid #f3f3f3; padding-top: 1rem; text-align: center;">
-                            <a href="#/settings" class="slds-text-link" style="font-size: 0.8rem; color: #0176d3; font-weight: 500;">
+                        <div style="border-top: 1px solid var(--slds-color-background-alt); padding-top: 1rem; text-align: center;">
+                            <a href="#/settings" class="slds-text-link" style="font-size: 0.8rem; color: var(--slds-color-status-info); font-weight: 500;">
                                 ${oauth.disconnected + oauth.expired} user${(oauth.disconnected + oauth.expired) === 1 ? '' : 's'} need attention →
                             </a>
                         </div>
@@ -1225,7 +1212,7 @@ const App = {
 
     renderAdminLicenseCard(metrics) {
         const licenses = metrics.licenses;
-        const utilizationColor = licenses.utilization > 85 ? '#c23934' : licenses.utilization > 70 ? '#e07c3e' : '#04844b';
+        const utilizationColor = licenses.utilization > 85 ? 'var(--slds-color-status-error)' : licenses.utilization > 70 ? '#e07c3e' : 'var(--slds-color-status-success)';
 
         // Capacity planning calculations
         const inactiveLicenses = Math.floor(licenses.used * 0.08); // ~8% inactive
@@ -1244,13 +1231,13 @@ const App = {
                 </div>
 
                 <!-- Capacity Forecast Alert -->
-                <div style="padding: 0.75rem 1rem; background: ${licenses.utilization > 85 ? '#fef5f5' : '#f3f9f3'}; border-left: 3px solid ${licenses.utilization > 85 ? '#c23934' : '#04844b'}; border-bottom: 1px solid #f3f2f2;">
+                <div style="padding: 0.75rem 1rem; background: ${licenses.utilization > 85 ? 'var(--slds-color-background-error)' : 'var(--slds-color-background-success)'}; border-left: 3px solid ${licenses.utilization > 85 ? 'var(--slds-color-status-error)' : 'var(--slds-color-status-success)'}; border-bottom: 1px solid var(--slds-color-background-alt-2);">
                     ${licenses.utilization > 85 ? `
-                        <strong style="color: #c23934; font-size: 0.875rem;">Action Needed</strong>
-                        <div style="font-size: 0.75rem; color: #3e3e3c; margin-top: 0.25rem;">At current growth (+${growthRate}/mo), capacity in ~${projectedMonths} months</div>
+                        <strong style="color: var(--slds-color-status-error); font-size: 0.875rem;">Action Needed</strong>
+                        <div style="font-size: 0.75rem; color: var(--slds-text-body); margin-top: 0.25rem;">At current growth (+${growthRate}/mo), capacity in ~${projectedMonths} months</div>
                     ` : `
-                        <strong style="color: #04844b; font-size: 0.875rem;">Healthy Capacity</strong>
-                        <div style="font-size: 0.75rem; color: #3e3e3c; margin-top: 0.25rem;">${projectedMonths}+ months runway at current growth</div>
+                        <strong style="color: var(--slds-color-status-success); font-size: 0.875rem;">Healthy Capacity</strong>
+                        <div style="font-size: 0.75rem; color: var(--slds-text-body); margin-top: 0.25rem;">${projectedMonths}+ months runway at current growth</div>
                     `}
                 </div>
 
@@ -1270,16 +1257,16 @@ const App = {
 
                     <!-- Key Metrics Grid -->
                     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
-                        <div style="text-align: center; padding: 0.5rem; background: #f3f2f2; border-radius: 0.25rem;">
-                            <div style="font-size: 1.25rem; font-weight: 700; color: #001642;">${licenses.available}</div>
+                        <div style="text-align: center; padding: 0.5rem; background: var(--slds-color-background-alt-2); border-radius: 0.25rem;">
+                            <div style="font-size: 1.25rem; font-weight: 700; color: var(--slds-text-heading);">${licenses.available}</div>
                             <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">Available</div>
                         </div>
-                        <div style="text-align: center; padding: 0.5rem; background: #f3f2f2; border-radius: 0.25rem;">
-                            <div style="font-size: 1.25rem; font-weight: 700; color: #04844b;">+${growthRate}</div>
+                        <div style="text-align: center; padding: 0.5rem; background: var(--slds-color-background-alt-2); border-radius: 0.25rem;">
+                            <div style="font-size: 1.25rem; font-weight: 700; color: var(--slds-color-status-success);">+${growthRate}</div>
                             <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">Added/Mo</div>
                         </div>
-                        <div style="text-align: center; padding: 0.5rem; background: #f3f2f2; border-radius: 0.25rem;">
-                            <div style="font-size: 1.25rem; font-weight: 700; color: ${inactiveLicenses > 5 ? '#fe9339' : '#001642'};">${inactiveLicenses}</div>
+                        <div style="text-align: center; padding: 0.5rem; background: var(--slds-color-background-alt-2); border-radius: 0.25rem;">
+                            <div style="font-size: 1.25rem; font-weight: 700; color: ${inactiveLicenses > 5 ? 'var(--slds-color-status-warning)' : 'var(--slds-text-heading)'};">${inactiveLicenses}</div>
                             <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">Inactive</div>
                         </div>
                     </div>
@@ -1289,19 +1276,19 @@ const App = {
                         <div class="slds-text-body_small" style="font-weight: 600; margin-bottom: 0.5rem; font-size: 0.8rem;">License Types</div>
                         <div style="display: flex; flex-direction: column; gap: 0.35rem;">
                             <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <span style="font-size: 0.75rem; color: #3e3e3c;">Connect Standard ($15/user/mo)</span>
+                                <span style="font-size: 0.75rem; color: var(--slds-text-body);">Connect Standard ($15/user/mo)</span>
                                 <span style="font-size: 0.75rem; font-weight: 600;">${Math.floor(licenses.used * 0.5)} used</span>
                             </div>
                             <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <span style="font-size: 0.75rem; color: #3e3e3c;">Connect Pro ($25/user/mo)</span>
+                                <span style="font-size: 0.75rem; color: var(--slds-text-body);">Connect Pro ($25/user/mo)</span>
                                 <span style="font-size: 0.75rem; font-weight: 600;">${Math.floor(licenses.used * 0.35)} used</span>
                             </div>
                             <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <span style="font-size: 0.75rem; color: #3e3e3c;">Connect Enterprise (Custom)</span>
+                                <span style="font-size: 0.75rem; color: var(--slds-text-body);">Connect Enterprise (Custom)</span>
                                 <span style="font-size: 0.75rem; font-weight: 600;">${Math.floor(licenses.used * 0.1)} used</span>
                             </div>
                             <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <span style="font-size: 0.75rem; color: #3e3e3c;">Dialpad Sell</span>
+                                <span style="font-size: 0.75rem; color: var(--slds-text-body);">Dialpad Sell</span>
                                 <span style="font-size: 0.75rem; font-weight: 600;">${Math.floor(licenses.used * 0.05)} used</span>
                             </div>
                         </div>
@@ -1336,7 +1323,7 @@ const App = {
                             <div class="slds-text-body_small slds-text-color_weak">Status</div>
                         </div>
                         <div>
-                            <div style="font-size: 1.25rem; font-weight: 600; color: ${isConnected ? '#001642' : '#c23934'};">
+                            <div style="font-size: 1.25rem; font-weight: 600; color: ${isConnected ? 'var(--slds-text-heading)' : 'var(--slds-color-status-error)'};">
                                 ${timeSinceSync !== null ? `${timeSinceSync}m ago` : 'Never'}
                             </div>
                             <div class="slds-text-body_small slds-text-color_weak">Last Sync</div>
@@ -1355,11 +1342,11 @@ const App = {
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                         <div>
-                            <div style="font-size: 1.25rem; font-weight: 600; color: ${integration.errorCount24h > 0 ? '#c23934' : '#04844b'};">${integration.errorCount24h}</div>
+                            <div style="font-size: 1.25rem; font-weight: 600; color: ${integration.errorCount24h > 0 ? 'var(--slds-color-status-error)' : 'var(--slds-color-status-success)'};">${integration.errorCount24h}</div>
                             <div class="slds-text-body_small slds-text-color_weak">Errors (24h)</div>
                         </div>
                         <div>
-                            <div style="font-size: 1.25rem; font-weight: 600; color: #001642;">${integration.permissionSetsAssigned}/${integration.permissionSetsTotal}</div>
+                            <div style="font-size: 1.25rem; font-weight: 600; color: var(--slds-text-heading);">${integration.permissionSetsAssigned}/${integration.permissionSetsTotal}</div>
                             <div class="slds-text-body_small slds-text-color_weak">Permission Sets</div>
                         </div>
                     </div>
@@ -1415,15 +1402,15 @@ const App = {
                                 <div class="slds-grid slds-grid_vertical-align-center">
                                     <div class="slds-col slds-no-flex slds-m-right_small">
                                         ${step.status === 'completed' ? `
-                                            <span style="display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 3px; background: #04844b; color: white; font-size: 12px; font-weight: bold;">✓</span>
+                                            <span style="display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 3px; background: var(--slds-color-status-success); color: white; font-size: 12px; font-weight: bold;">✓</span>
                                         ` : step.status === 'in-progress' ? `
-                                            <span style="display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 3px; background: #fe9339; color: white; font-size: 18px; font-weight: bold; line-height: 1;">−</span>
+                                            <span style="display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 3px; background: var(--slds-color-status-warning); color: white; font-size: 18px; font-weight: bold; line-height: 1;">−</span>
                                         ` : `
                                             <span style="display: inline-block; width: 20px; height: 20px; border-radius: 3px; border: 2px solid #c9c7c5; background: white;"></span>
                                         `}
                                     </div>
                                     <div class="slds-col slds-has-flexi-truncate">
-                                        <span class="slds-text-body_regular" style="${step.status === 'completed' ? 'text-decoration: line-through; color: #706e6b;' : step.status === 'in-progress' ? 'color: #001642; font-weight: 500;' : 'color: #3e3e3c;'}">${step.name}</span>
+                                        <span class="slds-text-body_regular" style="${step.status === 'completed' ? 'text-decoration: line-through; color: var(--slds-text-secondary);' : step.status === 'in-progress' ? 'color: var(--slds-text-heading); font-weight: 500;' : 'color: var(--slds-text-body);'}">${step.name}</span>
                                     </div>
                                 </div>
                             </li>
@@ -1453,16 +1440,16 @@ const App = {
         const systemUptimePercent = 99.2; // Mock: 99.2% uptime today
 
         const metricCards = [
-            { value: calls.total, label: 'Total Calls', color: '#001642' },
-            { value: DataService.formatDuration(calls.avgDuration), label: 'Avg Duration', color: '#001642' },
-            { value: calls.missed, label: 'Missed Calls', color: calls.missed > 20 ? '#c23934' : '#001642' },
-            { value: `${calls.serviceScore}%`, label: 'Service Score', color: '#001642' },
-            { value: activeAgents, label: 'Active Agents', color: '#001642' },
-            { value: `${answerRate}%`, label: 'Answer Rate', color: answerRate < 80 ? '#c23934' : answerRate < 90 ? '#fe9339' : '#04844b' },
-            { value: avgWaitTime, label: 'Avg Wait Time', color: '#001642' },
-            { value: `${licenseUtil}%`, label: 'License Usage', color: licenseUtil > 90 ? '#c23934' : licenseUtil > 80 ? '#fe9339' : '#001642' },
-            { value: `${apiUsagePercent}%`, label: 'API Usage', color: apiUsagePercent > 80 ? '#c23934' : apiUsagePercent > 60 ? '#fe9339' : '#04844b' },
-            { value: `${systemUptimePercent}%`, label: 'System Uptime', color: systemUptimePercent < 95 ? '#c23934' : systemUptimePercent < 99 ? '#fe9339' : '#04844b' }
+            { value: calls.total, label: 'Total Calls', color: 'var(--slds-text-heading)' },
+            { value: DataService.formatDuration(calls.avgDuration), label: 'Avg Duration', color: 'var(--slds-text-heading)' },
+            { value: calls.missed, label: 'Missed Calls', color: calls.missed > 20 ? 'var(--slds-color-status-error)' : 'var(--slds-text-heading)' },
+            { value: `${calls.serviceScore}%`, label: 'Service Score', color: 'var(--slds-text-heading)' },
+            { value: activeAgents, label: 'Active Agents', color: 'var(--slds-text-heading)' },
+            { value: `${answerRate}%`, label: 'Answer Rate', color: answerRate < 80 ? 'var(--slds-color-status-error)' : answerRate < 90 ? 'var(--slds-color-status-warning)' : 'var(--slds-color-status-success)' },
+            { value: avgWaitTime, label: 'Avg Wait Time', color: 'var(--slds-text-heading)' },
+            { value: `${licenseUtil}%`, label: 'License Usage', color: licenseUtil > 90 ? 'var(--slds-color-status-error)' : licenseUtil > 80 ? 'var(--slds-color-status-warning)' : 'var(--slds-text-heading)' },
+            { value: `${apiUsagePercent}%`, label: 'API Usage', color: apiUsagePercent > 80 ? 'var(--slds-color-status-error)' : apiUsagePercent > 60 ? 'var(--slds-color-status-warning)' : 'var(--slds-color-status-success)' },
+            { value: `${systemUptimePercent}%`, label: 'System Uptime', color: systemUptimePercent < 95 ? 'var(--slds-color-status-error)' : systemUptimePercent < 99 ? 'var(--slds-color-status-warning)' : 'var(--slds-color-status-success)' }
         ];
 
         return metricCards.map(metric => `
@@ -1494,19 +1481,19 @@ const App = {
                 <div class="slds-card__body slds-card__body_inner" style="padding: 0.75rem 1rem;">
                     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
                         <div style="text-align: center;">
-                            <div style="font-size: 1.75rem; font-weight: 700; color: #001642;">${calls.total}</div>
+                            <div style="font-size: 1.75rem; font-weight: 700; color: var(--slds-text-heading);">${calls.total}</div>
                             <div class="slds-text-body_small slds-text-color_weak">Total Calls</div>
                         </div>
                         <div style="text-align: center;">
-                            <div style="font-size: 1.75rem; font-weight: 700; color: #001642;">${DataService.formatDuration(calls.avgDuration)}</div>
+                            <div style="font-size: 1.75rem; font-weight: 700; color: var(--slds-text-heading);">${DataService.formatDuration(calls.avgDuration)}</div>
                             <div class="slds-text-body_small slds-text-color_weak">Avg Duration</div>
                         </div>
                         <div style="text-align: center;">
-                            <div style="font-size: 1.75rem; font-weight: 700; color: ${calls.missed > 20 ? '#c23934' : '#001642'};">${calls.missed}</div>
+                            <div style="font-size: 1.75rem; font-weight: 700; color: ${calls.missed > 20 ? 'var(--slds-color-status-error)' : 'var(--slds-text-heading)'};">${calls.missed}</div>
                             <div class="slds-text-body_small slds-text-color_weak">Missed Calls</div>
                         </div>
                         <div style="text-align: center;">
-                            <div style="font-size: 1.75rem; font-weight: 700; color: #001642;">${calls.serviceScore}%</div>
+                            <div style="font-size: 1.75rem; font-weight: 700; color: var(--slds-text-heading);">${calls.serviceScore}%</div>
                             <div class="slds-text-body_small slds-text-color_weak">Service Score</div>
                         </div>
                     </div>
@@ -1553,7 +1540,7 @@ const App = {
                                 </li>
                             `).join('')}
                         </ul>
-                        <div style="text-align: center; padding: 0.75rem 0 0.25rem 0; border-top: 1px solid #f3f2f2; margin-top: 0.75rem;">
+                        <div style="text-align: center; padding: 0.75rem 0 0.25rem 0; border-top: 1px solid var(--slds-color-background-alt-2); margin-top: 0.75rem;">
                             <button class="slds-button slds-button_neutral" style="font-size: 0.8rem;" onclick="window.open('https://help.dialpad.com/docs/dialpad-for-salesforce-release-notes', '_blank')">
                                 View All Release Notes
                             </button>
@@ -1825,19 +1812,19 @@ const App = {
                 <div class="slds-card__body slds-card__body_inner">
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
                         <div>
-                            <div style="font-size: 2rem; font-weight: 700; color: #001642;">${totalCalls}</div>
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--slds-text-heading);">${totalCalls}</div>
                             <div class="slds-text-body_small slds-text-color_weak">Total Calls</div>
                         </div>
                         <div>
-                            <div style="font-size: 2rem; font-weight: 700; color: #001642;">${DataService.formatDuration(avgHandleTime)}</div>
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--slds-text-heading);">${DataService.formatDuration(avgHandleTime)}</div>
                             <div class="slds-text-body_small slds-text-color_weak">Avg Handle Time</div>
                         </div>
                         <div>
-                            <div style="font-size: 2rem; font-weight: 700; color: #001642;">${teamPickupRate}%</div>
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--slds-text-heading);">${teamPickupRate}%</div>
                             <div class="slds-text-body_small slds-text-color_weak">Team Pickup Rate</div>
                         </div>
                         <div>
-                            <div style="font-size: 2rem; font-weight: 700; color: #001642;">${teamCSAT}</div>
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--slds-text-heading);">${teamCSAT}</div>
                             <div class="slds-text-body_small slds-text-color_weak">Team CSAT</div>
                         </div>
                     </div>
@@ -1866,17 +1853,17 @@ const App = {
                 <div class="slds-card__body slds-card__body_inner">
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1rem;">
                         <div>
-                            <div style="font-size: 2rem; font-weight: 700; color: #001642;">${activeLists.length}</div>
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--slds-text-heading);">${activeLists.length}</div>
                             <div class="slds-text-body_small slds-text-color_weak">Active Lists</div>
                         </div>
                         <div>
-                            <div style="font-size: 2rem; font-weight: 700; color: #001642;">${totalContactsRemaining}</div>
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--slds-text-heading);">${totalContactsRemaining}</div>
                             <div class="slds-text-body_small slds-text-color_weak">Contacts Remaining</div>
                         </div>
                     </div>
-                    <div style="padding-top: 1rem; border-top: 1px solid #dddbda;">
+                    <div style="padding-top: 1rem; border-top: 1px solid var(--slds-color-border);">
                         <div class="slds-text-body_small slds-text-color_weak slds-m-bottom_x-small">Calls from lists today</div>
-                        <div style="font-size: 1.5rem; font-weight: 700; color: #001642;">${callsFromListsToday}</div>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--slds-text-heading);">${callsFromListsToday}</div>
                         ${topList ? `
                         <div class="slds-text-body_small slds-text-color_weak slds-m-top_small">
                             Top list: <strong>${topList.name}</strong>
@@ -1955,7 +1942,7 @@ const App = {
                 </div>
                 <div class="slds-card__body slds-card__body_inner">
                     <div class="slds-text-align_center slds-m-bottom_medium">
-                        <div style="font-size: 3rem; font-weight: 700; color: #001642; line-height: 1;">${handledCalls.total}</div>
+                        <div style="font-size: 3rem; font-weight: 700; color: var(--slds-text-heading); line-height: 1;">${handledCalls.total}</div>
                         <p class="slds-text-body_small slds-text-color_weak">Calls today</p>
                     </div>
                     <div class="chart-placeholder">
@@ -2014,7 +2001,7 @@ const App = {
                     </td>
                     <td data-label="Status" style="padding: 0.375rem 0.75rem;">
                         <div class="slds-grid slds-grid_vertical-align-center" style="gap: 0.25rem;">
-                            <svg class="slds-icon slds-icon_x-small" style="width: 0.75rem; height: 0.75rem; fill: ${agent.state === 'On Call' ? '#3A49DA' : agent.state === 'Available' ? '#4bca81' : '#706e6b'};">
+                            <svg class="slds-icon slds-icon_x-small" style="width: 0.75rem; height: 0.75rem; fill: ${agent.state === 'On Call' ? '#3A49DA' : agent.state === 'Available' ? '#4bca81' : 'var(--slds-text-secondary)'};">
                                 <use xlink:href="${getAssetPath(`assets/icons/utility-sprite/svg/symbols.svg#${stateIcon[agent.state] || 'user'}`)}"></use>
                             </svg>
                             <span class="slds-badge ${getStateClass(agent.state)}" style="font-size: 0.75rem;">${agent.state}</span>
@@ -2028,7 +2015,7 @@ const App = {
                         <span style="font-weight: 600;">${userData?.callsToday || 0}</span>
                     </td>
                     <td data-label="Pickup Rate" style="padding: 0.375rem 0.75rem; text-align: center;">
-                        <span style="font-weight: 600; color: ${(userData?.pickupRate || 0) >= 90 ? '#4bca81' : (userData?.pickupRate || 0) >= 70 ? '#e07c3e' : '#c23934'};">${userData?.pickupRate || 0}%</span>
+                        <span style="font-weight: 600; color: ${(userData?.pickupRate || 0) >= 90 ? '#4bca81' : (userData?.pickupRate || 0) >= 70 ? '#e07c3e' : 'var(--slds-color-status-error)'};">${userData?.pickupRate || 0}%</span>
                     </td>
                 </tr>
             `;
@@ -2113,14 +2100,14 @@ const App = {
                 </div>
                 <div class="slds-card__body slds-card__body_inner">
                     <div class="slds-text-align_center slds-m-bottom_medium">
-                        <div style="font-size: 2rem; font-weight: 700; color: #001642; line-height: 1;">${aiAgent.totalSessions}</div>
+                        <div style="font-size: 2rem; font-weight: 700; color: var(--slds-text-heading); line-height: 1;">${aiAgent.totalSessions}</div>
                         <p class="slds-text-body_small slds-text-color_weak">Total sessions</p>
                     </div>
                     <div class="chart-placeholder" style="margin-bottom: 1rem;">
                         <p class="slds-text-color_weak">Chart shows up here</p>
                     </div>
                     <div class="slds-text-align_center slds-m-bottom_small">
-                        <div style="font-size: 1.25rem; font-weight: 600; color: #706e6b;">Deflection Rate</div>
+                        <div style="font-size: 1.25rem; font-weight: 600; color: var(--slds-text-secondary);">Deflection Rate</div>
                         <div style="font-size: 2rem; font-weight: 700; color: #3A49DA;">${aiAgent.deflectionRate}%</div>
                     </div>
                     <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_x-small">
@@ -2936,7 +2923,7 @@ const App = {
                 ${hasActiveSession && currentContact ? `
                     <div class="slds-grid slds-wrap slds-gutters" style="margin: 1rem;">
                         <div class="slds-col slds-size_1-of-2">
-                            <div class="slds-card" style="border-left: 4px solid #0176d3;">
+                            <div class="slds-card" style="border-left: 4px solid var(--slds-color-status-info);">
                                 <div class="slds-card__header slds-grid">
                                     <header class="slds-media slds-media_center slds-has-flexi-truncate">
                                         <div class="slds-media__body">
@@ -3048,7 +3035,7 @@ const App = {
                                     const isActive = hasActiveSession && list.id === session.listId;
 
                                     return `
-                                        <tr ${isActive ? 'style="background-color: #f3f2f2;"' : ''}>
+                                        <tr ${isActive ? 'style="background-color: var(--slds-color-background-alt-2);"' : ''}>
                                             ${hasActiveSession ? `
                                                 <td>
                                                     ${isActive
@@ -3822,7 +3809,7 @@ const App = {
                                 {
                                     label: 'Bottom CC',
                                     data: [80, 81, 82, 83, 82],
-                                    borderColor: '#C23934',
+                                    borderColor: 'var(--slds-color-status-error)',
                                     fill: false,
                                     tension: 0.4
                                 }
@@ -4650,8 +4637,8 @@ const App = {
         const config = {
             success: { bg: '#4bca81', icon: 'success' },
             error: { bg: '#ea001e', icon: 'error' },
-            warning: { bg: '#fe9339', icon: 'warning' },
-            info: { bg: '#0176d3', icon: 'info' }
+            warning: { bg: 'var(--slds-color-status-warning)', icon: 'warning' },
+            info: { bg: 'var(--slds-color-status-info)', icon: 'info' }
         };
 
         const { bg, icon } = config[type] || config.info;
@@ -5407,7 +5394,7 @@ const App = {
                                 <g fill="none" fill-rule="evenodd">
                                     <g transform="translate(0 5)">
                                         <circle cx="150" cy="94" r="94" fill="#E3F3FF"/>
-                                        <path d="M150,20 C150,20 180,60 180,94 C180,128 165,150 150,150 C135,150 120,128 120,94 C120,60 150,20 150,20 Z" fill="#0176D3"/>
+                                        <path d="M150,20 C150,20 180,60 180,94 C180,128 165,150 150,150 C135,150 120,128 120,94 C120,60 150,20 150,20 Z" fill="var(--slds-color-status-info)"/>
                                     </g>
                                 </g>
                             </svg>
@@ -5427,7 +5414,7 @@ const App = {
                 content: `
                     <div class="slds-media slds-media_center slds-m-bottom_medium">
                         <div class="slds-media__figure">
-                            <span class="slds-icon_container slds-icon-utility-warning" style="background-color: #FE9339;">
+                            <span class="slds-icon_container slds-icon-utility-warning" style="background-color: var(--slds-color-status-warning);">
                                 <span style="font-size: 2rem;">⚠️</span>
                             </span>
                         </div>
@@ -5537,7 +5524,7 @@ const App = {
                     <div class="slds-box slds-box_small slds-theme_default slds-m-bottom_medium">
                         <div class="slds-media slds-media_center">
                             <div class="slds-media__figure">
-                                <span class="slds-icon_container" style="background-color: #0176D3; border-radius: 0.25rem; padding: 0.5rem;">
+                                <span class="slds-icon_container" style="background-color: var(--slds-color-status-info); border-radius: 0.25rem; padding: 0.5rem;">
                                     <span style="font-size: 2rem; color: white;">📞</span>
                                 </span>
                             </div>
@@ -5917,7 +5904,7 @@ const App = {
                         <!-- Warning Box -->
                         <div class="slds-notify slds-notify_alert slds-theme_warning" role="alert" style="margin-bottom: 1.5rem;">
                             <span class="slds-assistive-text">warning</span>
-                            <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" style="fill: #fe9339;">
+                            <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" style="fill: var(--slds-color-status-warning);">
                                 <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
                                     <use xlink:href="${getAssetPath("assets/icons/utility-sprite/svg/symbols.svg#warning")}"></use>
                                 </svg>
@@ -6024,7 +6011,7 @@ const App = {
                     </div>
                     <div class="slds-card__body slds-card__body_inner">
                         <div class="slds-text-align_center slds-p-around_medium">
-                            <div style="font-size: 3rem; color: #04844b; margin-bottom: 0.5rem;">✓</div>
+                            <div style="font-size: 3rem; color: var(--slds-color-status-success); margin-bottom: 0.5rem;">✓</div>
                             <p class="slds-text-heading_small slds-m-bottom_x-small">All Calls Logged</p>
                             <p class="slds-text-body_small slds-text-color_weak">Great job! No unlogged calls detected.</p>
                         </div>
@@ -6101,7 +6088,7 @@ const App = {
                         </header>
                     </div>
                     <div class="slds-card__body slds-card__body_inner">
-                        <div class="slds-box slds-box_small slds-theme_shade slds-m-bottom_small" style="border-left: 4px solid #0176d3;">
+                        <div class="slds-box slds-box_small slds-theme_shade slds-m-bottom_small" style="border-left: 4px solid var(--slds-color-status-info);">
                             <div class="slds-p-around_small">
                                 <p class="slds-text-heading_small slds-m-bottom_x-small">Update Available</p>
                                 <p class="slds-text-body_small slds-text-color_default">
@@ -6134,7 +6121,7 @@ const App = {
                 </div>
                 <div class="slds-card__body slds-card__body_inner">
                     <div class="slds-text-align_center slds-p-around_medium">
-                        <div style="font-size: 3rem; color: #04844b; margin-bottom: 0.5rem;">✓</div>
+                        <div style="font-size: 3rem; color: var(--slds-color-status-success); margin-bottom: 0.5rem;">✓</div>
                         <p class="slds-text-heading_small slds-m-bottom_x-small">Up to Date</p>
                         <p class="slds-text-body_small slds-text-color_weak">
                             Running version ${AppState.currentVersion}
@@ -6161,9 +6148,9 @@ const App = {
                         </header>
                     </div>
                     <div class="slds-card__body slds-card__body_inner">
-                        <div class="slds-box slds-box_small slds-theme_shade slds-m-bottom_small" style="border-left: 4px solid #c23934;">
+                        <div class="slds-box slds-box_small slds-theme_shade slds-m-bottom_small" style="border-left: 4px solid var(--slds-color-status-error);">
                             <div class="slds-text-align_center slds-p-around_small">
-                                <div class="slds-text-heading_large" style="font-size: 2.5rem; font-weight: bold; color: #c23934;">!</div>
+                                <div class="slds-text-heading_large" style="font-size: 2.5rem; font-weight: bold; color: var(--slds-color-status-error);">!</div>
                                 <p class="slds-text-heading_small slds-text-color_default">
                                     Disconnected
                                 </p>
@@ -6191,7 +6178,7 @@ const App = {
                 </div>
                 <div class="slds-card__body slds-card__body_inner">
                     <div class="slds-text-align_center slds-p-around_medium slds-m-bottom_small">
-                        <div style="font-size: 3rem; color: #04844b; margin-bottom: 0.5rem;">✓</div>
+                        <div style="font-size: 3rem; color: var(--slds-color-status-success); margin-bottom: 0.5rem;">✓</div>
                         <p class="slds-text-heading_small slds-m-bottom_x-small">Connected</p>
                         <p class="slds-text-body_small slds-text-color_weak">
                             Last sync: ${lastSync}
@@ -6219,16 +6206,16 @@ const App = {
 
         let statusClass = 'slds-progress-bar__value_success';
         let statusText = 'On Track';
-        let statusColor = '#04844b';
+        let statusColor = 'var(--slds-color-status-success)';
 
         if (quota.status === 'behind') {
             statusClass = 'slds-theme_error';
             statusText = 'Behind Target';
-            statusColor = '#c23934';
+            statusColor = 'var(--slds-color-status-error)';
         } else if (quota.status === 'at-risk') {
             statusClass = 'slds-theme_warning';
             statusText = 'At Risk';
-            statusColor = '#fe9339';
+            statusColor = 'var(--slds-color-status-warning)';
         }
 
         return `
@@ -6253,7 +6240,7 @@ const App = {
                         <span class="slds-text-body_small slds-text-color_weak">${percentComplete}% complete</span>
                     </div>
                     ${quota.status === 'behind' ? `
-                        <div class="slds-box slds-box_small slds-theme_shade slds-m-top_small" style="border-left: 4px solid #c23934;">
+                        <div class="slds-box slds-box_small slds-theme_shade slds-m-top_small" style="border-left: 4px solid var(--slds-color-status-error);">
                             <p class="slds-text-body_small slds-text-color_default">
                                 <strong>Action Needed:</strong> You need ${quota.target - quota.made} more calls to meet your daily quota.
                             </p>
@@ -6280,7 +6267,7 @@ const App = {
                     </div>
                     <div class="slds-card__body slds-card__body_inner">
                         <div class="slds-text-align_center slds-p-around_medium">
-                            <div style="font-size: 3rem; color: #04844b; margin-bottom: 0.5rem;">✓</div>
+                            <div style="font-size: 3rem; color: var(--slds-color-status-success); margin-bottom: 0.5rem;">✓</div>
                             <p class="slds-text-heading_small slds-m-bottom_x-small">All Agents On Track</p>
                             <p class="slds-text-body_small slds-text-color_weak">Everyone is meeting their quotas!</p>
                         </div>
@@ -6311,7 +6298,7 @@ const App = {
                             ${atRiskAgents.map(agent => {
                                 const quota = AppState.getQuotaStatus(agent.id);
                                 const percent = Math.round((quota.made / quota.target) * 100);
-                                const statusColor = quota.status === 'behind' ? '#c23934' : '#fe9339';
+                                const statusColor = quota.status === 'behind' ? 'var(--slds-color-status-error)' : 'var(--slds-color-status-warning)';
                                 const statusText = quota.status === 'behind' ? 'Behind' : 'At Risk';
 
                                 return `
@@ -6356,7 +6343,7 @@ const App = {
                 </div>
                 <div class="slds-card__body slds-card__body_inner">
                     ${unloggedCount > 0 ? `
-                        <div class="slds-scoped-notification slds-media slds-media_center slds-m-bottom_x-small" role="status" style="background-color: #fef7e5; border-left: 3px solid #fe9339;">
+                        <div class="slds-scoped-notification slds-media slds-media_center slds-m-bottom_x-small" role="status" style="background-color: #fef7e5; border-left: 3px solid var(--slds-color-status-warning);">
                             <div class="slds-media__body">
                                 <p class="slds-text-body_small" style="color: #080707;">
                                     <strong>${unloggedCount} Unlogged Call${unloggedCount > 1 ? 's' : ''}</strong>
@@ -6365,7 +6352,7 @@ const App = {
                         </div>
                     ` : ''}
                     ${missedCalls > 0 ? `
-                        <div class="slds-scoped-notification slds-media slds-media_center slds-m-bottom_x-small" role="status" style="background-color: #feded8; border-left: 3px solid #c23934;">
+                        <div class="slds-scoped-notification slds-media slds-media_center slds-m-bottom_x-small" role="status" style="background-color: #feded8; border-left: 3px solid var(--slds-color-status-error);">
                             <div class="slds-media__body">
                                 <p class="slds-text-body_small" style="color: #080707;">
                                     <strong>${missedCalls} Missed Callback${missedCalls > 1 ? 's' : ''}</strong>
@@ -6374,7 +6361,7 @@ const App = {
                         </div>
                     ` : ''}
                     ${overdueFollowups > 0 ? `
-                        <div class="slds-scoped-notification slds-media slds-media_center slds-m-bottom_x-small" role="status" style="background-color: #d8edff; border-left: 3px solid #0176d3;">
+                        <div class="slds-scoped-notification slds-media slds-media_center slds-m-bottom_x-small" role="status" style="background-color: #d8edff; border-left: 3px solid var(--slds-color-status-info);">
                             <div class="slds-media__body">
                                 <p class="slds-text-body_small" style="color: #080707;">
                                     <strong>${overdueFollowups} Overdue Follow-up${overdueFollowups > 1 ? 's' : ''}</strong>
@@ -6602,25 +6589,25 @@ const App = {
                 </div>
                 <div class="slds-card__body slds-card__body_inner" style="flex: 1;">
                     <div class="slds-grid slds-grid_vertical slds-gutters_x-small">
-                        <div class="slds-col slds-p-around_x-small" style="border-bottom: 1px solid #dddbda;">
+                        <div class="slds-col slds-p-around_x-small" style="border-bottom: 1px solid var(--slds-color-border);">
                             <div class="slds-grid slds-grid_align-spread">
                                 <span class="slds-text-body_small slds-text-color_weak">Talk Time:</span>
                                 <span class="slds-text-body_small">${formatTime(workTime.talkTime || 0)}</span>
                             </div>
                         </div>
-                        <div class="slds-col slds-p-around_x-small" style="border-bottom: 1px solid #dddbda;">
+                        <div class="slds-col slds-p-around_x-small" style="border-bottom: 1px solid var(--slds-color-border);">
                             <div class="slds-grid slds-grid_align-spread">
                                 <span class="slds-text-body_small slds-text-color_weak">Wrap-up:</span>
                                 <span class="slds-text-body_small">${formatTime(workTime.wrapUpTime || 0)}</span>
                             </div>
                         </div>
-                        <div class="slds-col slds-p-around_x-small" style="border-bottom: 1px solid #dddbda;">
+                        <div class="slds-col slds-p-around_x-small" style="border-bottom: 1px solid var(--slds-color-border);">
                             <div class="slds-grid slds-grid_align-spread">
                                 <span class="slds-text-body_small slds-text-color_weak">Ready:</span>
                                 <span class="slds-text-body_small">${formatTime(workTime.readyTime || 0)}</span>
                             </div>
                         </div>
-                        <div class="slds-col slds-p-around_x-small" style="border-bottom: 1px solid #dddbda;">
+                        <div class="slds-col slds-p-around_x-small" style="border-bottom: 1px solid var(--slds-color-border);">
                             <div class="slds-grid slds-grid_align-spread">
                                 <span class="slds-text-body_small slds-text-color_weak">Hold:</span>
                                 <span class="slds-text-body_small">${formatTime(workTime.holdTime || 0)}</span>
@@ -6710,7 +6697,7 @@ const App = {
                     <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_small">Next contacts to call:</p>
                     <div style="flex: 1; overflow-y: auto;">
                         ${queue.map((contact, index) => `
-                            <div class="slds-box slds-box_x-small slds-m-bottom_x-small" style="border-left: 3px solid ${contact.priority === 'High' ? '#c23934' : '#0176d3'}; cursor: pointer; transition: all 0.2s ease;" onclick="window.location.hash='#/contacts'" onmouseenter="this.style.backgroundColor='#f9f9f9'; this.style.transform='translateX(4px)'" onmouseleave="this.style.backgroundColor=''; this.style.transform='translateX(0)'">
+                            <div class="slds-box slds-box_x-small slds-m-bottom_x-small" style="border-left: 3px solid ${contact.priority === 'High' ? 'var(--slds-color-status-error)' : 'var(--slds-color-status-info)'}; cursor: pointer; transition: all 0.2s ease;" onclick="window.location.hash='#/contacts'" onmouseenter="this.style.backgroundColor='#f9f9f9'; this.style.transform='translateX(4px)'" onmouseleave="this.style.backgroundColor=''; this.style.transform='translateX(0)'">
                                 <div class="slds-grid slds-grid_vertical-align-start">
                                     <div class="slds-col slds-has-flexi-truncate">
                                         <p class="slds-text-body_small"><strong>${index + 1}. ${contact.name}</strong></p>
@@ -6788,7 +6775,7 @@ const App = {
                     </div>
                     <div class="slds-card__body slds-card__body_inner" style="flex: 1; display: flex; align-items: center; justify-content: center;">
                         <div class="slds-text-align_center slds-p-around_medium">
-                            <div style="font-size: 2rem; color: #04844b; margin-bottom: 0.5rem;">✓</div>
+                            <div style="font-size: 2rem; color: var(--slds-color-status-success); margin-bottom: 0.5rem;">✓</div>
                             <p class="slds-text-body_small slds-text-color_weak">All calls are logged!</p>
                         </div>
                     </div>
@@ -6806,7 +6793,7 @@ const App = {
                     </header>
                 </div>
                 <div class="slds-card__body slds-card__body_inner" style="flex: 1; display: flex; flex-direction: column;">
-                    <div class="slds-scoped-notification slds-media slds-media_center slds-m-bottom_small" role="alert" style="background-color: #fef7e5; border-left: 3px solid #fe9339;">
+                    <div class="slds-scoped-notification slds-media slds-media_center slds-m-bottom_small" role="alert" style="background-color: #fef7e5; border-left: 3px solid var(--slds-color-status-warning);">
                         <div class="slds-media__body">
                             <p class="slds-text-body_small" style="color: #080707;">
                                 <strong>⚠️ ${unloggedCount} call${unloggedCount > 1 ? 's' : ''} need${unloggedCount === 1 ? 's' : ''} to be logged</strong>
@@ -6896,7 +6883,7 @@ const App = {
                     </div>
                     <div class="slds-card__body slds-card__body_inner" style="flex: 1; display: flex; align-items: center; justify-content: center;">
                         <div class="slds-text-align_center slds-p-around_medium">
-                            <div style="font-size: 2rem; color: #04844b; margin-bottom: 0.5rem;">✓</div>
+                            <div style="font-size: 2rem; color: var(--slds-color-status-success); margin-bottom: 0.5rem;">✓</div>
                             <p class="slds-text-body_small slds-text-color_weak">No open cases</p>
                         </div>
                     </div>
@@ -7010,7 +6997,7 @@ const App = {
                                     <g>
                                         <g transform="translate(125.000000, 200.000000)">
                                             <circle fill="#E0E5EE" cx="169" cy="100" r="100"></circle>
-                                            <path d="M169,50 L169,150 M119,100 L219,100" stroke="#0176D3" stroke-width="8" stroke-linecap="round"></path>
+                                            <path d="M169,50 L169,150 M119,100 L219,100" stroke="var(--slds-color-status-info)" stroke-width="8" stroke-linecap="round"></path>
                                         </g>
                                     </g>
                                 </g>
@@ -7045,7 +7032,7 @@ const App = {
                             </h2>
                         </div>
                         <div class="slds-no-flex">
-                            <span class="slds-badge" style="background-color: #c23934; color: white;">2 At-Risk</span>
+                            <span class="slds-badge" style="background-color: var(--slds-color-status-error); color: white;">2 At-Risk</span>
                         </div>
                     </header>
                 </div>
@@ -7054,11 +7041,11 @@ const App = {
                         Active calls with negative sentiment
                     </p>
 
-                    <div class="slds-box slds-box_x-small slds-m-bottom_small" style="background-color: #feded8; border-left: 3px solid #c23934;">
+                    <div class="slds-box slds-box_x-small slds-m-bottom_small" style="background-color: #feded8; border-left: 3px solid var(--slds-color-status-error);">
                         <div class="slds-grid slds-grid_vertical-align-start">
                             <div class="slds-col slds-has-flexi-truncate">
                                 <p class="slds-text-body_small slds-text-title slds-m-bottom_xxx-small">
-                                    <span style="color: #c23934; font-weight: 600;">😞 Negative</span> • Mike Chen
+                                    <span style="color: var(--slds-color-status-error); font-weight: 600;">😞 Negative</span> • Mike Chen
                                 </p>
                                 <p class="slds-text-body_small slds-m-bottom_xxx-small">
                                     Call with ABC Corp - 12 min
@@ -7082,11 +7069,11 @@ const App = {
                         </div>
                     </div>
 
-                    <div class="slds-box slds-box_x-small" style="background-color: #feded8; border-left: 3px solid #c23934;">
+                    <div class="slds-box slds-box_x-small" style="background-color: #feded8; border-left: 3px solid var(--slds-color-status-error);">
                         <div class="slds-grid slds-grid_vertical-align-start">
                             <div class="slds-col slds-has-flexi-truncate">
                                 <p class="slds-text-body_small slds-text-title slds-m-bottom_xxx-small">
-                                    <span style="color: #c23934; font-weight: 600;">😞 Negative</span> • Sarah Johnson
+                                    <span style="color: var(--slds-color-status-error); font-weight: 600;">😞 Negative</span> • Sarah Johnson
                                 </p>
                                 <p class="slds-text-body_small slds-m-bottom_xxx-small">
                                     Call with XYZ Inc - 8 min
@@ -7186,11 +7173,11 @@ const App = {
                                 <p class="slds-text-body_small">Timing Captured</p>
                             </div>
                             <div class="slds-col slds-no-flex">
-                                <span class="slds-badge" style="background-color: #c23934; color: white;">64%</span>
+                                <span class="slds-badge" style="background-color: var(--slds-color-status-error); color: white;">64%</span>
                             </div>
                         </div>
                         <div class="slds-progress-bar" style="height: 6px;">
-                            <span class="slds-progress-bar__value" style="width: 64%; background-color: #c23934;"></span>
+                            <span class="slds-progress-bar__value" style="width: 64%; background-color: var(--slds-color-status-error);"></span>
                         </div>
                     </div>
 
@@ -7240,7 +7227,7 @@ const App = {
                             </div>
                         </div>
                         <p class="slds-text-body_small slds-text-color_weak" style="margin-left: 1.5rem;">
-                            <span style="color: #c23934; font-weight: 600;">Due: Today 5pm</span> • From call at 2:15pm
+                            <span style="color: var(--slds-color-status-error); font-weight: 600;">Due: Today 5pm</span> • From call at 2:15pm
                         </p>
                     </div>
 
