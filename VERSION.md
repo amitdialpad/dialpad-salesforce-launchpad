@@ -141,8 +141,20 @@ https://github.com/amitdialpad/dialpad-salesforce-launchpad/compare/main...admin
 - ✅ Fixed version banner layout (removed "Update now" link)
 - ✅ 100% PM feedback compliance achieved (21/21 requirements)
 
+**Phase 5: OAuth Visibility Enhancements** ✅ COMPLETED (November 28, 2025)
+- ✅ OAuth metrics & tracking system (connected, disconnected, expired, expiringSoon)
+- ✅ Salesforce OAuth Status card with 4-metric grid
+- ✅ Recent Failed Logs card showing call sync failures
+- ✅ API Usage % metric card
+- ✅ System Uptime % metric card
+- ✅ Hierarchical information architecture (Alerts → Failed Logs → OAuth Status)
+- ✅ Collapsible INFO alerts in Attention Required card
+- ✅ Removed hover animations for simplified interactions
+- ✅ 4-card Row 1 layout (3 cols each)
+- ✅ Sales Engineer feedback addressed (OAuth visibility for admins)
+
 ---
 
-**Total Estimated Time:** 12-16 hours (4 days)
+**Total Estimated Time:** 16-20 hours (5 days)
 **Status:** ✅ ALL PHASES COMPLETED
-**Latest Update:** November 27, 2025 - PM Feedback Compliance Phase
+**Latest Update:** November 28, 2025 - OAuth Visibility Enhancements Phase

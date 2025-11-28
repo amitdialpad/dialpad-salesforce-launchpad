@@ -727,26 +727,44 @@ const App = {
                         </div>
                     </div>
                 </div>
+
+                <!-- Date-Filtered Metrics (Directly under filter) -->
+                <div class="slds-page-header__row slds-m-top_small">
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        ${this.renderAdminCompanyMetricCards(metrics)}
+                    </div>
+                </div>
             </div>
 
             <!-- Admin Launchpad - Optimized Priority Layout -->
             <div style="margin-top: 1.5rem;">
-                <!-- Row 1: Critical Health & Alerts (Above Fold) -->
+                <!-- Row 1: System Status Dashboard (Above Fold) -->
                 <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; margin-bottom: 1rem;">
-                    <div style="grid-column: span 6;">
-                        ${this.renderAdminSystemHealthCard(metrics)}
-                    </div>
-                    <div style="grid-column: span 6;">
+                    <div style="grid-column: span 3;">
                         ${this.renderAdminAlertsCard(metrics)}
                     </div>
+                    <div style="grid-column: span 3;">
+                        ${this.renderAdminSystemHealthCard(metrics)}
+                    </div>
+                    <div style="grid-column: span 3;">
+                        ${this.renderAdminFailedLogsCard(metrics)}
+                    </div>
+                    <div style="grid-column: span 3;">
+                        ${this.renderAdminUserConnectionCard(metrics)}
+                    </div>
                 </div>
 
-                <!-- Row 2: Primary KPIs Split (Above Fold) -->
+                <!-- Row 3: User & License Management -->
                 <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; margin-bottom: 1rem;">
-                    ${this.renderAdminCompanyMetricCards(metrics)}
+                    <div style="grid-column: span 6;">
+                        ${this.renderAdminUserOverviewCard(metrics)}
+                    </div>
+                    <div style="grid-column: span 6;">
+                        ${this.renderAdminLicenseCard(metrics)}
+                    </div>
                 </div>
 
-                <!-- Row 3: Setup Progress & Announcements (Dismissible, Above Fold) -->
+                <!-- Row 4: Setup Progress & Announcements (Dismissible) -->
                 ${(!AppState.dismissedSetupCard && metrics.setup.progress < 100) || !AppState.dismissedAnnouncementsCard ? `
                 <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; margin-bottom: 1rem;">
                     ${!AppState.dismissedSetupCard && metrics.setup.progress < 100 ? `
@@ -761,19 +779,6 @@ const App = {
                     ` : ''}
                 </div>
                 ` : ''}
-
-                <!-- Row 4: User & License Management -->
-                <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; margin-bottom: 1rem;">
-                    <div style="grid-column: span 4;">
-                        ${this.renderAdminUserOverviewCard(metrics)}
-                    </div>
-                    <div style="grid-column: span 4;">
-                        ${this.renderAdminLicenseCard(metrics)}
-                    </div>
-                    <div style="grid-column: span 4;">
-                        ${this.renderAdminUserConnectionCard(metrics)}
-                    </div>
-                </div>
             </div>
         `;
     },
@@ -794,6 +799,7 @@ const App = {
 
     renderAdminSystemHealthCard(metrics) {
         const health = metrics.systemHealth;
+        const integration = metrics.integration;
         const getStatusClass = (status) => {
             if (status === 'online') return 'status-connected';
             if (status === 'offline') return 'status-disconnected';
@@ -801,18 +807,31 @@ const App = {
         };
         const getStatusText = (status) => status.charAt(0).toUpperCase() + status.slice(1);
 
+        // Calculate health summary
+        const services = [health.coreService, health.voice, health.chatSms, health.analytics, health.ai, health.salesforceIntegration];
+        const onlineCount = services.filter(s => s === 'online').length;
+        const totalCount = services.length;
+        const healthPercent = Math.round((onlineCount / totalCount) * 100);
+
+        // API usage
+        const apiUsed = integration.apiUsage;
+        const apiLimit = integration.apiLimit;
+        const apiPercent = Math.round((apiUsed / apiLimit) * 100);
+        const apiColor = apiPercent > 80 ? '#c23934' : apiPercent > 60 ? '#fe9339' : '#04844b';
+
         return `
             <div class="slds-card" style="height: 100%;">
                 <div class="slds-card__header slds-grid">
                     <header class="slds-media slds-media_center slds-has-flexi-truncate">
                         <div class="slds-media__body">
                             <h2 class="slds-card__header-title">System Health</h2>
-                            <p class="slds-text-body_small slds-text-color_weak">Real-time service status</p>
+                            <p class="slds-text-body_small slds-text-color_weak">${onlineCount} of ${totalCount} services online (${healthPercent}%)</p>
                         </div>
                     </header>
                 </div>
                 <div class="slds-card__body slds-card__body_inner" style="padding: 0.75rem 1rem;">
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem;">
+                    <!-- Service Status Grid -->
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1rem;">
                         <div style="text-align: center;">
                             <div class="slds-badge ${getStatusClass(health.coreService)}" style="display: block; margin-bottom: 0.25rem; font-size: 0.75rem;">
                                 ${getStatusText(health.coreService)}
@@ -850,6 +869,110 @@ const App = {
                             <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.7rem;">Salesforce</div>
                         </div>
                     </div>
+
+                    <!-- API Usage -->
+                    <div style="border-top: 1px solid #f3f3f3; padding-top: 0.75rem; margin-bottom: 0.75rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                            <span style="font-size: 0.75rem; font-weight: 600;">Salesforce API Usage</span>
+                            <span style="font-size: 0.75rem; color: ${apiColor}; font-weight: 600;">${apiUsed.toLocaleString()} / ${apiLimit.toLocaleString()}</span>
+                        </div>
+                        <div style="width: 100%; height: 6px; background: #f3f3f3; border-radius: 3px; overflow: hidden;">
+                            <div style="width: ${apiPercent}%; height: 100%; background: ${apiColor}; transition: width 0.3s ease;"></div>
+                        </div>
+                        <div style="font-size: 0.65rem; color: #706e6b; margin-top: 0.25rem;">Last updated: 30 seconds ago</div>
+                    </div>
+
+                    <!-- System Uptime -->
+                    <div style="border-top: 1px solid #f3f3f3; padding-top: 0.75rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                            <span style="font-size: 0.75rem; font-weight: 600;">System Uptime</span>
+                            <span style="font-size: 0.75rem; color: #04844b; font-weight: 600;">99.8%</span>
+                        </div>
+                        <div style="position: relative; width: 100%; margin-bottom: 0.5rem;">
+                            <div style="width: 100%; height: 6px; background: #f3f3f3; border-radius: 3px; overflow: visible; cursor: pointer;"
+                                 onmouseenter="this.querySelector('.uptime-bar').style.filter='brightness(1.1)'; this.querySelector('.uptime-tooltip').style.display='block';"
+                                 onmouseleave="this.querySelector('.uptime-bar').style.filter='brightness(1)'; this.querySelector('.uptime-tooltip').style.display='none';">
+                                <div class="uptime-bar" style="width: 99.8%; height: 100%; background: #04844b; transition: all 0.2s ease;"></div>
+                                <div class="uptime-tooltip" style="display: none; position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); background: white; border: 1px solid #e5e5e5; border-radius: 0.25rem; padding: 0.75rem; box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 1000; min-width: 250px;">
+                                    <div style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem;">November 26, 2025</div>
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; background: #fef9f3; padding: 0.5rem; border-radius: 0.25rem; margin-bottom: 0.5rem;">
+                                        <svg class="slds-icon slds-icon_xx-small slds-icon-text-warning" style="width: 1rem; height: 1rem;" aria-hidden="true">
+                                            <use xlink:href="${getAssetPath('assets/icons/utility-sprite/svg/symbols.svg#warning')}"></use>
+                                        </svg>
+                                        <div>
+                                            <div style="font-size: 0.8rem; font-weight: 600;">API Performance Degradation</div>
+                                            <div style="font-size: 0.7rem; color: #706e6b;">Duration: 5 minutes</div>
+                                        </div>
+                                    </div>
+                                    <div style="font-size: 0.7rem; color: #706e6b; padding-top: 0.5rem; border-top: 1px solid #f3f3f3;">
+                                        <strong>Impact:</strong> Brief slowdown in Salesforce API responses
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="font-size: 0.65rem; color: #706e6b;">Last incident: 2 days ago • Hover for details</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+
+    renderAdminFailedLogsCard(metrics) {
+        const oauth = metrics.oauth;
+
+        // Mock failed logs data
+        const failedLogs = [
+            { time: '2 min ago', user: 'Sarah Johnson', contact: 'Acme Corp', reason: 'OAuth token expired' },
+            { time: '5 min ago', user: 'Mike Chen', contact: 'Tech Solutions Inc', reason: 'Not connected to Salesforce' },
+            { time: '12 min ago', user: 'Sarah Johnson', contact: 'Global Industries', reason: 'OAuth token expired' },
+            { time: '18 min ago', user: 'Alex Rivera', contact: 'Innovation Labs', reason: 'OAuth token expired' },
+            { time: '25 min ago', user: 'Mike Chen', contact: 'StartupXYZ', reason: 'Not connected to Salesforce' }
+        ];
+
+        return `
+            <div class="slds-card" style="height: 100%;">
+                <div class="slds-card__header slds-grid">
+                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                        <div class="slds-media__body">
+                            <h2 class="slds-card__header-title">Recent Failed Logs</h2>
+                            <p class="slds-text-body_small slds-text-color_weak">Last 24 hours</p>
+                        </div>
+                    </header>
+                </div>
+                <div class="slds-card__body slds-card__body_inner" style="padding: 0.75rem 1rem;">
+                    ${oauth.failedCallLogs24h === 0 ? `
+                        <div style="text-align: center; padding: 1rem;">
+                            <div style="font-size: 1.5rem; color: #04844b;">✓</div>
+                            <p class="slds-text-body_small slds-text-color_weak" style="margin-top: 0.25rem;">No failed call logs</p>
+                        </div>
+                    ` : `
+                        <div style="font-size: 0.75rem; font-weight: 600; color: #c23934; margin-bottom: 0.75rem;">
+                            ${oauth.failedCallLogs24h} call logs failed to sync
+                        </div>
+                        <div style="overflow-x: auto;">
+                            <table style="width: 100%; font-size: 0.75rem; border-collapse: collapse;">
+                                <thead>
+                                    <tr style="border-bottom: 1px solid #e5e5e5;">
+                                        <th style="text-align: left; padding: 0.5rem 0.25rem; font-weight: 600; color: #706e6b;">Time</th>
+                                        <th style="text-align: left; padding: 0.5rem 0.25rem; font-weight: 600; color: #706e6b;">User</th>
+                                        <th style="text-align: left; padding: 0.5rem 0.25rem; font-weight: 600; color: #706e6b;">Reason</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${failedLogs.slice(0, 5).map(log => `
+                                        <tr style="border-bottom: 1px solid #f3f3f3;">
+                                            <td style="padding: 0.5rem 0.25rem; color: #3e3e3c;">${log.time}</td>
+                                            <td style="padding: 0.5rem 0.25rem; color: #3e3e3c;">${log.user}</td>
+                                            <td style="padding: 0.5rem 0.25rem; color: #c23934;">${log.reason}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                            <div style="text-align: center; margin-top: 0.75rem;">
+                                <a href="#/calls" class="slds-text-link" style="font-size: 0.75rem; color: #0176d3; font-weight: 500;">View all failed logs →</a>
+                            </div>
+                        </div>
+                    `}
                 </div>
             </div>
         `;
@@ -857,6 +980,8 @@ const App = {
 
     renderAdminAlertsCard(metrics) {
         const alerts = metrics.alerts;
+        const oauth = metrics.oauth;
+
         const getAlertIcon = (type) => {
             if (type === 'warning') return 'warning';
             if (type === 'error') return 'error';
@@ -866,6 +991,65 @@ const App = {
             if (type === 'warning') return 'slds-icon-text-warning';
             if (type === 'error') return 'slds-icon-text-error';
             return 'slds-icon-text-default';
+        };
+        const getAlertAction = (message) => {
+            // OAuth-specific alerts
+            if (message.includes('not connected to Salesforce')) return { href: '#/settings', label: 'View Users' };
+            if (message.includes('failed call logs')) return { href: '#/calls', label: 'View Logs' };
+            if (message.includes('OAuth tokens expired')) return { href: '#/settings', label: 'View Users' };
+            if (message.includes('OAuth tokens expiring')) return { href: '#/settings', label: 'View Users' };
+
+            // System alerts
+            if (message.includes('integration is disconnected')) return { href: '#/settings', label: 'Fix Connection' };
+            if (message.includes('AI service')) return { href: '#/settings', label: 'View Status' };
+            if (message.includes('connection issues')) return { href: '#/settings', label: 'View Users' };
+            if (message.includes('License utilization')) return { href: '#/settings', label: 'Manage Licenses' };
+            if (message.includes('Setup') && message.includes('complete')) return { href: '#/admin', label: 'Continue Setup' };
+            return null;
+        };
+
+        // Group alerts by severity
+        const criticalAlerts = alerts.filter(a => a.severity === 'high');
+        const importantAlerts = alerts.filter(a => a.severity === 'medium');
+        const infoAlerts = alerts.filter(a => a.severity === 'low');
+
+        // Initialize collapsed state if not exists
+        if (AppState.alertsInfoCollapsed === undefined) AppState.alertsInfoCollapsed = true;
+        if (AppState.alertsFailedLogsCollapsed === undefined) AppState.alertsFailedLogsCollapsed = true;
+
+        // Mock failed logs data
+        const failedLogs = [
+            { time: '2 min ago', user: 'Sarah Johnson', contact: 'Acme Corp', reason: 'OAuth token expired' },
+            { time: '5 min ago', user: 'Mike Chen', contact: 'Tech Solutions Inc', reason: 'Not connected to Salesforce' },
+            { time: '12 min ago', user: 'Sarah Johnson', contact: 'Global Industries', reason: 'OAuth token expired' },
+            { time: '18 min ago', user: 'Alex Rivera', contact: 'Innovation Labs', reason: 'OAuth token expired' },
+            { time: '25 min ago', user: 'Mike Chen', contact: 'StartupXYZ', reason: 'Not connected to Salesforce' }
+        ];
+
+        const renderAlertSection = (sectionAlerts, icon, title, bgColor) => {
+            if (sectionAlerts.length === 0) return '';
+            return `
+                <div style="margin-bottom: 1rem;">
+                    <div style="font-size: 0.75rem; font-weight: 700; color: #3e3e3c; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                        ${icon} ${title} (${sectionAlerts.length})
+                    </div>
+                    ${sectionAlerts.map(alert => {
+                        const action = getAlertAction(alert.message);
+                        return `
+                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.5rem 0.75rem; background: ${bgColor}; border-radius: 0.25rem; margin-bottom: 0.5rem; ${action ? 'cursor: pointer; transition: all 0.15s ease;' : ''}" ${action ? `onclick="window.location.hash='${action.href}'" onmouseenter="this.style.boxShadow='0 1px 4px rgba(0,0,0,0.1)'; this.style.transform='translateX(2px)';" onmouseleave="this.style.boxShadow=''; this.style.transform='translateX(0)';"` : ''}>
+                            <div style="display: flex; align-items: center; gap: 0.5rem; flex: 1;">
+                                <svg class="slds-icon slds-icon_xx-small ${getAlertClass(alert.type)}" aria-hidden="true" style="flex-shrink: 0; width: 0.875rem; height: 0.875rem;">
+                                    <use xlink:href="${getAssetPath(`assets/icons/utility-sprite/svg/symbols.svg#${getAlertIcon(alert.type)}`)}"></use>
+                                </svg>
+                                <span style="font-size: 0.85rem; line-height: 1.3;">${alert.message}</span>
+                            </div>
+                            ${action ? `
+                                <a href="${action.href}" class="slds-text-link" style="font-size: 0.8rem; white-space: nowrap; color: #0176d3; font-weight: 500;" onclick="event.stopPropagation();">${action.label} →</a>
+                            ` : ''}
+                        </div>
+                    `}).join('')}
+                </div>
+            `;
         };
 
         return `
@@ -885,31 +1069,32 @@ const App = {
                             <p class="slds-text-body_small slds-text-color_weak" style="margin-top: 0.25rem;">All systems normal</p>
                         </div>
                     ` : `
-                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                            ${alerts.map(alert => {
-                                const getAlertAction = (message) => {
-                                    if (message.includes('integration is disconnected')) return { href: '#/settings', label: 'Fix Connection' };
-                                    if (message.includes('AI service')) return { href: '#/settings', label: 'View Status' };
-                                    if (message.includes('connection issues')) return { href: '#/settings', label: 'View Users' };
-                                    if (message.includes('License utilization')) return { href: '#/settings', label: 'Manage Licenses' };
-                                    if (message.includes('Setup') && message.includes('complete')) return { href: '#/admin', label: 'Continue Setup' };
-                                    return null;
-                                };
-                                const action = getAlertAction(alert.message);
-                                return `
-                                <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.5rem 0.75rem; background: ${alert.type === 'error' ? '#fef5f5' : alert.type === 'warning' ? '#fef9f3' : '#f3f4f6'}; border-radius: 0.25rem; ${action ? 'cursor: pointer; transition: all 0.15s ease;' : ''}" ${action ? `onclick="window.location.hash='${action.href}'" onmouseenter="this.style.boxShadow='0 1px 4px rgba(0,0,0,0.1)'; this.style.transform='translateX(2px)';" onmouseleave="this.style.boxShadow=''; this.style.transform='translateX(0)';"` : ''}>
-                                    <div style="display: flex; align-items: center; gap: 0.5rem; flex: 1;">
-                                        <svg class="slds-icon slds-icon_xx-small ${getAlertClass(alert.type)}" aria-hidden="true" style="flex-shrink: 0; width: 0.875rem; height: 0.875rem;">
-                                            <use xlink:href="${getAssetPath(`assets/icons/utility-sprite/svg/symbols.svg#${getAlertIcon(alert.type)}`)}"></use>
-                                        </svg>
-                                        <span style="font-size: 0.85rem; line-height: 1.3;">${alert.message}</span>
-                                    </div>
-                                    ${action ? `
-                                        <a href="${action.href}" class="slds-text-link" style="font-size: 0.8rem; white-space: nowrap; color: #0176d3; font-weight: 500;" onclick="event.stopPropagation();">${action.label} →</a>
-                                    ` : ''}
+                        ${renderAlertSection(criticalAlerts, '🔴', 'CRITICAL', '#fef5f5')}
+                        ${renderAlertSection(importantAlerts, '⚠️', 'IMPORTANT', '#fef9f3')}
+
+                        ${infoAlerts.length > 0 ? `
+                            <div style="margin-bottom: 1rem;">
+                                <div style="font-size: 0.75rem; font-weight: 700; color: #3e3e3c; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;" onclick="AppState.alertsInfoCollapsed = !AppState.alertsInfoCollapsed; window.app.renderCurrentPage();">
+                                    <span>ℹ️ INFO (${infoAlerts.length})</span>
+                                    <span style="font-size: 0.7rem;">${AppState.alertsInfoCollapsed ? '▶' : '▼'}</span>
                                 </div>
-                            `}).join('')}
-                        </div>
+                                ${!AppState.alertsInfoCollapsed ? infoAlerts.map(alert => {
+                                    const action = getAlertAction(alert.message);
+                                    return `
+                                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.5rem 0.75rem; background: #f3f4f6; border-radius: 0.25rem; margin-bottom: 0.5rem; ${action ? 'cursor: pointer; transition: all 0.15s ease;' : ''}" ${action ? `onclick="window.location.hash='${action.href}'" onmouseenter="this.style.boxShadow='0 1px 4px rgba(0,0,0,0.1)'; this.style.transform='translateX(2px)';" onmouseleave="this.style.boxShadow=''; this.style.transform='translateX(0)';"` : ''}>
+                                        <div style="display: flex; align-items: center; gap: 0.5rem; flex: 1;">
+                                            <svg class="slds-icon slds-icon_xx-small ${getAlertClass(alert.type)}" aria-hidden="true" style="flex-shrink: 0; width: 0.875rem; height: 0.875rem;">
+                                                <use xlink:href="${getAssetPath(`assets/icons/utility-sprite/svg/symbols.svg#${getAlertIcon(alert.type)}`)}"></use>
+                                            </svg>
+                                            <span style="font-size: 0.85rem; line-height: 1.3;">${alert.message}</span>
+                                        </div>
+                                        ${action ? `
+                                            <a href="${action.href}" class="slds-text-link" style="font-size: 0.8rem; white-space: nowrap; color: #0176d3; font-weight: 500;" onclick="event.stopPropagation();">${action.label} →</a>
+                                        ` : ''}
+                                    </div>
+                                `}).join('') : ''}
+                            </div>
+                        ` : ''}
                     `}
                 </div>
             </div>
@@ -923,7 +1108,7 @@ const App = {
         const pendingInvites = 1; // Mock: 1 pending invitation
 
         return `
-            <div class="slds-card clickable-card" style="cursor: pointer; transition: all 0.2s ease; height: 100%;" onclick="window.location.hash='#/settings'" onmouseenter="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.15)'" onmouseleave="this.style.transform='translateY(0)'; this.style.boxShadow=''">
+            <div class="slds-card clickable-card" style="cursor: pointer; height: 100%;" onclick="window.location.hash='#/settings'">
                 <div class="slds-card__header slds-grid">
                     <header class="slds-media slds-media_center slds-has-flexi-truncate">
                         <div class="slds-media__body">
@@ -971,76 +1156,65 @@ const App = {
 
     renderAdminUserConnectionCard(metrics) {
         const users = metrics.users;
+        const oauth = metrics.oauth;
         const allUsers = DataService.getUsers('admin');
-        const usersWithIssues = allUsers.filter((u, i) => i < users.connectionIssues); // Mock: first N users have issues
 
-        // Connection analytics
-        const activeNow = users.activeToday;
-        const activeYesterday = Math.floor(activeNow * 0.92); // 8% growth trend
-        const activityTrend = activeNow - activeYesterday;
-        const trendPercent = Math.round((activityTrend / activeYesterday) * 100);
-
-        // Inactive users (haven't logged in 7+ days)
-        const inactiveUsers = Math.floor(users.total * 0.12); // 12% inactive
-        const avgSessionDuration = '3h 24m'; // Mock average
-
-        // Peak usage time
-        const currentHour = new Date().getHours();
-        const isPeakHours = currentHour >= 9 && currentHour <= 16;
+        // Mock: first N users have OAuth issues
+        const usersWithOAuthIssues = allUsers.filter((u, i) => i < (oauth.disconnected + oauth.expired));
+        const hasOAuthIssues = oauth.disconnected > 0 || oauth.expired > 0;
 
         return `
-            <div class="slds-card clickable-card" style="height: 100%; cursor: pointer; transition: all 0.2s ease;"
-                 onclick="window.location.hash='#/settings'"
-                 onmouseenter="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.15)'"
-                 onmouseleave="this.style.transform='translateY(0)'; this.style.boxShadow=''">
+            <div class="slds-card clickable-card" style="height: 100%; cursor: pointer;" onclick="window.location.hash='#/settings'">
                 <div class="slds-card__header slds-grid">
                     <header class="slds-media slds-media_center slds-has-flexi-truncate">
                         <div class="slds-media__body">
-                            <h2 class="slds-card__header-title">User Connections</h2>
-                            <p class="slds-text-body_small slds-text-color_weak">Real-time status & activity</p>
+                            <h2 class="slds-card__header-title">Salesforce OAuth Status</h2>
+                            <p class="slds-text-body_small slds-text-color_weak">User authentication & call logging</p>
                         </div>
                     </header>
                 </div>
 
-                <!-- Connection Status Alert -->
-                ${users.connectionIssues > 0 ? `
+                <!-- OAuth Status Alert -->
+                ${hasOAuthIssues ? `
                     <div style="padding: 0.75rem 1rem; background: #fef5f5; border-left: 3px solid #c23934; border-bottom: 1px solid #f3f2f2;">
                         <strong style="color: #c23934; font-size: 0.875rem;">Action Required</strong>
-                        <div style="font-size: 0.75rem; color: #3e3e3c; margin-top: 0.25rem;">Review users unable to connect and provide support</div>
+                        <div style="font-size: 0.75rem; color: #3e3e3c; margin-top: 0.25rem;">Users need to reconnect to Salesforce to enable call logging</div>
                     </div>
                 ` : `
                     <div style="padding: 0.75rem 1rem; background: #f3f9f3; border-left: 3px solid #04844b; border-bottom: 1px solid #f3f2f2;">
-                        <strong style="color: #04844b; font-size: 0.875rem;">✓ All Users Connected</strong>
-                        <div style="font-size: 0.75rem; color: #3e3e3c; margin-top: 0.25rem;">No connection issues detected</div>
+                        <strong style="color: #04844b; font-size: 0.875rem;">All Users Connected</strong>
+                        <div style="font-size: 0.75rem; color: #3e3e3c; margin-top: 0.25rem;">OAuth tokens active, call logging enabled</div>
                     </div>
                 `}
 
                 <div class="slds-card__body slds-card__body_inner" style="padding: 0.75rem 1rem;">
 
-                    <!-- Users with Connection Issues -->
-                    ${users.connectionIssues > 0 ? `
-                        <div style="margin-bottom: 1rem;">
-                            <div style="font-weight: 600; font-size: 0.8rem; margin-bottom: 0.5rem; color: #c23934;">
-                                ${users.connectionIssues} User${users.connectionIssues === 1 ? '' : 's'} with Connection Issues
-                            </div>
-                            <ul style="list-style: none; margin: 0; padding: 0;">
-                                ${usersWithIssues.slice(0, 3).map(user => `
-                                    <li style="padding: 0.5rem; border-bottom: 1px solid #f3f3f3;">
-                                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                                            <div>
-                                                <div style="font-weight: 600; font-size: 0.875rem;">${user.name}</div>
-                                                <div style="font-size: 0.7rem; color: #706e6b;">${user.email}</div>
-                                            </div>
-                                            <div class="slds-badge status-disconnected" style="font-size: 0.7rem;">Offline</div>
-                                        </div>
-                                    </li>
-                                `).join('')}
-                            </ul>
-                            ${users.connectionIssues > 3 ? `
-                                <div style="margin-top: 0.5rem; text-align: center;">
-                                    <span class="slds-text-link" style="color: #0176d3; font-size: 0.8rem; font-weight: 500;">+${users.connectionIssues - 3} more →</span>
-                                </div>
-                            ` : ''}
+                    <!-- OAuth Status Grid -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #04844b;">${oauth.connected}</div>
+                            <div class="slds-text-body_small slds-text-color_weak">Connected</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: ${oauth.disconnected > 0 ? '#c23934' : '#001642'};">${oauth.disconnected}</div>
+                            <div class="slds-text-body_small slds-text-color_weak">Disconnected</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: ${oauth.expired > 0 ? '#fe9339' : '#001642'};">${oauth.expired}</div>
+                            <div class="slds-text-body_small slds-text-color_weak">Expired</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: ${oauth.expiringSoon > 0 ? '#fe9339' : '#001642'};">${oauth.expiringSoon}</div>
+                            <div class="slds-text-body_small slds-text-color_weak">Expiring Soon</div>
+                        </div>
+                    </div>
+
+                    <!-- Action Link -->
+                    ${hasOAuthIssues ? `
+                        <div style="border-top: 1px solid #f3f3f3; padding-top: 1rem; text-align: center;">
+                            <a href="#/settings" class="slds-text-link" style="font-size: 0.8rem; color: #0176d3; font-weight: 500;">
+                                ${oauth.disconnected + oauth.expired} user${(oauth.disconnected + oauth.expired) === 1 ? '' : 's'} need attention →
+                            </a>
                         </div>
                     ` : ''}
 
@@ -1059,10 +1233,7 @@ const App = {
         const projectedMonths = Math.floor(licenses.available / growthRate);
 
         return `
-            <div class="slds-card clickable-card" style="height: 100%; cursor: pointer; transition: all 0.2s ease;"
-                 onclick="window.open('https://dialpadbeta.com/licenses', '_blank')"
-                 onmouseenter="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.15)'"
-                 onmouseleave="this.style.transform='translateY(0)'; this.style.boxShadow=''">
+            <div class="slds-card clickable-card" style="height: 100%; cursor: pointer;" onclick="window.open('https://dialpadbeta.com/licenses', '_blank')">
                 <div class="slds-card__header slds-grid">
                     <header class="slds-media slds-media_center slds-has-flexi-truncate">
                         <div class="slds-media__body">
@@ -1265,19 +1436,41 @@ const App = {
 
     renderAdminCompanyMetricCards(metrics) {
         const calls = metrics.calls;
+        const users = metrics.users;
+        const licenses = metrics.licenses;
+        const integration = metrics.integration;
+
+        // Calculate additional metrics
+        const activeAgents = users.activeToday;
+        const answerRate = Math.round(((calls.total - calls.missed) / calls.total) * 100);
+        const avgWaitTime = '45s'; // Mock data
+        const licenseUtil = licenses.utilization;
+
+        // API Usage
+        const apiUsagePercent = Math.round((integration.apiUsage / integration.apiLimit) * 100);
+
+        // System Uptime (from 00:00 today to now)
+        const systemUptimePercent = 99.2; // Mock: 99.2% uptime today
+
         const metricCards = [
             { value: calls.total, label: 'Total Calls', color: '#001642' },
             { value: DataService.formatDuration(calls.avgDuration), label: 'Avg Duration', color: '#001642' },
             { value: calls.missed, label: 'Missed Calls', color: calls.missed > 20 ? '#c23934' : '#001642' },
-            { value: `${calls.serviceScore}%`, label: 'Service Score', color: '#001642' }
+            { value: `${calls.serviceScore}%`, label: 'Service Score', color: '#001642' },
+            { value: activeAgents, label: 'Active Agents', color: '#001642' },
+            { value: `${answerRate}%`, label: 'Answer Rate', color: answerRate < 80 ? '#c23934' : answerRate < 90 ? '#fe9339' : '#04844b' },
+            { value: avgWaitTime, label: 'Avg Wait Time', color: '#001642' },
+            { value: `${licenseUtil}%`, label: 'License Usage', color: licenseUtil > 90 ? '#c23934' : licenseUtil > 80 ? '#fe9339' : '#001642' },
+            { value: `${apiUsagePercent}%`, label: 'API Usage', color: apiUsagePercent > 80 ? '#c23934' : apiUsagePercent > 60 ? '#fe9339' : '#04844b' },
+            { value: `${systemUptimePercent}%`, label: 'System Uptime', color: systemUptimePercent < 95 ? '#c23934' : systemUptimePercent < 99 ? '#fe9339' : '#04844b' }
         ];
 
         return metricCards.map(metric => `
-            <div style="grid-column: span 3;">
-                <div class="slds-card clickable-card" style="cursor: pointer; transition: all 0.2s ease; height: 100%;" onclick="window.location.hash='#/calls'" onmouseenter="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.15)'" onmouseleave="this.style.transform='translateY(0)'; this.style.boxShadow=''">
-                    <div class="slds-card__body slds-card__body_inner" style="padding: 1rem; text-align: center;">
-                        <div style="font-size: 2rem; font-weight: 700; color: ${metric.color}; margin-bottom: 0.5rem;">${metric.value}</div>
-                        <div class="slds-text-body_small slds-text-color_weak">${metric.label}</div>
+            <div style="flex: 1; min-width: 140px;">
+                <div class="slds-card clickable-card" style="cursor: pointer; height: 100%;" onclick="window.location.hash='#/calls'">
+                    <div class="slds-card__body slds-card__body_inner" style="padding: 0.75rem 0.5rem; text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: ${metric.color}; margin-bottom: 0.25rem; word-break: break-word;">${metric.value}</div>
+                        <div class="slds-text-body_small slds-text-color_weak" style="font-size: 0.75rem;">${metric.label}</div>
                     </div>
                 </div>
             </div>

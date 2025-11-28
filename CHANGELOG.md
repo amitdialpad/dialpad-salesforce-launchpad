@@ -4,6 +4,105 @@ All notable changes to the admin-refactor-v2 branch are documented here.
 
 ---
 
+## [Admin V2] - 2025-11-28 - OAuth Visibility Enhancements
+
+### Added
+- **OAuth Metrics & Tracking** ([data-service.js:413-418, 537-543](prototype/js/data-service.js))
+  - Added OAuth connection metrics: `connected`, `disconnected`, `expired`, `expiringSoon`
+  - Added `failedCallLogs24h` tracking for call logs that failed due to OAuth issues
+  - OAuth metrics available in all admin dashboard cards via `metrics.oauth`
+
+- **Salesforce OAuth Status Card** ([app.js:1157-1226](prototype/js/app.js#L1157-L1226))
+  - New dedicated card in Row 1 showing OAuth connection health
+  - 4-metric grid: Connected, Disconnected, Expired, Expiring Soon
+  - Color-coded metrics (green for healthy, red/orange for issues)
+  - Action link: "X users need attention →" navigates to Settings
+  - Alert banner shows "Action Required" when users need to reconnect
+
+- **Recent Failed Logs Card** ([app.js:920-981](prototype/js/app.js#L920-L981))
+  - Dedicated card showing call logs that failed to sync
+  - Table with Time, User, and Reason columns
+  - Shows 5 most recent failed logs
+  - Link to view all failed logs
+  - Empty state when no failures
+
+- **API Usage % Metric** ([app.js:1456, 1470](prototype/js/app.js#L1470))
+  - New metric card showing Salesforce API usage percentage
+  - Calculated from `integration.apiUsage / integration.apiLimit`
+  - Color-coded: Green (<60%), Orange (60-80%), Red (>80%)
+
+- **System Uptime % Metric** ([app.js:1459, 1471](prototype/js/app.js#L1471))
+  - New metric card showing today's system uptime
+  - Mock data: 99.2% uptime
+  - Color-coded: Green (>99%), Orange (95-99%), Red (<95%)
+
+- **OAuth Summary Alerts** ([data-service.js:464-470](prototype/js/data-service.js))
+  - High-level alerts in Attention Required card
+  - "X users not connected to Salesforce - calls not logging" (severity: high)
+  - "X call logs failed to sync in last 24 hours" (severity: medium)
+
+### Changed
+- **Row 1 Layout Restructure** ([app.js:741-755](prototype/js/app.js#L741-L755))
+  - Changed from 3 cards to 4 cards, each 3 columns wide
+  - **Card 1:** Attention Required (alerts with collapsible INFO section)
+  - **Card 2:** System Health (services, API usage, uptime)
+  - **Card 3:** Recent Failed Logs (call log sync failures)
+  - **Card 4:** Salesforce OAuth Status (user connection metrics)
+  - Balanced layout with appropriate content in each card
+
+- **Attention Required Card Enhancement** ([app.js:1057-1102](prototype/js/app.js#L1057-L1102))
+  - Added collapsible INFO alerts section (collapsed by default)
+  - Toggle arrow shows/hides INFO alerts
+  - OAuth summary alerts included for high-level awareness
+  - Grouped alerts by severity: CRITICAL, IMPORTANT, INFO
+
+- **Metric Cards Expansion** ([app.js:1443-1483](prototype/js/app.js#L1443-L1483))
+  - Increased from 8 to 10 metric cards
+  - Added API Usage % and System Uptime % metrics
+  - All cards maintain consistent styling (140px min-width, flexbox layout)
+
+### Removed
+- **Hover Animations** ([app.js:1111, 1167, 1236, 1476](prototype/js/app.js))
+  - Removed `onmouseenter` and `onmouseleave` animations from all clickable cards
+  - Removed `transition: all 0.2s ease` styles
+  - Affected cards: User Management, OAuth Status, License Utilization, all 10 metric cards
+  - Simplified interaction: cards remain clickable but no visual animation
+
+- **OAuth Status User List**
+  - Removed individual user list from OAuth Status card
+  - Simplified to just metrics grid + action link
+  - Reduces overwhelming detail, focuses on at-a-glance visibility
+
+### Fixed
+- **OAuth Link Text** ([app.js:1218](prototype/js/app.js#L1218))
+  - Changed from "7 users need attention → Go to Settings" to "7 users need attention →"
+  - Cleaner, more concise call-to-action
+
+- **Card Height Balance**
+  - Removed fixed `max-height: 500px` from cards
+  - Natural sizing based on content
+  - Collapsible INFO alerts help control Attention Required card height
+
+### Information Architecture
+**Implemented hierarchical OAuth visibility:**
+1. **Attention Required** - High-level summary alerts for triage (10-second scan)
+   - "5 users not connected - calls not logging"
+   - "12 call logs failed to sync"
+2. **Recent Failed Logs** - Detailed failure data table (investigate specific issues)
+   - Time, User, Reason for each failure
+3. **OAuth Status** - Overall connection health metrics (take action)
+   - Connected: 3, Disconnected: 5, Expired: 2, Expiring Soon: 3
+   - Direct link to Settings for remediation
+
+### Validation
+- ✅ **Sales Engineer Feedback Addressed** - OAuth visibility for admins implemented
+- ✅ **No Redundancy** - Each card serves distinct purpose in workflow
+- ✅ **At-a-Glance Visibility** - Admins can see which users need to connect to Salesforce
+- ✅ **Failed Log Tracking** - Call logging failures visible with reasons
+- ✅ **Simplified Interactions** - Removed distracting hover animations
+
+---
+
 ## [Admin V2] - 2025-11-27 - PM Feedback Compliance Phase
 
 ### Added

@@ -410,6 +410,13 @@ const DataService = {
         const connectionIssues = 2; // Mock: 2 users with connection problems
         const neverLoggedIn = 5; // Mock
 
+        // OAuth / Salesforce Connection Stats
+        const oauthDisconnected = 5; // Mock: users not connected to Salesforce
+        const oauthExpired = 2; // Mock: users with expired OAuth tokens
+        const oauthExpiringSoon = 3; // Mock: tokens expiring in < 7 days
+        const oauthConnected = totalUsers - oauthDisconnected - oauthExpired;
+        const failedCallLogs24h = 12; // Mock: call logs that failed due to OAuth issues in last 24h
+
         // Calculate license utilization
         const licensesTotal = 50;
         const licensesUsed = totalUsers;
@@ -453,6 +460,15 @@ const DataService = {
         if (AppState.integrationStatus === 'disconnected') {
             alerts.push({ type: 'error', message: 'Salesforce integration is disconnected. Call logging and data sync are disabled.', severity: 'high' });
         }
+
+        // OAuth summary alerts (high-level awareness, details in dedicated cards)
+        if (oauthDisconnected > 0) {
+            alerts.push({ type: 'error', message: `${oauthDisconnected} users not connected to Salesforce - calls not logging`, severity: 'high' });
+        }
+        if (failedCallLogs24h > 0) {
+            alerts.push({ type: 'warning', message: `${failedCallLogs24h} call logs failed to sync in last 24 hours`, severity: 'medium' });
+        }
+
         if (systemHealth.ai === 'offline') {
             alerts.push({ type: 'warning', message: 'AI service is currently offline', severity: 'medium' });
         }
@@ -511,6 +527,13 @@ const DataService = {
                 connectionIssues,
                 neverLoggedIn,
                 connected: totalUsers - connectionIssues - neverLoggedIn
+            },
+            oauth: {
+                connected: oauthConnected,
+                disconnected: oauthDisconnected,
+                expired: oauthExpired,
+                expiringSoon: oauthExpiringSoon,
+                failedCallLogs24h: failedCallLogs24h
             },
             licenses: {
                 total: licensesTotal,

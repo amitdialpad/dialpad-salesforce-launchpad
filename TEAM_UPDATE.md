@@ -1,8 +1,8 @@
-# Team Update: Admin V2 Implementation Complete
+# Team Update: Admin V2 OAuth Visibility Enhancement Complete
 
-**Date:** November 27, 2025
+**Date:** November 28, 2025
 **Branch:** admin-refactor-v2
-**Status:** ✅ 100% PM Feedback Compliance Achieved
+**Status:** ✅ OAuth Visibility Enhancements Complete
 
 ---
 
@@ -19,7 +19,100 @@ https://github.com/amitdialpad/dialpad-salesforce-launchpad/compare/main...admin
 
 ---
 
-## ✅ What We Completed (Nov 27, 2025)
+## ✅ What We Completed (Nov 28, 2025)
+
+### OAuth Visibility Enhancement - Sales Engineer Feedback
+
+Based on Sales Engineer feedback about OAuth visibility pain points, we implemented comprehensive OAuth status tracking and error surfacing for admins.
+
+#### Pain Points Addressed:
+1. ✅ **Admin Visibility** - Ability for admins to see which Dialpad users are/aren't connected to Salesforce
+2. ✅ **Error Surfacing** - Alerts when call logging fails due to missing/expired Salesforce auth
+3. ⏳ **User Prompts** (Deferred) - In-app prompts requiring users to connect before features work
+
+### New Features Added
+
+1. **Salesforce OAuth Status Card** (Row 1, 3rd position)
+   - Shows 4 key metrics: Connected, Disconnected, Expired, Expiring Soon
+   - Color-coded for quick visual scanning (green = healthy, red/orange = needs attention)
+   - Alert banner when users need to reconnect
+   - Direct link to Settings: "X users need attention →"
+   - Simplified design: metrics grid only, no overwhelming detail
+
+2. **Recent Failed Logs Card** (Row 1, 3rd position)
+   - Dedicated table showing call logs that failed to sync
+   - 3 columns: Time, User, Reason
+   - Shows 5 most recent failures
+   - Link to view all failed logs
+   - Empty state message when no failures
+
+3. **OAuth Metrics System** (Backend)
+   - Added to `data-service.js`: `connected`, `disconnected`, `expired`, `expiringSoon`, `failedCallLogs24h`
+   - OAuth data available throughout admin dashboard via `metrics.oauth`
+   - 7-day warning threshold for expiring tokens
+
+4. **OAuth Summary Alerts** (Attention Required card)
+   - High-level alerts: "5 users not connected - calls not logging"
+   - Failed logs alert: "12 call logs failed to sync in last 24 hours"
+   - Collapsible INFO section to control card height
+
+5. **API Usage % Metric Card**
+   - Shows Salesforce API usage percentage (67% in mock data)
+   - Color-coded: Green (<60%), Orange (60-80%), Red (>80%)
+   - Calculated from `integration.apiUsage / integration.apiLimit`
+
+6. **System Uptime % Metric Card**
+   - Shows today's system uptime (99.2% in mock data)
+   - Color-coded: Green (>99%), Orange (95-99%), Red (<95%)
+   - At-a-glance health indicator
+
+### Layout Changes
+
+7. **Row 1 Restructure** - 4 balanced cards (3 cols each)
+   - Card 1: Attention Required (alerts with collapsible INFO)
+   - Card 2: System Health (services, API, uptime)
+   - Card 3: Recent Failed Logs (call sync failures)
+   - Card 4: Salesforce OAuth Status (user connections)
+
+8. **Metric Cards Expansion**
+   - Increased from 8 to 10 metric cards
+   - Added API Usage % and System Uptime %
+   - Consistent styling across all cards
+
+### UX Improvements
+
+9. **Removed Hover Animations**
+   - Simplified all clickable cards
+   - Removed `onmouseenter/onmouseleave` animations
+   - Affects: User Management, OAuth Status, License, all 10 metric cards
+   - Cleaner, less distracting user experience
+
+10. **Collapsible INFO Alerts**
+    - INFO alerts now collapse by default in Attention Required
+    - Toggle arrow to show/hide
+    - Keeps critical alerts always visible
+
+### Information Architecture
+
+**Implemented hierarchical OAuth visibility workflow:**
+
+1. **Attention Required** (10-second scan)
+   - High-level summary: "5 users not connected - calls not logging"
+   - Purpose: Immediate awareness of issues
+
+2. **Recent Failed Logs** (Investigate)
+   - Detailed table: Time, User, Reason
+   - Purpose: Understand which specific logs failed and why
+
+3. **OAuth Status** (Take Action)
+   - Metrics grid: 3 connected, 5 disconnected, 2 expired, 3 expiring soon
+   - Purpose: See overall connection health and navigate to Settings for remediation
+
+**Result:** No redundancy - each card serves distinct purpose in admin workflow
+
+---
+
+## ✅ Previous Completion (Nov 27, 2025)
 
 ### Added Features
 1. **Update Consent Modal**
@@ -97,6 +190,43 @@ All documentation updated and available in the repo:
 
 ## 🎯 What to Test
 
+### OAuth Visibility Features (NEW - Nov 28)
+1. **Admin Dashboard Row 1**
+   - Verify 4 cards appear: Attention Required, System Health, Recent Failed Logs, OAuth Status
+   - Check that each card is 3 columns wide (balanced layout)
+
+2. **Attention Required Card**
+   - Verify OAuth alerts appear: "5 users not connected to Salesforce - calls not logging"
+   - Verify failed logs alert: "12 call logs failed to sync in last 24 hours"
+   - Click INFO section arrow → Verify collapsible behavior (collapsed by default)
+
+3. **System Health Card**
+   - Verify health summary: "5 of 6 services online (83%)"
+   - Verify API usage progress bar (67%)
+   - Verify System Uptime with interactive tooltip on hover
+
+4. **Recent Failed Logs Card**
+   - Verify table with 5 rows showing Time, User, Reason
+   - Verify "View all failed logs →" link is clickable
+   - Check consistent font sizes and styling
+
+5. **Salesforce OAuth Status Card**
+   - Verify 4 metrics grid: Connected (3), Disconnected (5), Expired (2), Expiring Soon (3)
+   - Verify color-coding (red for disconnected/expired)
+   - Verify "Action Required" banner appears (red background)
+   - Click "7 users need attention →" → Should navigate to Settings
+   - Click anywhere on card → Should navigate to Settings
+
+6. **Metric Cards Row (Below Date Filter)**
+   - Verify 10 metric cards appear (was 8, added 2 new)
+   - New card 9: API Usage % (67%)
+   - New card 10: System Uptime % (99.2%)
+   - Verify no hover animations on any cards
+
+7. **User Management & License Cards**
+   - Click cards → Verify they navigate correctly
+   - Verify NO hover animations (translateY effect removed)
+
 ### Demo Controls
 1. Enable "Show banner" → Click "View what's new" → Click "Update to 2.5.0" → See consent modal with checkbox
 2. Click "Show onboarding" → See enhanced 6-step wizard with interactive forms
@@ -116,7 +246,22 @@ All documentation updated and available in the repo:
 
 ## 🔧 Technical Details
 
-**Key Files Modified:**
+**Key Files Modified (Nov 28):**
+- `prototype/js/data-service.js` - OAuth metrics system
+  - Lines 413-418: OAuth metrics calculation
+  - Lines 464-470: OAuth summary alerts
+  - Lines 537-543: OAuth object in metrics return
+
+- `prototype/js/app.js` - Dashboard components (~300 new lines)
+  - Lines 741-755: Row 1 layout (4 cards, 3 cols each)
+  - Lines 797-915: System Health card with interactive uptime
+  - Lines 920-981: Recent Failed Logs card
+  - Lines 1057-1102: Attention Required card with collapsible INFO
+  - Lines 1157-1226: Salesforce OAuth Status card
+  - Lines 1443-1483: Metric cards (10 cards, added API Usage & System Uptime)
+  - Lines 1111, 1167, 1236, 1476: Removed hover animations
+
+**Key Files Modified (Nov 27):**
 - `prototype/js/app.js` - Main application logic (~500 lines modified)
   - Lines 263-293: Version banner
   - Lines 696-704: View Reports action
@@ -144,10 +289,21 @@ All documentation updated and available in the repo:
 ## 💡 Key Points
 
 ✅ Main branch (north star) remains **completely untouched** as requested
-✅ All 21 PM requirements implemented and validated
-✅ Interactive features use existing Demo Controls
-✅ Consistent design patterns throughout
+✅ OAuth visibility addresses Sales Engineer feedback (2 of 3 pain points)
+✅ Hierarchical information architecture prevents redundancy
+✅ 10 metric cards provide comprehensive at-a-glance visibility
+✅ Simplified interactions (no hover animations)
+✅ All 21 PM requirements from Nov 27 remain implemented
 ✅ Comprehensive documentation for handoff
+
+## 📊 Implementation Summary
+
+**Total Features Implemented:** 31 (21 PM + 10 OAuth)
+**Lines of Code Modified:** ~800 lines (data-service.js + app.js)
+**Documentation Updated:** 3 files (VERSION.md, CHANGELOG.md, TEAM_UPDATE.md)
+**New Cards Added:** 2 (Recent Failed Logs, OAuth Status)
+**New Metrics Added:** 2 (API Usage %, System Uptime %)
+**Layout Changes:** Row 1 restructured (3→4 cards)
 
 ---
 
