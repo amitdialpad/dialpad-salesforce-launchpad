@@ -26,6 +26,7 @@ const AppState = {
     // Alert states
     unloggedCallsCount: 3,
     showUnloggedAlert: true,
+    showOAuthErrors: true, // Toggle OAuth errors for demos
 
     // Integration health states
     integrationStatus: 'connected', // 'connected' or 'disconnected'
@@ -172,6 +173,11 @@ const AppState = {
     setVersionBanner(show) {
         this.showVersionBanner = show;
         this.dispatchStateChange('versionBanner', this.showVersionBanner);
+    },
+
+    setOAuthErrors(show) {
+        this.showOAuthErrors = show;
+        this.dispatchStateChange('oauthErrors', this.showOAuthErrors);
     },
 
     toggleSandboxWarning() {

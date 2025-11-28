@@ -410,12 +410,12 @@ const DataService = {
         const connectionIssues = 2; // Mock: 2 users with connection problems
         const neverLoggedIn = 5; // Mock
 
-        // OAuth / Salesforce Connection Stats
-        const oauthDisconnected = 5; // Mock: users not connected to Salesforce
-        const oauthExpired = 2; // Mock: users with expired OAuth tokens
-        const oauthExpiringSoon = 3; // Mock: tokens expiring in < 7 days
+        // OAuth / Salesforce Connection Stats (Demo Control: Show OAuth Errors)
+        const oauthDisconnected = AppState.showOAuthErrors ? 5 : 0; // Mock: users not connected to Salesforce
+        const oauthExpired = AppState.showOAuthErrors ? 2 : 0; // Mock: users with expired OAuth tokens
+        const oauthExpiringSoon = AppState.showOAuthErrors ? 3 : 0; // Mock: tokens expiring in < 7 days
         const oauthConnected = totalUsers - oauthDisconnected - oauthExpired;
-        const failedCallLogs24h = 12; // Mock: call logs that failed due to OAuth issues in last 24h
+        const failedCallLogs24h = AppState.showOAuthErrors ? 12 : 0; // Mock: call logs that failed due to OAuth issues in last 24h
 
         // Calculate license utilization
         const licensesTotal = 50;

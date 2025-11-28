@@ -5278,6 +5278,15 @@ const App = {
             });
         }
 
+        // OAuth errors toggle
+        const oauthErrorsToggle = document.getElementById('toggle-oauth-errors');
+        if (oauthErrorsToggle) {
+            oauthErrorsToggle.addEventListener('change', (e) => {
+                AppState.setOAuthErrors(e.target.checked);
+                this.renderCurrentPage();
+            });
+        }
+
         // Changelog trigger
         const changelogBtn = document.getElementById('show-changelog');
         if (changelogBtn) {
