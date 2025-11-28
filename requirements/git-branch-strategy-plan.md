@@ -703,6 +703,62 @@ Thanks,
 
 ---
 
+### Issue 5: GitHub Pages Deployment Not Immediately Visible
+
+**Problem:** After pushing to admin-refactor-v2 branch, changes don't appear immediately on the deployed URL. GitHub shows "recent pushes" banner but the live site still shows old version.
+
+**What's Happening:**
+1. `git push origin admin-refactor-v2` succeeds and commits appear on GitHub
+2. GitHub Actions workflow must run to deploy the changes
+3. Deployment takes 2-3 minutes to complete
+4. During this time, the URL still shows the previous version
+
+**Solution:**
+1. **Verify the push succeeded:**
+   ```bash
+   git status
+   # Should show: Your branch is up to date with 'origin/admin-refactor-v2'
+   ```
+
+2. **Check GitHub Actions workflow:**
+   - Go to: https://github.com/amitdialpad/dialpad-salesforce-launchpad/actions
+   - Look for "Deploy to GitHub Pages" workflow
+   - Verify it's running (yellow circle) or completed (green checkmark)
+   - If failed (red X), click to see error logs
+
+3. **Monitor deployment progress:**
+   - Workflow typically takes 2-3 minutes
+   - Steps: Checkout → Fetch branches → Build deployment → Upload artifact → Deploy
+   - Wait for green checkmark before testing live URL
+
+4. **Verify deployment completed:**
+   ```bash
+   # Check latest commit on GitHub matches local
+   git log -1 --oneline
+   # Compare with: https://github.com/amitdialpad/dialpad-salesforce-launchpad/commits/admin-refactor-v2
+   ```
+
+5. **Test the live URL:**
+   - Clear browser cache (Cmd+Shift+R on Mac, Ctrl+Shift+R on Windows)
+   - Visit: https://amitdialpad.github.io/dialpad-salesforce-launchpad/admin-refactor/
+   - Verify changes are visible
+
+**Important Notes:**
+- GitHub may show "Compare & pull request" banner before deployment completes
+- The banner appears immediately after push, but site updates after workflow completes
+- Always wait for GitHub Actions to finish before sharing the live URL
+- Network issues can delay the push - check `git status` to confirm all commits are pushed
+
+**Common Mistakes:**
+- ❌ Assuming push succeeded when you see the GitHub banner
+- ❌ Testing the live URL before GitHub Actions completes
+- ❌ Not clearing browser cache when testing
+- ✅ Check `git status` shows "up to date with origin"
+- ✅ Monitor Actions tab for workflow completion
+- ✅ Wait 2-3 minutes after push before testing
+
+---
+
 ## Next Steps
 
 ### Immediate Actions (30 minutes)
